@@ -41,7 +41,7 @@ def main():
     print("Initializing ChromeDriver... ", end='')
     try:
         chrome_options = Options()
-        chrome_options.add_argument("--headless")
+        #chrome_options.add_argument("--headless")
         chrome_options.add_argument("--log-level=3")
         #chrome_options.add_argument('--executable_path="./chromedriver.exe"')
         chrome_service = Service()
@@ -79,7 +79,7 @@ def main():
         button_submit = driver.find_element(By.NAME, name_button_submit)
         print("done.")
     except:
-        fail
+        fail()
 
     # input data in fields and proceed
     print("Inserting credentials... ", end='')
@@ -131,8 +131,9 @@ def main():
             ticker='Strike!',
         )
 
-    driver.quit()
     print("Possible appointment slot found! Check it out ASAP!")
+    print("\nPress Return to quit the browser instance...")
+    driver.quit()
 
 if __name__ == "__main__":
     main()
