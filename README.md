@@ -3,10 +3,10 @@ Hai prenotato una visita specialistica al CUP ma è tutto pieno?
 Con SaniDrive, inserisci Codice Fiscale e NRE nel file `credentials.txt` e controlla automaticamente ogni 30 secondi se si è liberato un posto.
 
 ## Requirements
-Per usare SaniDrive, devi scaricare ChromeDriver, che trovi [qui](https://googlechromelabs.github.io/chrome-for-testing/). Se non ce l'hai, installa anche Chrome. Assicurati di scaricare la versione di ChromeDriver che corrisponde a quella del browser Chrome che hai installato!
-Metti `chromedriver.exe` nella stessa directory in cui si trova `SaniDrive.py`.
+Per usare SaniDrive devi scaricare ChromeDriver, che trovi [qui](https://googlechromelabs.github.io/chrome-for-testing/). Ti servirà inoltre il browser Chrome. Assicurati di scaricare la versione di ChromeDriver che corrisponde a quella del browser che hai installato!
 
-Nella stessa directory crea anche il file di testo `credentials.txt` che deve rigorosamente contenere solo due righe: nella prima il tuo Codice Fiscale, nella seconda l'NRE della dua prescrizione.
+Metti `chromedriver.exe` nella stessa directory in cui si trova `SaniDrive.py`.
+Nella stessa directory crea anche il file di testo `credentials.txt` che deve rigorosamente contenere solo due righe: nella prima il tuo Codice Fiscale, nella seconda l'NRE della tua prescrizione.
 
 Infine, installa i seguenti pacchetti con `pip install`:
 ```
