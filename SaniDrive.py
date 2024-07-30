@@ -125,7 +125,7 @@ def main():
         notification.notify(
             title='SaniDrive ha trovato qualcosa!',
             message='Sembra che ci sia un appuntamento disponibile!',
-            app_name='SaniDrive',
+            app_name='SaniDrive', 
             app_icon='',
             timeout=20,
             ticker='Strike!',
