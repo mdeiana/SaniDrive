@@ -10,32 +10,38 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
+# Static Variables
+id_cf = '_ricettaelettronica_WAR_cupprenotazione_:ePrescriptionSearchForm:CFInput'
+id_nre = '_ricettaelettronica_WAR_cupprenotazione_:ePrescriptionSearchForm:nreInput0'
+name_button_submit = '_ricettaelettronica_WAR_cupprenotazione_:ePrescriptionSearchForm:nreButton_button'
+name_button_proceed = '_ricettaelettronica_WAR_cupprenotazione_:navigation-prestazioni-under:prestazioni-nextButton-under__button'
+class_button_cookies = '.js-cookieBarAccept'
+name_class_appointment = 'appuntamento'
+
+# Classes
+
+
+
+# Functions
 def fail():
-    print("failed.\nPage layout must have changed. If you'd be so kind,\
-          please notify me at michele.deiana.dev@gmail.com")
+    print("non riuscito.\nProbabilmente il layout della pagina e' cambiato,\
+          per favore avvisami con email a michele.deiana.dev@gmail.com")
     sys.exit()
 
+# Main script
 def main():
     # get credentials from file
-    print("Getting credentials... ", end='')
+    print("Lettura credenziali... ", end='')
     try:
-        with open("credentials.txt", "r") as f:
+        with open("credenziali.txt", "r") as f:
             cf = f.readline()
             nre = f.readline()
             print("done.")
     except FileNotFoundError:
-        print("failed.\nFile not found. Make sure your credentials are\
-              in the file credentials.txt in the same directory as\
-              SaniDrive.py, one value per line.")
+        print("non riuscita.\nIl file 'credenziali.txt' non e' stato trovato.\
+              Assicurati che sia nella stessa cartella in cui si trova SaniDrive.py\
+              , e che CF e NRE siano nella prima e seconda riga rispettivamente.")
         sys.exit()
-
-    # stuff we'll need to ID the elements we'll be interacting with
-    id_cf = '_ricettaelettronica_WAR_cupprenotazione_:ePrescriptionSearchForm:CFInput'
-    id_nre = '_ricettaelettronica_WAR_cupprenotazione_:ePrescriptionSearchForm:nreInput0'
-    name_button_submit = '_ricettaelettronica_WAR_cupprenotazione_:ePrescriptionSearchForm:nreButton_button'
-    name_button_proceed = '_ricettaelettronica_WAR_cupprenotazione_:navigation-prestazioni-under:prestazioni-nextButton-under__button'
-    class_button_cookies = '.js-cookieBarAccept'
-    name_class_appointment = 'appuntamento'
 
     # initialize driver
     print("Initializing ChromeDriver... ", end='')
