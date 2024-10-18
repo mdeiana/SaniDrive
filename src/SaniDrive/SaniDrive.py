@@ -38,9 +38,7 @@ def main():
             nre = f.readline()
             print("done.")
     except FileNotFoundError:
-        print("non riuscita.\nIl file 'credenziali.txt' non e' stato trovato.\
-              Assicurati che sia nella stessa cartella in cui si trova SaniDrive.py\
-              , e che CF e NRE siano nella prima e seconda riga rispettivamente.")
+        print("non riuscita.\nIl file 'credenziali.txt' non e' stato trovato.")
         sys.exit()
 
     # initialize driver
