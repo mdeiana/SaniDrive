@@ -20,25 +20,3 @@ Esegui SaniDrive.py e vai a fare altro!
 
 ## To do
 Tanti exception catch, supportare l'inserimento delle credenziali con argomenti direttamente da CLI, supportare invio di email o push di notifica su telefono, supportare diversi siti, inserire euristiche di riserva o più resilienti ad un possibile cambiamento del layout del sito.
-
-
-### Actual To-do
-- [ ] Investigate to see if other pages contain more information. If so:
-    - [ ] find a better way of extracting and refreshing info
-
-- [ ] Find a way to catalogue all of it and display changes on terminal
-    - [ ] Continuously refresh and find a way to track changes:
-          What spots are new, which ones are gone...
-        - [ ] bonus points for entry class and methods and shit
-
-- [ ] Investigate for ways to send notifications more effectively
-    - [ ] Phone?
-    - [ ] Email for sure, come on...
-
-- [ ] Improve feature-set and user-experience
-    - [ ] Cli arguments or Interactive options:
-      - [ ] Store multiple credential pairs and select which to use
-      - [ ] Possibly, make it so an appointment can be selected and
-            booked directly from within software
-      - [ ] Maybe one day, GUI
-    - [ ] Italian localization
