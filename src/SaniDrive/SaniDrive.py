@@ -43,13 +43,14 @@ class FileEmptyError(Exception):
 
 # Classes
 class Appointment:
-    def __init__(self, place, date: str, time, notes):
+    def __init__(self, place: str, date: str, time: str, notes: str):
         self.place = place
         self.date = date
         self.time = time
         self.notes = notes
 
     def __str__(self):
+        """Returns appointment information in readable string form"""
         # set up proper spacing
         if len(self.date) <= 22:
             date = self.date + '\t\t'
@@ -80,7 +81,7 @@ class Appointment:
             else:
                 if this_day > other_day: return False
                 else:
-                    if this_hour > other_hour: return False
+                    if this_hour >= other_hour: return False
 
         return True
 
@@ -173,9 +174,8 @@ def init_driver(args: Namespace) -> WebDriver:
     
     chrome_options.add_argument("--log-level=3")
     chrome_options.add_argument(f'--executable_path={args.driverFile}')
-    chrome_service.log_output = args.logFile
-
-    #driver = webdriver.Chrome(chrome_options, chrome_service)
+    chrome_service.log_output = os.path.abspath(args.logFile)
+    # chrome_service isn't included as the second argument because Selenium bugs out
     driver = webdriver.Chrome(chrome_options)
     backline(1)
     return driver
@@ -300,7 +300,7 @@ def parse_arguments():
                         'e\' nascosta per evitare di interagirci accidentalmente. Specificare questa opzione la rende visible.')
     parser.add_argument('--log', '-l', dest='logFile', default=None, action='store', help='Specifica il percorso '+
                         'del file in cui salvare il log di ChromeDriver. Se il parametro non e\' specificato, i log '+
-                        'non sono salvati.')
+                        'non sono salvati. Questo parametro e\' correntemente disabilitato per un bug in Selenium.')
     args = parser.parse_args()
     return args
 
@@ -383,13 +383,11 @@ def main():
     
     # print prescriptions and choose which to track
     print("\nNumero\t Codice fiscale\t\tNRE\t\tNome\t\t\tNota")
-    prescr_n = 0
-    for prescr in prescriptions:
-        prescr_n += 1
-        print(prescr_n, "\t", prescr)
+    for i, prescr in enumerate(prescriptions):
+        print(i+1, "\t", prescr)
     print("")
 
-    c = int(input(f"Seleziona un'impegnativa (1 - {prescr_n}): ")) - 1
+    c = int(input(f"Seleziona un'impegnativa (1 - {i+1}): ")) - 1
     backline(1)
 
     # initialize driver, delete some nasty output by driver to stdout
@@ -405,35 +403,41 @@ def main():
                 "https://googlechromelabs.github.io/chrome-for-testing/ \n"+
                 "La versione deve essere la stessa del browser Chrome, che puoi "+
                 "trovare andando alla pagina chrome://version")
-        sys.exit(1)   
+        #sys.exit(1)
+        raise
 
     # get the page with the list of all the appointments and expand the list
     get_appointments_page(driver, *prescriptions[c].get_creds())
     expand_list(driver)
     
     print(f"\nRaggiunta la pagina. Aggiornamento ogni {list_reload_interval} secondi.")    
-    print("Aggiornamento in corso... ")
+    print("Caricamento lista appuntamenti... ")
 
     # main loop
-    appointments = [] # these are the sanitised appointments from the class
-    old_appointments = [] # expensive but easy way to keep track of changes
+    appointments : list[Appointment] = [] # these are the sanitised appointments from the class
+    old_appointments : list[Appointment] = [] # expensive but easy way to keep track of changes
     appnts = [] # these are the appointment webelements from the driver, bad name mb
     change_counter = -1
+    refresh_counter = 0
     pretty = 0 # used to make change_counter display intuitively
     while True:
+        sleep(10)
+        """
+        used to make sure the list has loaded fully before reading appointments
+        this is temporary and needs to be replaced with an implicit wait method
+        """
         cls()
         # print selected prescription data for sanity
         print("\nNumero\t Codice fiscale\t\tNRE\t\tNome\t\t\tNota")
-        print(c+1, "\t", prescr, '\n')
+        print(c+1, "\t", prescriptions[c], '\n')
         sys.stdout.flush()
 
         # print prescription column info
-        print(f'\t\t\t\tAPPUNTAMENTI')
-        print(f'Numero\t\t Data\t\t\t\tOra\t\t\tVia')
+        print(f'\t\t\t\t\t\tAPPUNTAMENTI')
+        print(f'Numero\t\t Data\t\t\t\t Ora\t\t\tVia')
         sys.stdout.flush()
         
         # get appointment objects and discard the first because it's repeated later
-        sleep(10)
         appnts = driver.find_elements(By.CLASS_NAME, name_class_appointment)
         appnts = appnts[1:]
 
@@ -446,18 +450,26 @@ def main():
             # note support to be added
 
             # store information in new instance
-            appointments.append(Appointment(place, time_fields[0].text,
+            appointments.append(Appointment(place, time_fields[0].text.strip(),
                                             time_fields[2].text, ''))
 
         # find out if something changed, send a notif and move on
         if appointments != old_appointments:
             change_counter += 1
-            send_notif()
-        old_appointments = appointments
+
+        # store earliest found appointment separately
+        try:
+            if appointments[0].is_sooner_than(earliest_appointment):
+                earliest_appointment = appointments[0]
+                found_on_refresh = refresh_counter
+                send_notif()
+        except NameError:
+            earliest_appointment = appointments[0]
+            found_on_refresh = refresh_counter
+            pass
 
         # print all available appointments
-        an = len(appointments)
-        if an == 0:
+        if len(appointments) == 0:
             print("\t\t\tNessun appuntamento.")
             pretty = 1
         else:
@@ -465,19 +477,23 @@ def main():
                 print(f"{i+1}\t", a)
 
         # print some statistics
-        print(f'\nAppuntamenti totali: {an};\t\t\tCambiamenti rilevati: '+
-                f'{change_counter+pretty}')
+        print(f"\n\t\tPrimo appuntamento mai trovato\t(durante aggiornamento {found_on_refresh}):\n",
+                "\t", earliest_appointment, "\n")
+        print(f'\t\tAggiornamenti totali: {refresh_counter}\t\t\tCambiamenti rilevati: '+
+                f'{change_counter+pretty}\n')
 
-        # reset everything to get new data
-        driver.quit()
+        # cycle data
+        old_appointments = appointments
         appointments = []
-        sleep(list_reload_interval)
+        refresh_counter += 1
 
+        # refresh
+        driver.quit()
+        sleep(list_reload_interval)
+        print("Aggiornamento lista appuntamenti... ")
         driver = init_driver(args)
         get_appointments_page(driver, *prescriptions[c].get_creds())
         expand_list(driver)
-
-    driver.quit()
 
 if __name__ == "__main__":
     main()

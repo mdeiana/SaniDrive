@@ -12,7 +12,8 @@ os.chdir(root)
 
 # modify sys.argv to simulate passing of arguments from shell
 sys.argv = ['SaniDrive.py', '--file', 'data/credenziali.json', 
-            '--visible', '--log', 'tests/logs.txt',
+            #'--visible',
+            '--log', 'tests/logs.txt',
             '--driver', 'driver/chromedriver.exe']
 
 # test code
