@@ -75,13 +75,23 @@ class Appointment:
         other_day = tokens[1]; other_month = month[tokens[2]]; other_year = int(tokens[3])
 
         # compare
-        if this_year > other_year: return False
-        else:
-            if this_month > other_month: return False
-            else:
-                if this_day > other_day: return False
-                else:
-                    if this_hour >= other_hour: return False
+        if this_year > other_year:
+            return False
+        if this_year < other_year:
+            return True
+        if this_year == other_year:
+            if this_month > other_month:
+                return False
+            if this_month < other_month:
+                return True
+            if this_month == other_month:
+                if this_day > other_day:
+                    return False
+                if this_day < other_day:
+                    return True
+                if this_day == other_day:
+                    if this_hour >= other_hour:
+                        return False
 
         return True
 
@@ -143,13 +153,14 @@ class RefreshTimer:
             Timer(self.interval, self._callback).start()
 
 # Functions
-def send_notif():
+def send_notif(appnt: Appointment) -> None:
+    """Send desktop notification with appointment information"""
     notification.notify(
             title='SaniDrive ha trovato qualcosa!',
-            message='Sembra che ci sia un appuntamento disponibile!',
+            message=appnt.date + ' ' + appnt.place,
             app_name='SaniDrive',
             app_icon='',
-            timeout=20,
+            timeout=30,
             ticker='Strike!',
         )
     return
@@ -314,6 +325,13 @@ def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
     return
 
+def divider(*args: str):
+    print("=================================================="+
+          "==================================================")
+    for arg in args:
+        print(arg, end='')
+    return
+
 def fail():
     print("non riuscito.\nProbabilmente il layout della pagina e' cambiato, "+
           "per favore avvisami con email a michele.deiana.dev@gmail.com")
@@ -403,8 +421,7 @@ def main():
                 "https://googlechromelabs.github.io/chrome-for-testing/ \n"+
                 "La versione deve essere la stessa del browser Chrome, che puoi "+
                 "trovare andando alla pagina chrome://version")
-        #sys.exit(1)
-        raise
+        sys.exit(1)
 
     # get the page with the list of all the appointments and expand the list
     get_appointments_page(driver, *prescriptions[c].get_creds())
@@ -430,10 +447,11 @@ def main():
         # print selected prescription data for sanity
         print("\nNumero\t Codice fiscale\t\tNRE\t\tNome\t\t\tNota")
         print(c+1, "\t", prescriptions[c], '\n')
+        divider('\n')
         sys.stdout.flush()
 
         # print prescription column info
-        print(f'\t\t\t\t\t\tAPPUNTAMENTI')
+        print(f'\t\t\t\t\t\tAPPUNTAMENTI\n')
         print(f'Numero\t\t Data\t\t\t\t Ora\t\t\tVia')
         sys.stdout.flush()
         
@@ -462,7 +480,7 @@ def main():
             if appointments[0].is_sooner_than(earliest_appointment):
                 earliest_appointment = appointments[0]
                 found_on_refresh = refresh_counter
-                send_notif()
+                send_notif(earliest_appointment)
         except NameError:
             earliest_appointment = appointments[0]
             found_on_refresh = refresh_counter
@@ -477,10 +495,11 @@ def main():
                 print(f"{i+1}\t", a)
 
         # print some statistics
-        print(f"\n\t\tPrimo appuntamento mai trovato\t(durante aggiornamento {found_on_refresh}):\n",
+        print(f"\n\t\tAppuntamento piu' vicino trovato (durante aggiornamento {found_on_refresh}):\n",
                 "\t", earliest_appointment, "\n")
         print(f'\t\tAggiornamenti totali: {refresh_counter}\t\t\tCambiamenti rilevati: '+
                 f'{change_counter+pretty}\n')
+        divider('\n')
 
         # cycle data
         old_appointments = appointments
