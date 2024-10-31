@@ -11,10 +11,14 @@ from src.sanidrive import SaniDrive
 os.chdir(root)
 
 # modify sys.argv to simulate passing of arguments from shell
-sys.argv = ['SaniDrive.py', '--file', 'data/credenziali.json', 
-            #'--visible',
+sys.argv = ['SaniDrive.py',
+            '--file', 'data/credenziali.json', 
+            '--visible',
             '--log', 'tests/logs.txt',
-            '--driver', 'driver/chromedriver.exe']
+            '--driver', 'data/chromedriver.exe',
+            #'--date', '30/12/2025',
+            '--audio', 'data/emmescingue.mpeg'
+            ]
 
 # test code
 SaniDrive.main()
