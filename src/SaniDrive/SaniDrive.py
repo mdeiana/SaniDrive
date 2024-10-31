@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import zipfile
 import argparse
 import requests
 from time import sleep
@@ -20,9 +21,10 @@ from selenium.common.exceptions import StaleElementReferenceException as SERE
 from selenium.common.exceptions import ElementClickInterceptedException as ECI
 
 # Version
-__version__ = '1.1'
+__version__ = '1.2'
 
 # Constant Parameters
+driver_version_page = 'https://googlechromelabs.github.io/chrome-for-testing/'
 driver_dl_page = 'https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json'
 id_cf = '_ricettaelettronica_WAR_cupprenotazione_:ePrescriptionSearchForm:CFInput'
 id_nre = '_ricettaelettronica_WAR_cupprenotazione_:ePrescriptionSearchForm:nreInput0'
@@ -465,12 +467,7 @@ def interactive_latest_appointment() -> Appointment:
 def init_driver(args: Namespace) -> WebDriver:
     """
     Create a new WebDriver instance with the correct parameters specified
-    by the user from CLI and return it. This unfortunately needs to be done
-    for every cycle because the website freaks out if all context isn't
-    completely reset when re-visiting the login page.
-
-    MAKE SURE the previous instance of the driver has been killed with
-    driver.quit() before reassigning it with init_driver again
+    by the user from CLI and return it.
 
     Parameters
     ----------
@@ -486,6 +483,8 @@ def init_driver(args: Namespace) -> WebDriver:
         The instance of the Selenium ChromeDriver
 
     """
+    driver_path = os.path.abspath(args.driverFile)
+
     print("Inizializzazione ChromeDriver... ", end='') # 33 characters in line
     sys.stdout.flush()
     try:
@@ -497,7 +496,7 @@ def init_driver(args: Namespace) -> WebDriver:
         
         chrome_options.add_argument("--log-level=3")
         chrome_options.add_argument('--remote-debugging-port=9222')
-        chrome_options.add_argument(f'--executable_path={args.driverFile}')
+        chrome_options.add_argument(f'--executable_path={driver_path}')
         chrome_service.log_output = os.path.abspath(args.logFile)
         # chrome_service isn't included as the second argument because
         # Selenium bugs out if it is as of version 4.20.0
@@ -514,7 +513,7 @@ def init_driver(args: Namespace) -> WebDriver:
         sys.exit(1)
     return driver
 
-def get_appointments_page(driver: webdriver, cf: str, nre: str):
+def get_appointments_page(driver: webdriver, cf: str, nre: str) -> None:
     """
     Core script that reaches the login page, navigates to where the list
     of appointments is given and extracts them into a list of objects
@@ -523,7 +522,12 @@ def get_appointments_page(driver: webdriver, cf: str, nre: str):
     only by logging in again, so this function has to be re-run for every
     cycle update.
 
-    
+    Parameters
+    ----------
+    driver : webdriver
+        The webdriver instance that's been initialized by `init_driver`
+    cf : str, nre : str
+        The credentials to be inserted in the page's input fields
     """
     driver.get("https://cupweb.sardegnasalute.it/web/guest/ricetta-elettronica?")
 
@@ -616,10 +620,10 @@ def expand_list(driver: webdriver):
 def parse_arguments() -> Namespace:
 
     class ArgumentParser(argparse.ArgumentParser):
-        # Custom class that overrides default message
+        """Custom class that overrides default message"""
         def error(self, message):
             print("\nSembra che tu abbia commesso un errore nell'usare le "+
-            "opzioni da linea di comando.\nUsa l'opzione --aiuto per una "+
+            "opzioni da linea di comando.\nUsa l'opzione --help per una "+
             "lista di tutte le opzioni e istruzioni su come usarle.")
             self.exit(1)
 
@@ -633,9 +637,9 @@ def parse_arguments() -> Namespace:
         help=f'Specifica il percorso del file con le credenziali. E\' bene usare un percorso assoluto '+
         'per garantire l\'uso del file corretto. Il percorso di default e\' "data/credenziali.json", '+
         'relativamente alla directory da cui e\' eseguito SaniDrive.\n')
-    parser.add_argument('--driver', dest='driverFile', default='driver/chromedriver.exe', metavar='FILE',
+    parser.add_argument('--driver', dest='driverFile', default='data/chromedriver-win64/chromedriver.exe', metavar='FILE',
         help='Specifica il percorso dell\'eseguibile di ChromeDriver. E\' bene usare un percorso assoluto '+
-        'per garantire l\'uso del file corretto. Il percorso di default e\' "driver/chromedriver.exe", '+
+        'per garantire l\'uso del file corretto. Il percorso di default e\' "data/chromedriver-win64/chromedriver.exe", '+
         'relativamente alla directory da cui e\' eseguito SaniDrive. Scarica la versione di ChromeDriver '+
         'che combacia a quella del tuo browser Chrome da https://googlechromelabs.github.io/chrome-for-testing/\n')
     parser.add_argument('--visibile', '--visible', '-v', dest='visible', default=False, action='store_true', help=
@@ -658,11 +662,18 @@ def parse_arguments() -> Namespace:
         "di tutti quelli trovati in precedenza, ma la finestra di ChromeDriver non sara' aperta e SaniDrive "+
         "continuera' a cercare. Infine, se l'opzione non e' specificata, la data potra' essere scelta "+
         "interattivamente dopo aver selezionato un'impegnativa da monitorare.\n")
-    #parser.add_argument('--nonstop', '--nostop', '-n', ... 
-    #    help="Non fermare il programma quando un appuntamento "+
-    #    "precedente la data scelta con --data e' trovato. La notifica verra' "+
-    #    "prodotta comunque. Questa opzione e' sempre attiva se l'opzione "+
-    #    "--data non e' specificata.")
+    parser.add_argument('--nonstop', '--nostop', '-n', dest='nonstop',
+        default=False, action='store_true',
+        help="Non fermare il programma quando un appuntamento "+
+        "precedente la data scelta con --data e' trovato. La notifica verra' "+
+        "prodotta comunque.")
+    parser.add_argument('--exec', '-e', '--audio', '-a', dest='audioFile',
+        default='', action='store', help="Specifica il percorso di un file "+
+        "da eseguire quando un appuntamento precedente la data scelta con "+
+        "--data e' trovato. L'utilizzo inteso e' quello di riprodurre un "+
+        "file audio o aprire un collegamento a un video, ma eseguire un "+
+        "file arbitrario puo' essere un modo di estendere le funzionalita' "+
+        "di SaniDrive.", metavar='FILE')
     args = parser.parse_args()
     return args
 
@@ -734,25 +745,154 @@ def _center(string: str, n: int, center_last: bool = False,
     return lines_printed
 
 def _fail(reason: str = '', masculine: bool = True) -> None:
-    """Internal function that prints info on failure for user"""
-
+    """
+    Internal function that prints info on failure for user
+    
+    Parameters
+    ----------
+    reason : str
+        Valid strings are 'layout', 'date', 'session', 'automatic_download',
+        ''.
+    """
+    p = lambda s: _center(s, line_width)
     start = 'non riuscito.\n' if masculine else 'non riuscita.\n'
     if reason == 'layout':
-        print(start + "Probabilmente il layout della pagina e' "+
+        print(start); p("Probabilmente il layout della pagina e' "+
             "cambiato, per favore avvisami con email a "+
             "michele.deiana.dev@gmail.com")
     if reason == 'date':
-        print("Errore: la data specificata non e' valida oppure e' "+
+        p("Errore: la data specificata non e' valida oppure e' "+
             "formattata incorrettamente. Controlla la data e ricorda che "+
             "puoi usare l'opzione --help per vedere i formati supportati.")
     if reason == 'session':
-        print(start + "Probabilmente la sessione e' scaduta oppure "+
+        print(start); p("Probabilmente la sessione e' scaduta oppure "+
             "la connessione e' stata interrotta. Per favore riprova, "+
             "e se il problema persiste avvisami con email a "+
             "michele.deiana.dev@gmail.com")
+    if reason == 'automatic_download':
+        print(start); p("Qualcosa e' andato storto. Per favore riprova, e se "+
+              "il problema persiste contattami con email a "+
+              "michele.deiana.dev@gmail.com")
     if reason == '':
         print("Errore generico: qualcosa e' andato storto.")
     sys.exit(1)
+
+def download_chromedriver(dir_path: str) -> str:
+    """
+    Go to the dispatch page `https://googlechromelabs.github.io/chrome-for-\
+    testing/known-good-versions-with-downloads.json` and download the latest
+    stable version of ChromeDriver obtained by parsing the official page
+    `https://googlechromelabs.github.io/chrome-for-testing/`.
+
+    Parameters
+    ----------
+    dir_path : str
+        The absolute path to the directory that is either specified as
+        destined for chromedriver.exe to reside in or the default one.
+
+    Returns
+    -------
+    str
+        The absolute path to the downloaded chromedriver.exe, which should be
+        `f'{dir_path}/chromedriver-win64/chromedriver.exe'`
+    """
+
+    archive_path = os.path.join(dir_path, 'chromedriver-win64.zip')
+    extr_dir_path = os.path.join(dir_path, 'chromedriver-win64')
+    driver_path = os.path.join(extr_dir_path, 'chromedriver.exe')
+    p = lambda s: _center(s, line_width)
+    print("Controllo presenza ChromeDriver... non rilevata.\n")
+    p("Se non hai indicato manualmente il percorso di chromedriver.exe, "+
+      "probabilmente non hai scaricato ChromeDriver. SaniDrive puo' "+
+      "scaricarlo automaticamente per te nella cartella di default o "+
+      "in quella specificata se ne hai scelta una.")
+    print('\n')
+
+    c = 0
+    while c != 1:
+        c = input('Scaricare ChromeDriver automaticamente? (S/n): ')
+        backline(1)
+        if c == 'S' or c == 's':
+            c = 1
+        if c == 'N' or c == 'n':
+            sys.exit(0)
+
+    # get the latest stable version
+    print('Controllo versione ChromeDriver... ', end=''); sys.stdout.flush()
+    sleep(1)
+    try:
+        response = requests.get(driver_version_page)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        version = soup.find('code').text
+    except:
+        _fail('automatic_download')
+    print(f"trovata versione {version}.\n")
+    p("Assicurati di avere la stessa "+
+      f"versione del browser Google Chrome installata (solitamente "+
+      f"coincide con l'ultimo aggiornamento disponibile).")
+
+    print('\nConsultazione JSON API endpoints... ', end=''); sys.stdout.flush()
+    sleep(1)
+    try:
+        response = requests.get(driver_dl_page)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        biglist = json.loads(soup.__str__())['versions']
+        for bigdict in biglist:
+            if bigdict['version'] == version:
+                dictlet = bigdict['downloads']
+                break
+        dl_url = dictlet['chromedriver'][4]['url']
+    except:
+        _fail('automatic_download')
+    print('fatto.')
+
+    print(f'\nDownload da {dl_url}... '); sys.stdout.flush()
+    sleep(1)
+    try:
+        response = requests.get(dl_url, stream=True)
+        response.raise_for_status()
+
+        with open(archive_path, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                if not chunk:
+                    break
+                f.write(chunk)
+        print('fatto.')
+    except:
+        _fail('automatic_download')
+        sys.exit(1)
+
+    print(f'\nDecompressione archivio... ', end=''), sys.stdout.flush()
+    sleep(1)
+    try:
+        with zipfile.ZipFile(archive_path, 'r') as zip:
+            zip.extractall(dir_path)
+    except:
+        _fail('automatic_download', masculine=False)
+    print('fatto.')
+
+    print("Rimozione archivio... ", end=''), sys.stdout.flush()
+    sleep(1)
+    try:
+        os.remove(archive_path)
+        print("completata.")
+    except:
+        print("non riuscita. Passaggio non vitale, procediamo...\n")
+
+    print("\n\n")
+    _center('-'*47, line_width, True)
+    _center("Installazione automatica avvenuta con successo.",
+            line_width, True)
+    _center('-'*47, line_width, True)
+    print("\n\n")
+    print("L'eseguibile di ChromeDriver si trova ora nel percorso:\n"+
+          f"{driver_path}\n\n")
+    
+    _center('|||   Premere Invio per continuare   |||', line_width, True)
+    input('')
+    cls()
+
+    return driver_path
 
 def pop_prescriptions(path: str) -> list[Prescription]:
     """
@@ -980,6 +1120,12 @@ def main():
     args = parse_arguments()
     credPath = os.path.abspath(args.credFile)
     list_reload_interval = int(args.interval)
+    audio_exists = os.path.isfile(os.path.abspath(args.audioFile))
+    driver_path = os.path.abspath(args.driverFile)
+
+    # download the latest version of chromedriver if it's not in provided path
+    if not os.path.isfile(driver_path):
+        driver_path = download_chromedriver(os.path.dirname(driver_path))
 
     # read prescriptions from file and choose which to track
     prescriptions = read_prescriptions(credPath)
@@ -1060,20 +1206,23 @@ def main():
                 earliest_appointment = appointments[0]
                 found_on_refresh = refresh_counter
             if appointments[0].is_sooner_than(latest_appointment):
-                send_notif(appointments[0])
-                print('')
-                p('|||   NUOVO APPUNTAMENTO TROVATO   |||')
-                print('')
-                _center('Trovato un appuntamento per prima della data '+
-                'specificata. '+
-                'Effettua la prenotazione dalla finestra di ChromeDriver '+
-                'oppure premi Invio per continuare a cercare usando la '+
-                'data di questo prossimo appuntamento come nuova data.'
-                , line_width)
-                input('')
-                backline(6)
-                latest_appointment = appointments[0]
-                ldate = ' '.join(appointments[0].date.split()[1:])
+                if audio_exists:
+                    os.system(f'{os.path.abspath(args.audioFile)}')
+                    send_notif(appointments[0])
+                if not args.nonstop:
+                    print('')
+                    p('|||   NUOVO APPUNTAMENTO TROVATO   |||')
+                    print('')
+                    _center('Trovato un appuntamento per prima della data '+
+                    'specificata. '+
+                    'Effettua la prenotazione dalla finestra di ChromeDriver '+
+                    'oppure premi Invio per continuare a cercare usando la '+
+                    'data di questo prossimo appuntamento come nuova data.'
+                    , line_width)
+                    input('')
+                    backline(6)
+                    latest_appointment = appointments[0]
+                    ldate = ' '.join(appointments[0].date.split()[1:])
             pass
         except IndexError:
             pass
@@ -1112,10 +1261,9 @@ def main():
         refresh_counter += 1
 
         # refresh
-        driver.quit()
+        driver.delete_all_cookies()
         sleep(list_reload_interval)
         print("Aggiornamento lista appuntamenti... ")
-        driver = init_driver(args)
         get_appointments_page(driver, *prescriptions[c].get_creds())
         expand_list(driver)
 
