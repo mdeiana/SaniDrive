@@ -1,0 +1,425 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>SaniDrive &#8212; SaniDrive 1.3 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="_static/documentation_options.js?v=b1f56dee"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'modules';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">SaniDrive 1.3 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="sanidrive.html">sanidrive package</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/modules.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>SaniDrive</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="sanidrive">
+<h1>SaniDrive<a class="headerlink" href="#sanidrive" title="Link to this heading">#</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="sanidrive.html">sanidrive package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sanidrive.html#module-sanidrive">sanidrive module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sanidrive.html#module-config">config module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#config.set_line_width"><code class="docutils literal notranslate"><span class="pre">set_line_width()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sanidrive.html#module-util">util module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#util.parse_arguments"><code class="docutils literal notranslate"><span class="pre">parse_arguments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#util.download_chromedriver"><code class="docutils literal notranslate"><span class="pre">download_chromedriver()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#util.cls"><code class="docutils literal notranslate"><span class="pre">cls()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#util.title"><code class="docutils literal notranslate"><span class="pre">title()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#util.backline"><code class="docutils literal notranslate"><span class="pre">backline()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#util.divider"><code class="docutils literal notranslate"><span class="pre">divider()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#util._center"><code class="docutils literal notranslate"><span class="pre">_center()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#util._fail"><code class="docutils literal notranslate"><span class="pre">_fail()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sanidrive.html#module-driver">driver module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#driver.RefreshTimer"><code class="docutils literal notranslate"><span class="pre">RefreshTimer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sanidrive.html#driver.RefreshTimer.is_due"><code class="docutils literal notranslate"><span class="pre">RefreshTimer.is_due</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="sanidrive.html#driver.RefreshTimer.set_interval"><code class="docutils literal notranslate"><span class="pre">RefreshTimer.set_interval()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="sanidrive.html#driver.RefreshTimer.start"><code class="docutils literal notranslate"><span class="pre">RefreshTimer.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="sanidrive.html#driver.RefreshTimer._callback"><code class="docutils literal notranslate"><span class="pre">RefreshTimer._callback()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="sanidrive.html#id0"><code class="docutils literal notranslate"><span class="pre">RefreshTimer.set_interval()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="sanidrive.html#id1"><code class="docutils literal notranslate"><span class="pre">RefreshTimer.start()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#driver.init_driver"><code class="docutils literal notranslate"><span class="pre">init_driver()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#driver.get_appointments_page"><code class="docutils literal notranslate"><span class="pre">get_appointments_page()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#driver.expand_list"><code class="docutils literal notranslate"><span class="pre">expand_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sanidrive.html#module-prescription">prescription module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#prescription.FileEmptyError"><code class="docutils literal notranslate"><span class="pre">FileEmptyError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#prescription.Prescription"><code class="docutils literal notranslate"><span class="pre">Prescription</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sanidrive.html#prescription.Prescription.get_creds"><code class="docutils literal notranslate"><span class="pre">Prescription.get_creds()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="sanidrive.html#id2"><code class="docutils literal notranslate"><span class="pre">Prescription.get_creds()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#prescription.read_prescriptions"><code class="docutils literal notranslate"><span class="pre">read_prescriptions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#prescription.pop_prescriptions"><code class="docutils literal notranslate"><span class="pre">pop_prescriptions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#prescription.choose_prescription"><code class="docutils literal notranslate"><span class="pre">choose_prescription()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#prescription.add_prescription"><code class="docutils literal notranslate"><span class="pre">add_prescription()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#prescription.write_prescriptions"><code class="docutils literal notranslate"><span class="pre">write_prescriptions()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sanidrive.html#module-appointment">appointment module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#appointment.Appointment"><code class="docutils literal notranslate"><span class="pre">Appointment</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sanidrive.html#appointment.Appointment.place"><code class="docutils literal notranslate"><span class="pre">Appointment.place</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="sanidrive.html#appointment.Appointment.date"><code class="docutils literal notranslate"><span class="pre">Appointment.date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="sanidrive.html#appointment.Appointment.time"><code class="docutils literal notranslate"><span class="pre">Appointment.time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="sanidrive.html#appointment.Appointment.notes"><code class="docutils literal notranslate"><span class="pre">Appointment.notes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="sanidrive.html#appointment.Appointment.is_sooner_than"><code class="docutils literal notranslate"><span class="pre">Appointment.is_sooner_than()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="sanidrive.html#appointment.Appointment.latest"><code class="docutils literal notranslate"><span class="pre">Appointment.latest()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="sanidrive.html#id3"><code class="docutils literal notranslate"><span class="pre">Appointment.is_sooner_than()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="sanidrive.html#id4"><code class="docutils literal notranslate"><span class="pre">Appointment.latest()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="sanidrive.html#appointment.Appointment.date_is_valid"><code class="docutils literal notranslate"><span class="pre">Appointment.date_is_valid()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#appointment.interactive_latest_appointment"><code class="docutils literal notranslate"><span class="pre">interactive_latest_appointment()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sanidrive.html#appointment.send_notif"><code class="docutils literal notranslate"><span class="pre">send_notif()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Michele Deiana
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Michele Deiana.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

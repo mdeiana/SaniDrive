@@ -1,0 +1,1044 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>sanidrive package &#8212; SaniDrive 1.3 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="_static/documentation_options.js?v=b1f56dee"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'sanidrive';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="SaniDrive" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">SaniDrive 1.3 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">sanidrive package</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/sanidrive.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>sanidrive package</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-sanidrive">sanidrive module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-config">config module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#config.set_line_width"><code class="docutils literal notranslate"><span class="pre">set_line_width()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-util">util module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#util.parse_arguments"><code class="docutils literal notranslate"><span class="pre">parse_arguments()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#util.download_chromedriver"><code class="docutils literal notranslate"><span class="pre">download_chromedriver()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#util.cls"><code class="docutils literal notranslate"><span class="pre">cls()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#util.title"><code class="docutils literal notranslate"><span class="pre">title()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#util.backline"><code class="docutils literal notranslate"><span class="pre">backline()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#util.divider"><code class="docutils literal notranslate"><span class="pre">divider()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#util._center"><code class="docutils literal notranslate"><span class="pre">_center()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#util._fail"><code class="docutils literal notranslate"><span class="pre">_fail()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-driver">driver module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#driver.RefreshTimer"><code class="docutils literal notranslate"><span class="pre">RefreshTimer</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#driver.RefreshTimer.is_due"><code class="docutils literal notranslate"><span class="pre">RefreshTimer.is_due</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#driver.RefreshTimer.set_interval"><code class="docutils literal notranslate"><span class="pre">RefreshTimer.set_interval()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#driver.RefreshTimer.start"><code class="docutils literal notranslate"><span class="pre">RefreshTimer.start()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#driver.RefreshTimer._callback"><code class="docutils literal notranslate"><span class="pre">RefreshTimer._callback()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id0"><code class="docutils literal notranslate"><span class="pre">RefreshTimer.set_interval()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id1"><code class="docutils literal notranslate"><span class="pre">RefreshTimer.start()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#driver.init_driver"><code class="docutils literal notranslate"><span class="pre">init_driver()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#driver.get_appointments_page"><code class="docutils literal notranslate"><span class="pre">get_appointments_page()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#driver.expand_list"><code class="docutils literal notranslate"><span class="pre">expand_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-prescription">prescription module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prescription.FileEmptyError"><code class="docutils literal notranslate"><span class="pre">FileEmptyError</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prescription.Prescription"><code class="docutils literal notranslate"><span class="pre">Prescription</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#prescription.Prescription.get_creds"><code class="docutils literal notranslate"><span class="pre">Prescription.get_creds()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2"><code class="docutils literal notranslate"><span class="pre">Prescription.get_creds()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prescription.read_prescriptions"><code class="docutils literal notranslate"><span class="pre">read_prescriptions()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prescription.pop_prescriptions"><code class="docutils literal notranslate"><span class="pre">pop_prescriptions()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prescription.choose_prescription"><code class="docutils literal notranslate"><span class="pre">choose_prescription()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prescription.add_prescription"><code class="docutils literal notranslate"><span class="pre">add_prescription()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prescription.write_prescriptions"><code class="docutils literal notranslate"><span class="pre">write_prescriptions()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-appointment">appointment module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.Appointment"><code class="docutils literal notranslate"><span class="pre">Appointment</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.Appointment.place"><code class="docutils literal notranslate"><span class="pre">Appointment.place</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.Appointment.date"><code class="docutils literal notranslate"><span class="pre">Appointment.date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.Appointment.time"><code class="docutils literal notranslate"><span class="pre">Appointment.time</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.Appointment.notes"><code class="docutils literal notranslate"><span class="pre">Appointment.notes</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.Appointment.is_sooner_than"><code class="docutils literal notranslate"><span class="pre">Appointment.is_sooner_than()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.Appointment.latest"><code class="docutils literal notranslate"><span class="pre">Appointment.latest()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3"><code class="docutils literal notranslate"><span class="pre">Appointment.is_sooner_than()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4"><code class="docutils literal notranslate"><span class="pre">Appointment.latest()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.Appointment.date_is_valid"><code class="docutils literal notranslate"><span class="pre">Appointment.date_is_valid()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.interactive_latest_appointment"><code class="docutils literal notranslate"><span class="pre">interactive_latest_appointment()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.send_notif"><code class="docutils literal notranslate"><span class="pre">send_notif()</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="sanidrive-package">
+<h1>sanidrive package<a class="headerlink" href="#sanidrive-package" title="Link to this heading">#</a></h1>
+<section id="module-sanidrive">
+<span id="sanidrive-module"></span><h2>sanidrive module<a class="headerlink" href="#module-sanidrive" title="Link to this heading">#</a></h2>
+<p>Entry point with main script logic</p>
+</section>
+<section id="module-config">
+<span id="config-module"></span><h2>config module<a class="headerlink" href="#module-config" title="Link to this heading">#</a></h2>
+<p>Defines global variables and a setter for each variable.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="config.set_line_width">
+<span class="sig-prename descclassname"><span class="pre">config.</span></span><span class="sig-name descname"><span class="pre">set_line_width</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#config.set_line_width" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-util">
+<span id="util-module"></span><h2>util module<a class="headerlink" href="#module-util" title="Link to this heading">#</a></h2>
+<p>Defines routines to format text and print information to the user.
+Additionally provides command-line argument parsing and a routine to
+automatically download ChromeDriver.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="util.parse_arguments">
+<span class="sig-prename descclassname"><span class="pre">util.</span></span><span class="sig-name descname"><span class="pre">parse_arguments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Namespace</span></span></span><a class="headerlink" href="#util.parse_arguments" title="Link to this definition">#</a></dt>
+<dd><p>Parse arguments using Argparse.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="util.download_chromedriver">
+<span class="sig-prename descclassname"><span class="pre">util.</span></span><span class="sig-name descname"><span class="pre">download_chromedriver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#util.download_chromedriver" title="Link to this definition">#</a></dt>
+<dd><p>Download the latest stable version of ChromeDriver automatically.</p>
+<p>Go to the dispatch page <cite>https://googlechromelabs.github.io/chrome-for-    testing/known-good-versions-with-downloads.json</cite> and download the latest
+stable version of ChromeDriver obtained by parsing the official page
+<cite>https://googlechromelabs.github.io/chrome-for-testing/</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dir_path</strong> (<em>str</em>) – The absolute path to the directory that is either specified as
+destined for chromedriver.exe to reside in or the default one.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The absolute path to the downloaded chromedriver.exe, which should be
+<cite>f’{dir_path}/chromedriver-win64/chromedriver.exe’</cite></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="util.cls">
+<span class="sig-prename descclassname"><span class="pre">util.</span></span><span class="sig-name descname"><span class="pre">cls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#util.cls" title="Link to this definition">#</a></dt>
+<dd><p>Clear the screen using shell commands.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="util.title">
+<span class="sig-prename descclassname"><span class="pre">util.</span></span><span class="sig-name descname"><span class="pre">title</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#util.title" title="Link to this definition">#</a></dt>
+<dd><p>Print title from file if available, otherwise from string literals.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="util.backline">
+<span class="sig-prename descclassname"><span class="pre">util.</span></span><span class="sig-name descname"><span class="pre">backline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#util.backline" title="Link to this definition">#</a></dt>
+<dd><p>Go back to start of n-th last line and erase it.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="util.divider">
+<span class="sig-prename descclassname"><span class="pre">util.</span></span><span class="sig-name descname"><span class="pre">divider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">char</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#util.divider" title="Link to this definition">#</a></dt>
+<dd><p>Print a divider that matches the length of the terminal.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="util._center">
+<span class="sig-prename descclassname"><span class="pre">util.</span></span><span class="sig-name descname"><span class="pre">_center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_last</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_all</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailing_newline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#util._center" title="Link to this definition">#</a></dt>
+<dd><p>Internal function that formats text dynamically.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>string</strong> (<em>str</em>) – The text to be printed.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – The width of the screen, used for wrapping the text into many lines.</p></li>
+<li><p><strong>center_last</strong> (<em>bool</em>) – Whether to have the last line be centered or left-aligned.</p></li>
+<li><p><strong>center_all</strong> (<em>bool</em>) – Whether the text should be simply wrapped, or also centered.
+This affects all lines except the last, which is instead controlled
+by the <cite>center_last</cite> parameter.</p></li>
+<li><p><strong>trailing_newline</strong> (<em>bool</em>) – Whether to print a newline after all the text has been printed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The amount of lines printed.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="util._fail">
+<span class="sig-prename descclassname"><span class="pre">util.</span></span><span class="sig-name descname"><span class="pre">_fail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reason</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masculine</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#util._fail" title="Link to this definition">#</a></dt>
+<dd><p>Internal function that prints info on failure for user</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>reason</strong> (<em>str</em>) – Valid strings are ‘layout’, ‘date’, ‘session’, ‘automatic_download’,
+‘’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-driver">
+<span id="driver-module"></span><h2>driver module<a class="headerlink" href="#module-driver" title="Link to this heading">#</a></h2>
+<p>Defines variables that store URLs and DOM object names and provides routines
+to navigate the CUP website and extract information from it using Selenium.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="driver.RefreshTimer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">driver.</span></span><span class="sig-name descname"><span class="pre">RefreshTimer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#driver.RefreshTimer" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Custom wrapper for threading.Timer class.</p>
+<p>It’s used when precise timing isn’t needed by checking if the
+timer has finished at any point by evaluating is_due.</p>
+<p>Starts on instancing, can be reset by further calling start() method on
+same object, but not if that object’s timer hasn’t finished yet.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="driver.RefreshTimer.is_due">
+<span class="sig-name descname"><span class="pre">is_due</span></span><a class="headerlink" href="#driver.RefreshTimer.is_due" title="Link to this definition">#</a></dt>
+<dd><p>False if the timer is still ticking, True if it’s expired.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="driver.RefreshTimer.set_interval">
+<span class="sig-name descname"><span class="pre">set_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#driver.RefreshTimer.set_interval" title="Link to this definition">#</a></dt>
+<dd><p>Change the length of the interval the timer will wait for
+the next time it’s reset with start()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="driver.RefreshTimer.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#driver.RefreshTimer.start" title="Link to this definition">#</a></dt>
+<dd><p>Restart the timer with the previously set interval</p>
+</dd></dl>
+
+<p class="rubric">Notes</p>
+<p>At the moment, this class is not used. It was required when a different
+strategy to crawl the website was being used, but it turned out to be
+ineffective and another approach was chosen.</p>
+<p>The class exists nonetheless as changes to the website may make it relevant
+again in the future.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="driver.RefreshTimer._callback">
+<span class="sig-name descname"><span class="pre">_callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#driver.RefreshTimer._callback" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">set_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="driver.init_driver">
+<span class="sig-prename descclassname"><span class="pre">driver.</span></span><span class="sig-name descname"><span class="pre">init_driver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Namespace</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">WebDriver</span></span></span><a class="headerlink" href="#driver.init_driver" title="Link to this definition">#</a></dt>
+<dd><p>Create a new WebDriver instance with the correct parameters specified
+by the user from CLI and return it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>Namespace</em>) – The Namespace object produced by argparse.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The instance of the Selenium ChromeDriver.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>WebDriver</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="driver.get_appointments_page">
+<span class="sig-prename descclassname"><span class="pre">driver.</span></span><span class="sig-name descname"><span class="pre">get_appointments_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebDriver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nre</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#driver.get_appointments_page" title="Link to this definition">#</a></dt>
+<dd><p>Core script that reaches the login page, navigates to where the list
+of appointments is given and extracts them into a list of objects
+with sanitised text fields.
+Unfortunately, the website’s list of apointments is generated anew
+only by logging in again, so this function has to be re-run for every
+cycle update.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>driver</strong> (<em>WebDriver</em>) – The WebDriver instance that’s been initialized by <cite>init_driver</cite></p></li>
+<li><p><strong>cf</strong> (<em>str</em><em>, </em><em>nre : str</em>) – The credentials to be inserted in the page’s input fields</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="driver.expand_list">
+<span class="sig-prename descclassname"><span class="pre">driver.</span></span><span class="sig-name descname"><span class="pre">expand_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebDriver</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#driver.expand_list" title="Link to this definition">#</a></dt>
+<dd><p>Instructs driver to click the button that loads all appointments</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>driver</strong> (<em>WebDriver</em>) – The driver, which must already be on the correct page</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-prescription">
+<span id="prescription-module"></span><h2>prescription module<a class="headerlink" href="#module-prescription" title="Link to this heading">#</a></h2>
+<p>Provides classes and routines to manage the user-defined prescriptions
+for which appointments will be searched.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#module-appointment" title="appointment"><code class="xref py py-mod docutils literal notranslate"><span class="pre">appointment</span></code></a></p>
+</div>
+<dl class="py exception">
+<dt class="sig sig-object py" id="prescription.FileEmptyError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">prescription.</span></span><span class="sig-name descname"><span class="pre">FileEmptyError</span></span><a class="headerlink" href="#prescription.FileEmptyError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="prescription.Prescription">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">prescription.</span></span><span class="sig-name descname"><span class="pre">Prescription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nre</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">note</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#prescription.Prescription" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class used to store information on saved prescriptions.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="prescription.Prescription.get_creds">
+<span class="sig-name descname"><span class="pre">get_creds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#prescription.Prescription.get_creds" title="Link to this definition">#</a></dt>
+<dd><p>Returns relevant information for login as tuple.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">get_creds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#id2" title="Link to this definition">#</a></dt>
+<dd><p>Returns relevant information for login as tuple.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="prescription.read_prescriptions">
+<span class="sig-prename descclassname"><span class="pre">prescription.</span></span><span class="sig-name descname"><span class="pre">read_prescriptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#prescription.Prescription" title="prescription.Prescription"><span class="pre">Prescription</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#prescription.read_prescriptions" title="Link to this definition">#</a></dt>
+<dd><p>Open file and populate prescriptions. Used to handle sending
+correct messages to user depending on condition of the specified file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – The path of the file to open.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The read prescriptions as returned from pop_prescription() function.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#prescription.Prescription" title="prescription.Prescription">Prescription</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="prescription.pop_prescriptions">
+<span class="sig-prename descclassname"><span class="pre">prescription.</span></span><span class="sig-name descname"><span class="pre">pop_prescriptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#prescription.Prescription" title="prescription.Prescription"><span class="pre">Prescription</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#prescription.pop_prescriptions" title="Link to this definition">#</a></dt>
+<dd><p>Populates list of prescription objects with attributes as read from
+.json file and return the list.</p>
+<p>Uses <cite>json</cite> standard library for reading and decoding into dictionary and
+list Python objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – The path to the .json file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The list with the populated Prescriptions.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#prescription.Prescription" title="prescription.Prescription">Prescription</a>]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#prescription.FileEmptyError" title="prescription.FileEmptyError"><strong>FileEmptyError</strong></a> – Custom exception raised when specified file is empty.</p></li>
+<li><p><strong>Exception</strong> – All exceptions are handled by caller function.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="prescription.choose_prescription">
+<span class="sig-prename descclassname"><span class="pre">prescription.</span></span><span class="sig-name descname"><span class="pre">choose_prescription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prescrs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#prescription.Prescription" title="prescription.Prescription"><span class="pre">Prescription</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#prescription.choose_prescription" title="Link to this definition">#</a></dt>
+<dd><p>Prints all prescriptions, takes user input to choose which one to
+select and start querying the website for. If there are no saved
+prescriptions, creates one. Whenever a new prescription is made,
+prints the whole list again and lets the user decide once more.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prescrs</strong> (<em>list</em><em>[</em><a class="reference internal" href="#prescription.Prescription" title="prescription.Prescription"><em>Prescription</em></a><em>]</em>) – The list of prescriptions as returned by read_prescriptions()</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – The path to the .json file to save the newly added prescriptions to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The index that identifies the chosen prescription from the list</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="prescription.add_prescription">
+<span class="sig-prename descclassname"><span class="pre">prescription.</span></span><span class="sig-name descname"><span class="pre">add_prescription</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#prescription.Prescription" title="prescription.Prescription"><span class="pre">Prescription</span></a></span></span><a class="headerlink" href="#prescription.add_prescription" title="Link to this definition">#</a></dt>
+<dd><p>Create a new prescription, asking the user to input relevant data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Prescription to be appended to list by caller function and
+to be written to .json file with the others in the list</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#prescription.Prescription" title="prescription.Prescription">Prescription</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="prescription.write_prescriptions">
+<span class="sig-prename descclassname"><span class="pre">prescription.</span></span><span class="sig-name descname"><span class="pre">write_prescriptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prescr_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#prescription.Prescription" title="prescription.Prescription"><span class="pre">Prescription</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#prescription.write_prescriptions" title="Link to this definition">#</a></dt>
+<dd><p>Starting from a list of read prescriptions, generate the correct
+dictionary object to write to .json file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>list</strong> (<em>list</em><em>[</em><a class="reference internal" href="#prescription.Prescription" title="prescription.Prescription"><em>Prescription</em></a><em>]</em>) – The list of prescriptions</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – The file to which to write json data</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-appointment">
+<span id="appointment-module"></span><h2>appointment module<a class="headerlink" href="#module-appointment" title="Link to this heading">#</a></h2>
+<p>Provides class and routines to store, manage, compare and convert appointments
+as parsed from the CUP website into useful, structured objects.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="appointment.Appointment">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">appointment.</span></span><span class="sig-name descname"><span class="pre">Appointment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">place</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#appointment.Appointment" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class that stores information on found appointments and provides
+ways of comparing and ordering them by date.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="appointment.Appointment.place">
+<span class="sig-name descname"><span class="pre">place</span></span><a class="headerlink" href="#appointment.Appointment.place" title="Link to this definition">#</a></dt>
+<dd><p>Place information as read from website appointment list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="appointment.Appointment.date">
+<span class="sig-name descname"><span class="pre">date</span></span><a class="headerlink" href="#appointment.Appointment.date" title="Link to this definition">#</a></dt>
+<dd><p>Date information in the form ‘Sabato 2 Novembre 2025’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="appointment.Appointment.time">
+<span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#appointment.Appointment.time" title="Link to this definition">#</a></dt>
+<dd><p>Time information in the form ‘14:20’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="appointment.Appointment.notes">
+<span class="sig-name descname"><span class="pre">notes</span></span><a class="headerlink" href="#appointment.Appointment.notes" title="Link to this definition">#</a></dt>
+<dd><p>Other information as read from website (not implemented)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="appointment.Appointment.is_sooner_than">
+<span class="sig-name descname"><span class="pre">is_sooner_than</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#appointment.Appointment.is_sooner_than" title="Link to this definition">#</a></dt>
+<dd><p>Returns True if called from an instanced Appointment
+that is closer in time than the Appointment instance
+passed as argument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="appointment.Appointment.latest">
+<span class="sig-name descname"><span class="pre">latest</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#appointment.Appointment.latest" title="Link to this definition">#</a></dt>
+<dd><p>Class method that returns an Appointment instance whose <cite>date</cite>
+attribute is based on the date specified from command line
+arguments to allow for date comparisons with is_sooner_than.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">is_sooner_than</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#appointment.Appointment" title="appointment.Appointment"><span class="pre">Appointment</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#id3" title="Link to this definition">#</a></dt>
+<dd><p>Method that is used to determine which of two Appointment instances
+comes first in time.</p>
+<p>Returns True if the instance this is called from is closer in time
+than the Appointment instance that is passed as argument, or when
+the latter instance is empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#appointment.Appointment" title="appointment.Appointment"><em>Appointment</em></a>) – The instance to compare against</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tells whether instance comes before in time than argument</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">latest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#appointment.Appointment" title="appointment.Appointment"><span class="pre">Appointment</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#id4" title="Link to this definition">#</a></dt>
+<dd><p>Generate and return Appointment class whose <cite>date</cite> attribute reflects
+the date passed as argument and is coherent with how it’s stored in all
+other instances.</p>
+<p>The only exception is if the passed date consists of an empty list,
+which is a special case that requires returning an Appointment instance
+whose every attribute is an empty string ‘’ as such an instance is
+treated as positioned later in time than any other (and itself).</p>
+<p>The <cite>date</cite> parameter is passed to static method <cite>date_is_valid</cite>
+for validation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>date</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – The date as read from command line arguments, i.e. in the
+format DD MM YYYY, or DD Month YYYY as a list of strings;
+alternatively, a list of one string with format DD-MM-YYYY
+or DD/MM/YYY; alternatively, an empty list.
+Year can also be specified as YY, in which case ‘20’ is prefixed.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>Appointment</em> – The class initialized with the passed <cite>date</cite> parameter.</p></li>
+<li><p><em>None</em> – If the <cite>date</cite> parameter isn’t properly formatted.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#appointment.Appointment.date_is_valid" title="appointment.Appointment.date_is_valid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Appointment.date_is_valid</span></code></a></dt><dd><p>Used for date validation.</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="appointment.Appointment.date_is_valid">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">date_is_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#appointment.Appointment.date_is_valid" title="Link to this definition">#</a></dt>
+<dd><p>Static method that checks whether the user-entered date is formatted
+as supported first, and whether it’s a valid date second.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>arg</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – The date argument as a list of either 1 or 3 strings</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul>
+<li><p><em>tuple[bool, str]</em></p></li>
+<li><p><strong>valid</strong> (<em>bool</em>) – True if date is valid, False otherwise</p></li>
+<li><p><strong>info</strong> (<em>str</em>) – If <cite>valid</cite> == False, <cite>info</cite> stores the reason the date isn’t
+valid.</p>
+<p>Possible <cite>info</cite> values are:
+‘year_format’, ‘year_not_int’, ‘month_spelling’,
+‘invalid_month’, ‘day_not_int’, ‘invalid_day’,
+‘argument_number’, ‘format_error’</p>
+<p>If instead <cite>valid</cite> == True, <cite>info</cite> stores the date in the
+following format so as to be compatible with <cite>is_sooner_than</cite>
+method for date comparisons: ‘&lt;dummy&gt; 7 Ottobre 2025’.</p>
+</li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="appointment.interactive_latest_appointment">
+<span class="sig-prename descclassname"><span class="pre">appointment.</span></span><span class="sig-name descname"><span class="pre">interactive_latest_appointment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#appointment.Appointment" title="appointment.Appointment"><span class="pre">Appointment</span></a></span></span><a class="headerlink" href="#appointment.interactive_latest_appointment" title="Link to this definition">#</a></dt>
+<dd><p>Prompts the user for the date before which they don’t want found
+appointments to produce notifications and returns an instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The instance whose <cite>date</cite> attribute is set to the date input by the
+user after having been converted to a format compatible with the
+<cite>is_sooner_than</cite> method for later comparison.
+Said format is: ‘str int str int’</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#appointment.Appointment" title="appointment.Appointment">Appointment</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="appointment.send_notif">
+<span class="sig-prename descclassname"><span class="pre">appointment.</span></span><span class="sig-name descname"><span class="pre">send_notif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">appnt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#appointment.Appointment" title="appointment.Appointment"><span class="pre">Appointment</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#appointment.send_notif" title="Link to this definition">#</a></dt>
+<dd><p>Send desktop notification with appointment information</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">SaniDrive</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-sanidrive">sanidrive module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-config">config module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#config.set_line_width"><code class="docutils literal notranslate"><span class="pre">set_line_width()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-util">util module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#util.parse_arguments"><code class="docutils literal notranslate"><span class="pre">parse_arguments()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#util.download_chromedriver"><code class="docutils literal notranslate"><span class="pre">download_chromedriver()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#util.cls"><code class="docutils literal notranslate"><span class="pre">cls()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#util.title"><code class="docutils literal notranslate"><span class="pre">title()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#util.backline"><code class="docutils literal notranslate"><span class="pre">backline()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#util.divider"><code class="docutils literal notranslate"><span class="pre">divider()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#util._center"><code class="docutils literal notranslate"><span class="pre">_center()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#util._fail"><code class="docutils literal notranslate"><span class="pre">_fail()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-driver">driver module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#driver.RefreshTimer"><code class="docutils literal notranslate"><span class="pre">RefreshTimer</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#driver.RefreshTimer.is_due"><code class="docutils literal notranslate"><span class="pre">RefreshTimer.is_due</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#driver.RefreshTimer.set_interval"><code class="docutils literal notranslate"><span class="pre">RefreshTimer.set_interval()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#driver.RefreshTimer.start"><code class="docutils literal notranslate"><span class="pre">RefreshTimer.start()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#driver.RefreshTimer._callback"><code class="docutils literal notranslate"><span class="pre">RefreshTimer._callback()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id0"><code class="docutils literal notranslate"><span class="pre">RefreshTimer.set_interval()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id1"><code class="docutils literal notranslate"><span class="pre">RefreshTimer.start()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#driver.init_driver"><code class="docutils literal notranslate"><span class="pre">init_driver()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#driver.get_appointments_page"><code class="docutils literal notranslate"><span class="pre">get_appointments_page()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#driver.expand_list"><code class="docutils literal notranslate"><span class="pre">expand_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-prescription">prescription module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prescription.FileEmptyError"><code class="docutils literal notranslate"><span class="pre">FileEmptyError</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prescription.Prescription"><code class="docutils literal notranslate"><span class="pre">Prescription</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#prescription.Prescription.get_creds"><code class="docutils literal notranslate"><span class="pre">Prescription.get_creds()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2"><code class="docutils literal notranslate"><span class="pre">Prescription.get_creds()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prescription.read_prescriptions"><code class="docutils literal notranslate"><span class="pre">read_prescriptions()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prescription.pop_prescriptions"><code class="docutils literal notranslate"><span class="pre">pop_prescriptions()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prescription.choose_prescription"><code class="docutils literal notranslate"><span class="pre">choose_prescription()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prescription.add_prescription"><code class="docutils literal notranslate"><span class="pre">add_prescription()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prescription.write_prescriptions"><code class="docutils literal notranslate"><span class="pre">write_prescriptions()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-appointment">appointment module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.Appointment"><code class="docutils literal notranslate"><span class="pre">Appointment</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.Appointment.place"><code class="docutils literal notranslate"><span class="pre">Appointment.place</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.Appointment.date"><code class="docutils literal notranslate"><span class="pre">Appointment.date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.Appointment.time"><code class="docutils literal notranslate"><span class="pre">Appointment.time</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.Appointment.notes"><code class="docutils literal notranslate"><span class="pre">Appointment.notes</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.Appointment.is_sooner_than"><code class="docutils literal notranslate"><span class="pre">Appointment.is_sooner_than()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.Appointment.latest"><code class="docutils literal notranslate"><span class="pre">Appointment.latest()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3"><code class="docutils literal notranslate"><span class="pre">Appointment.is_sooner_than()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4"><code class="docutils literal notranslate"><span class="pre">Appointment.latest()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.Appointment.date_is_valid"><code class="docutils literal notranslate"><span class="pre">Appointment.date_is_valid()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.interactive_latest_appointment"><code class="docutils literal notranslate"><span class="pre">interactive_latest_appointment()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#appointment.send_notif"><code class="docutils literal notranslate"><span class="pre">send_notif()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Michele Deiana
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Michele Deiana.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
