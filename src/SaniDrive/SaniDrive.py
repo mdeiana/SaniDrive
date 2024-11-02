@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import zipfile
+import shutil
 import argparse
 import requests
 from time import sleep
@@ -20,7 +21,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import StaleElementReferenceException as SERE
 from selenium.common.exceptions import ElementClickInterceptedException as ECI
 
-# Version
 __version__ = '1.2'
 
 # Constant Parameters
@@ -51,29 +51,29 @@ class FileEmptyError(Exception):
 class Appointment:
     """
     Class that stores information on found appointments and provides
-    ways of comparing and ordering them by date
+    ways of comparing and ordering them by date.
 
     Attributes
     ----------
     place : str
-        String with place information as read from website appointment list
+        Place information as read from website appointment list
     date : str
-        String with date information in the form 'Sabato 2 Novembre 2025'
+        Date information in the form 'Sabato 2 Novembre 2025'
     time : str
-        String with time information in the form '14:20'
+        Time information in the form '14:20'
     notes : str
-        String with other information as read from website (not implemented)
+        Other information as read from website (not implemented)
 
     Methods
     -------
     is_sooner_than
-        Returns True when called from an instanced Appointment
+        Returns True if called from an instanced Appointment
         that is closer in time than the Appointment instance
-        passed as argument
+        passed as argument.
     latest
         Class method that returns an Appointment instance whose `date`
         attribute is based on the date specified from command line
-        arguments to allow for date comparisons with is_sooner_than
+        arguments to allow for date comparisons with is_sooner_than.
     """
     def __init__(self, place: str, date: str, time: str, notes: str):
         self.place = place
@@ -99,9 +99,11 @@ class Appointment:
     def is_sooner_than(self, other: 'Appointment') -> bool:
         """
         Method that is used to determine which of two Appointment instances
-        comes first in time. Returns True when the instance this is called
-        from is closer in time than the Appointment instance that is passed
-        as argument, or when the latter instance is empty.
+        comes first in time.
+        
+        Returns True if the instance this is called from is closer in time
+        than the Appointment instance that is passed as argument, or when
+        the latter instance is empty.
 
         Parameters
         ----------
@@ -416,7 +418,8 @@ def interactive_latest_appointment() -> Appointment:
     while True:
         
         print(f'\x1b[{lines_printed+1}F\x1b[2K', end='')
-        date = input('\t\t\t\t\t    Inserisci la data: ')
+        _center('Inserisci la data: ', line_width * 13/14, True, False, False)
+        date = input()
 
         print(f'\x1b[{lines_printed}E')
         backline(lines_printed)
@@ -497,20 +500,21 @@ def init_driver(args: Namespace) -> WebDriver:
         chrome_options.add_argument("--log-level=3")
         chrome_options.add_argument('--remote-debugging-port=9222')
         chrome_options.add_argument(f'--executable_path={driver_path}')
-        chrome_service.log_output = os.path.abspath(args.logFile)
+        #chrome_service.log_output = os.path.abspath(args.logFile)
         # chrome_service isn't included as the second argument because
         # Selenium bugs out if it is as of version 4.20.0
         driver = webdriver.Chrome(chrome_options)
         backline(1)
         print("\x1b[1A\x1b[33Cfatto.")
         sys.stdout.flush()
-    except:
+    except Exception as e:
         print("non riuscita.\nQualcosa e' andato storto. Assicurati di aver "+
             "scaricato la giusta versione di ChromeDriver. La puoi trovare "+
             "qui: https://googlechromelabs.github.io/chrome-for-testing/ \n"+
             "La versione deve essere la stessa del browser Chrome, che puoi "+
             "trovare andando alla pagina chrome://version")
-        sys.exit(1)
+        #sys.exit(1)
+        raise e
     return driver
 
 def get_appointments_page(driver: webdriver, cf: str, nre: str) -> None:
@@ -668,7 +672,8 @@ def parse_arguments() -> Namespace:
         "precedente la data scelta con --data e' trovato. La notifica verra' "+
         "prodotta comunque.")
     parser.add_argument('--exec', '-e', '--audio', '-a', dest='audioFile',
-        default='', action='store', help="Specifica il percorso di un file "+
+        default='data/emmescingue.mpeg',
+        action='store', help="Specifica il percorso di un file "+
         "da eseguire quando un appuntamento precedente la data scelta con "+
         "--data e' trovato. L'utilizzo inteso e' quello di riprodurre un "+
         "file audio o aprire un collegamento a un video, ma eseguire un "+
@@ -676,6 +681,32 @@ def parse_arguments() -> Namespace:
         "di SaniDrive.", metavar='FILE')
     args = parser.parse_args()
     return args
+
+def title():
+
+    title_path = os.path.abspath('data/title.txt')
+    p = lambda s: _center(s, line_width, True, False, True)
+    divider('=', line_width, '\n')
+
+    if not os.path.isfile(title_path) or line_width < 92:
+        p(r'')
+        p(r'  / ____|           (_)  __ \     (_)           ')
+        p(r' | (___   __ _ _ __  _| |  | |_ __ ___   _____  ')
+        p(r"  \___ \ / _` | '_ \| | |  | | '__| \ \ / / _ \ ")
+        p(r'  ____) | (_| | | | | | |__| | |  | |\ V /  __/ ')
+        p(r' |_____/ \__,_|_| |_|_|_____/|_|  |_| \_/ \___| ')
+    else:
+        with open(title_path, 'r') as f:
+            for line in f:
+                p(line.strip('\n'))
+
+    print('\n')
+    print('by Michele Deiana, github.com/mdeiana'.rjust(line_width))
+    divider('=', line_width, '\n')
+    print('\n\n\n\n'); p('|||   Premi Invio per iniziare   |||')
+    sys.stdout.write("\033[?25l"); input('')
+    sys.stdout.write("\033[?25h"); cls()
+    return
 
 def backline(n: int = 1):
     """Goes back to start of n-th last line and erases it"""
@@ -695,10 +726,10 @@ def divider(char: str, n: int, *args: str):
     return
 
 def _center(string: str, n: int, center_last: bool = False,
-	    center_all: bool = False) -> int:
+	    center_all: bool = False, trailing_newline: bool = True) -> int:
     """Internal function that formats text dynamically"""
 
-    def center_line(line, n):
+    def center_line(line, n, end_char = '\n'):
         """Local function that centers a line in an n character-wide space"""
         l = len(line)
         buf = 0
@@ -712,7 +743,7 @@ def _center(string: str, n: int, center_last: bool = False,
 
         left = ' ' * (int(n/2) - int(l/2) - buf)
 
-        print(f"{left}{line}")
+        print(f"{left}{line}", end=end_char)
 
     lines_printed = 0
     index = 0
@@ -737,10 +768,13 @@ def _center(string: str, n: int, center_last: bool = False,
         lines_printed += 1
 
     if center_last:
-        center_line(string[index:], n)
+        center_line(string[index:], n, end_char='')
     else:
-        print(string[index:])
+        print(string[index:], end='')
     lines_printed += 1
+
+    if trailing_newline:
+        print('')
 
     return lines_printed
 
@@ -918,7 +952,7 @@ def pop_prescriptions(path: str) -> list[Prescription]:
     Exception
         All exceptions are handled by calling function
     """
-    # determine if file is empty, if not load javascript
+    # determine if file is empty, if not load json
     with open(path, 'r') as f:
         f.seek(0, os.SEEK_END)
         end = f.tell()
@@ -1114,8 +1148,12 @@ def write_prescriptions(prescr_list: list[Prescription], path: str) -> None:
 
     return
 
-def main():
+if __name__ == "__main__":
+    # get screen dimensions and print title
+    line_width = shutil.get_terminal_size((120, 30))[0]
     cls()
+    title()
+
     # parse arguments
     args = parse_arguments()
     credPath = os.path.abspath(args.credFile)
@@ -1165,7 +1203,7 @@ def main():
     refresh_counter = 0
     found_on_refresh = 0
     pretty = 0 # used to make change_counter display intuitive stats
-    p = lambda s: _center(s, line_width, True) # ""pretty"" printing lmao
+    p = lambda s: _center(s, line_width, True) # shorten call to _center
     while True:
         cls()
 
@@ -1247,11 +1285,14 @@ def main():
         print('')
         p(f"Appuntamento piu' vicino trovato (durante aggiornamento "+
           f"{found_on_refresh}):")
-        #print('\t\t', earliest_appointment, '\n')
         p(f'{' '.join(earliest_appointment.__str__().split())}')
-        print(f'\n\t\t\tAggiornamenti totali: '+
+        print('')
+        p(f"Aggiornamenti totali: {refresh_counter}"+' '*25+
+          f"Cambiamenti rilevati: {change_counter+pretty}")
+        print('')
+        """ print(f'\n\t\t\tAggiornamenti totali: '+
               f'{refresh_counter}\t\t\t\tCambiamenti rilevati: '+
-              f'{change_counter+pretty}\n')
+              f'{change_counter+pretty}\n') """
         divider('=', line_width, '\n')
 
         # cycle data
@@ -1266,6 +1307,3 @@ def main():
         print("Aggiornamento lista appuntamenti... ")
         get_appointments_page(driver, *prescriptions[c].get_creds())
         expand_list(driver)
-
-if __name__ == "__main__":
-    main()
