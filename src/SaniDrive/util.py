@@ -21,19 +21,25 @@ driver_dl_page = 'https://googlechromelabs.github.io/chrome-for-testing/known-go
 
 def parse_arguments() -> Namespace:
     """Parse arguments using Argparse."""
+
     class ArgumentParser(argparse.ArgumentParser):
         """Custom class that overrides default message"""
         def error(self, message):
             print("\nSembra che tu abbia commesso un errore nell'usare le "+
-            "opzioni da linea di comando.\nUsa l'opzione --help per una "+
+            "opzioni da linea di comando.\nUsa l'opzione --aiuto per una "+
             "lista di tutte le opzioni e istruzioni su come usarle.")
             self.exit(1)
+    
+    class BetterFormatter(argparse.HelpFormatter):
+        "Custom class that improves help format to make it more legible"
+        def _split_lines(self, text: str, width: int) -> list[str]:
+            return super()._split_lines(text, width) + ['']
 
     parser = ArgumentParser(
                 prog="SaniDrive",
                 description="Tieni traccia e avverti automaticamente di posti liberi per una prenotazione al CUP Sardegna",
-                epilog='SaniDrive by Michele Deiana (github.com/mdeiana). Governo pls fix sanita\''#,
-                #formatter_class=argparse.RawTextHelpFormatter
+                epilog='SaniDrive by Michele Deiana (github.com/mdeiana). Governo pls fix sanita\'',
+                formatter_class=BetterFormatter
                 )
     parser.add_argument('--file', '-f', dest='credFile', default='data/credenziali.json', metavar='FILE',
         help=f'Specifica il percorso del file con le credenziali. E\' bene usare un percorso assoluto '+
@@ -69,15 +75,22 @@ def parse_arguments() -> Namespace:
         help="Non fermare il programma quando un appuntamento "+
         "precedente la data scelta con --data e' trovato. La notifica verra' "+
         "prodotta comunque.")
-    parser.add_argument('--exec', '-e', '--audio', '-a', dest='audioFile',
-        default='data/emmescingue.mpeg',
+    parser.add_argument('--exec', '--esegui', '-e', '--suono', '--suoneria',
+        '-s', '--avviso', dest='audioFile', default='data/emmescingue.mpeg',
         action='store', help="Specifica il percorso di un file "+
         "da eseguire quando un appuntamento precedente la data scelta con "+
         "--data e' trovato. L'utilizzo inteso e' quello di riprodurre un "+
         "file audio o aprire un collegamento a un video, ma eseguire un "+
         "file arbitrario puo' essere un modo di estendere le funzionalita' "+
         "di SaniDrive.", metavar='FILE')
+    parser.add_argument('--aiuto', '-a', dest='help', default=False,
+        action='store_true', help='Scrivi questo messaggio di aiuto ed esci.')
     args = parser.parse_args()
+    
+    if args.help:
+        parser.print_help()
+        exit(0)
+
     return args
 
 def download_chromedriver(dir_path: str) -> str:
