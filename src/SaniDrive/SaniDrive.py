@@ -3,9 +3,9 @@
 import os
 import sys
 import shutil
-import config
 from time import sleep
 
+import config
 from util import cls, title, _center, backline, divider, _fail
 from util import parse_arguments, download_chromedriver
 from prescription import read_prescriptions, choose_prescription
@@ -17,18 +17,18 @@ from driver import init_driver, get_appointments_page, expand_list
 __version__ = '1.3'
 
 if __name__ == "__main__":
-    # get screen dimensions and print title
-    line_width = shutil.get_terminal_size((120, 30))[0]
-    config.set_line_width(line_width)
-    cls()
-    title()
-
     # parse arguments
     args = parse_arguments()
     credPath = os.path.abspath(args.credFile)
     list_reload_interval = int(args.interval)
     audio_exists = os.path.isfile(os.path.abspath(args.audioFile))
     driver_path = os.path.abspath(args.driverFile)
+
+    # get screen dimensions and print title
+    line_width = shutil.get_terminal_size((120, 30))[0]
+    config.set_line_width(line_width)
+    cls()
+    title()
 
     # download the latest version of chromedriver if it's not in provided path
     if not os.path.isfile(driver_path):
@@ -112,10 +112,13 @@ if __name__ == "__main__":
             if appointments[0].is_sooner_than(earliest_appointment):
                 earliest_appointment = appointments[0]
                 found_on_refresh = refresh_counter
+
             if appointments[0].is_sooner_than(latest_appointment):
+                send_notif(appointments[0])
+                
                 if audio_exists:
                     os.system(f'{os.path.abspath(args.audioFile)}')
-                    send_notif(appointments[0])
+
                 if not args.nonstop:
                     print('')
                     p('|||   NUOVO APPUNTAMENTO TROVATO   |||')

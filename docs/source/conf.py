@@ -23,7 +23,8 @@ sys.path.insert(0, os.path.abspath('../../src/sanidrive'))
 
 extensions = [
     'sphinx.ext.napoleon',
-    'sphinx.ext.autodoc'
+    'sphinx.ext.autodoc',
+    'myst_parser'
 ]
 
 templates_path = ['_templates']
