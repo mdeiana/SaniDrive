@@ -3,18 +3,18 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+=======================
 SaniDrive
 =======================
 
-SaniDrive e vaffanculo al governo italiano
 
+Table of Content
+================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    sanidrive
-
 
 
 Indices and tables

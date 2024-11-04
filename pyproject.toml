@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sanidrive"
+version = "0.0.1"
+authors = [
+  { name="Michele Deiana", email="michele.deiana.dev@gmail.com" },
+]
+description = "Automate appointment lookup on Sardinian public health website"
+readme = "README.md"
+requires-python = ">=3.12.3"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Windows",
+]
+
+[project.urls]
+Homepage = "https://github.com/mdeiana/sanidrive"
+Issues = "https://github.com/mdeiana/sanidrive/issues"
