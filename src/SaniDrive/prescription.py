@@ -4,7 +4,7 @@ for which appointments will be searched.
 
 See Also
 --------
-:py:module:`appointment`
+:py:mod:`appointment`
 """
 
 import config

@@ -88,15 +88,12 @@ def init_driver(args: Namespace) -> WebDriver:
     Parameters
     ----------
     args : Namespace
-        The Namespace object produced by argparse. This must contain:
-        driverFile : str
-            Path to the ChromeDriver executable
-        logFile : str
-            Path to the file to write ChromeDriver logs to
+        The Namespace object produced by argparse.
+
     Returns
     -------
     WebDriver
-        The instance of the Selenium ChromeDriver
+        The instance of the Selenium ChromeDriver.
     """
     driver_path = os.path.abspath(args.driverFile)
 

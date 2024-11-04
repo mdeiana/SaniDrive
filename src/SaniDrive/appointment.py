@@ -177,13 +177,13 @@ class Appointment:
         valid : bool
             True if date is valid, False otherwise
         info : str
-            Small string that has different meanings depending on the value
-            of the bool `valid` that's returned in the same tuple.
             If `valid` == False, `info` stores the reason the date isn't
-            valid. Possible `info` values are:
-                'year_format', 'year_not_int', 'month_spelling',
-                'invalid_month', 'day_not_int', 'invalid_day',
-                'argument_number', 'format_error'
+            valid.
+            
+            Possible `info` values are:
+            'year_format', 'year_not_int', 'month_spelling',
+            'invalid_month', 'day_not_int', 'invalid_day',
+            'argument_number', 'format_error'
 
             If instead `valid` == True, `info` stores the date in the
             following format so as to be compatible with `is_sooner_than`
