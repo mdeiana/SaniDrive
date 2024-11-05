@@ -41,13 +41,13 @@ def parse_arguments() -> Namespace:
                 epilog='SaniDrive by Michele Deiana (github.com/mdeiana). Governo pls fix sanita\'',
                 formatter_class=BetterFormatter
                 )
-    parser.add_argument('--file', '-f', dest='credFile', default='data/credenziali.json', metavar='FILE',
+    parser.add_argument('--file', '-f', dest='credFile', default='../../data/credenziali.json', metavar='FILE',
         help=f'Specifica il percorso del file con le credenziali. E\' bene usare un percorso assoluto '+
-        'per garantire l\'uso del file corretto. Il percorso di default e\' "data/credenziali.json", '+
+        'per garantire l\'uso del file corretto. Il percorso di default e\' "../../data/credenziali.json", '+
         'relativamente alla directory da cui e\' eseguito SaniDrive.\n')
-    parser.add_argument('--driver', dest='driverFile', default='data/chromedriver-win64/chromedriver.exe', metavar='FILE',
+    parser.add_argument('--driver', dest='driverFile', default='../../data/chromedriver-win64/chromedriver.exe', metavar='FILE',
         help='Specifica il percorso dell\'eseguibile di ChromeDriver. E\' bene usare un percorso assoluto '+
-        'per garantire l\'uso del file corretto. Il percorso di default e\' "data/chromedriver-win64/chromedriver.exe", '+
+        'per garantire l\'uso del file corretto. Il percorso di default e\' "../../data/chromedriver-win64/chromedriver.exe", '+
         'relativamente alla directory da cui e\' eseguito SaniDrive. Scarica la versione di ChromeDriver '+
         'che combacia a quella del tuo browser Chrome da https://googlechromelabs.github.io/chrome-for-testing/\n')
     parser.add_argument('--visibile', '--visible', '-v', dest='visible', default=False, action='store_true', help=
@@ -76,7 +76,8 @@ def parse_arguments() -> Namespace:
         "precedente la data scelta con --data e' trovato. La notifica verra' "+
         "prodotta comunque.")
     parser.add_argument('--exec', '--esegui', '-e', '--suono', '--suoneria',
-        '-s', '--avviso', dest='audioFile', default='data/emmescingue.mpeg',
+        '-s', '--avviso', dest='audioFile',
+        default='../../data/emmescingue.mpeg',
         action='store', help="Specifica il percorso di un file "+
         "da eseguire quando un appuntamento precedente la data scelta con "+
         "--data e' trovato. L'utilizzo inteso e' quello di riprodurre un "+
@@ -218,13 +219,12 @@ def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
     return
 
-def title():
+def title(file_path: str):
     """Print title from file if available, otherwise from string literals."""
-    title_path = os.path.abspath('data/title.txt')
     p = lambda s: _center(s, config.line_width, True, False, True)
     divider('=', config.line_width, '\n')
 
-    if not os.path.isfile(title_path) or config.line_width < 92:
+    if not os.path.isfile(file_path) or config.line_width < 92:
         p(r'')
         p(r'  / ____|           (_)  __ \     (_)           ')
         p(r' | (___   __ _ _ __  _| |  | |_ __ ___   _____  ')
@@ -232,7 +232,7 @@ def title():
         p(r'  ____) | (_| | | | | | |__| | |  | |\ V /  __/ ')
         p(r' |_____/ \__,_|_| |_|_|_____/|_|  |_| \_/ \___| ')
     else:
-        with open(title_path, 'r') as f:
+        with open(file_path, 'r') as f:
             for line in f:
                 p(line.strip('\n'))
 

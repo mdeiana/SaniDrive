@@ -80,7 +80,7 @@ class RefreshTimer:
             self.is_due = False
             Timer(self.interval, self._callback).start()
 
-def init_driver(args: Namespace) -> WebDriver:
+def init_driver(path: str, visible: bool) -> WebDriver:
     """
     Create a new WebDriver instance with the correct parameters specified
     by the user from CLI and return it.
@@ -95,20 +95,18 @@ def init_driver(args: Namespace) -> WebDriver:
     WebDriver
         The instance of the Selenium ChromeDriver.
     """
-    driver_path = os.path.abspath(args.driverFile)
-
     print("Inizializzazione ChromeDriver... ", end='') # 33 characters in line
     sys.stdout.flush()
     try:
         chrome_options = Options()
         #chrome_service = Service()
 
-        if not args.visible:
+        if not visible:
             chrome_options.add_argument("--headless")
         
         chrome_options.add_argument("--log-level=3")
         chrome_options.add_argument('--remote-debugging-port=9222')
-        chrome_options.add_argument(f'--executable_path={driver_path}')
+        chrome_options.add_argument(f'--executable_path={path}')
         #chrome_service.log_output = os.path.abspath(args.logFile)
         # chrome_service isn't included as the second argument because
         # Selenium bugs out if it is as of version 4.20.0
