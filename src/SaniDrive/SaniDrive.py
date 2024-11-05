@@ -17,26 +17,29 @@ from driver import init_driver, get_appointments_page, expand_list
 __version__ = '1.3'
 
 if __name__ == "__main__":
-    # parse arguments
+    # parse arguments, get absolute directories for files
     args = parse_arguments()
-    credPath = os.path.abspath(args.credFile)
+    root = os.path.dirname(os.path.realpath(__file__))
+    cred_path = os.path.join(root, args.credFile)
+    audio_path = os.path.join(root, args.audioFile)
+    audio_exists = os.path.isfile(audio_path)
+    driver_path = os.path.join(root, args.driverFile)
+    title_path = os.path.join(root, '../../data/title.txt')
     list_reload_interval = int(args.interval)
-    audio_exists = os.path.isfile(os.path.abspath(args.audioFile))
-    driver_path = os.path.abspath(args.driverFile)
 
     # get screen dimensions and print title
     line_width = shutil.get_terminal_size((120, 30))[0]
     config.set_line_width(line_width)
     cls()
-    title()
+    title(title_path)
 
     # download the latest version of chromedriver if it's not in provided path
     if not os.path.isfile(driver_path):
         driver_path = download_chromedriver(os.path.dirname(driver_path))
 
     # read prescriptions from file and choose which to track
-    prescriptions = read_prescriptions(credPath)
-    c = choose_prescription(prescriptions, credPath)
+    prescriptions = read_prescriptions(cred_path)
+    c = choose_prescription(prescriptions, cred_path)
 
     # set up latest date appointment if date is defined by command line
     if args.latestDate != '':
@@ -53,7 +56,7 @@ if __name__ == "__main__":
         ldate = 'non specificata'
 
     # initialize driver
-    driver = init_driver(args)
+    driver = init_driver(driver_path, args.visible)
 
     # get the page with the list of all the appointments and expand the list
     get_appointments_page(driver, *prescriptions[c].get_creds())
@@ -117,7 +120,7 @@ if __name__ == "__main__":
                 send_notif(appointments[0])
                 
                 if audio_exists:
-                    os.system(f'{os.path.abspath(args.audioFile)}')
+                    os.system(f'{audio_path}')
 
                 if not args.nonstop:
                     print('')
