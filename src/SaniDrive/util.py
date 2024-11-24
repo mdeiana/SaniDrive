@@ -205,7 +205,7 @@ def download_chromedriver(dir_path: str) -> str:
     _center('-'*47, config.line_width, True)
     print("\n\n")
     print("L'eseguibile di ChromeDriver si trova ora nel percorso:\n"+
-          f"{driver_path}\n\n")
+          f"{os.path.realpath(driver_path)}\n\n")
     
     _center('|||   Premere Invio per continuare   |||', config.line_width,
             True)

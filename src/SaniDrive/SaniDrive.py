@@ -16,25 +16,19 @@ from driver import init_driver, get_appointments_page, expand_list
 
 __version__ = '1.3'
 
-if __name__ == "__main__":
+def run():
     # parse arguments, get absolute directories for files
     args = parse_arguments()
-    root = os.path.dirname(os.path.realpath(__file__))
     cred_path = os.path.join(root, args.credFile)
     audio_path = os.path.join(root, args.audioFile)
     audio_exists = os.path.isfile(audio_path)
     driver_path = os.path.join(root, args.driverFile)
-    title_path = os.path.join(root, '../../data/title.txt')
     list_reload_interval = int(args.interval)
-
-    # get screen dimensions and print title
-    line_width = shutil.get_terminal_size((120, 30))[0]
-    config.set_line_width(line_width)
-    cls()
-    title(title_path)
 
     # download the latest version of chromedriver if it's not in provided path
     if not os.path.isfile(driver_path):
+        if not os.path.exists(os.path.dirname(driver_path)):
+            os.mkdir(os.path.dirname(driver_path))
         driver_path = download_chromedriver(os.path.dirname(driver_path))
 
     # read prescriptions from file and choose which to track
@@ -182,3 +176,20 @@ if __name__ == "__main__":
         print("Aggiornamento lista appuntamenti... ")
         get_appointments_page(driver, *prescriptions[c].get_creds())
         expand_list(driver)
+
+if __name__ == "__main__":
+    # parse arguments, get absolute directories for files
+    root = os.path.dirname(os.path.realpath(__file__))
+    title_path = os.path.join(root, '../../data/title.txt')
+
+    # get screen dimensions and print title
+    line_width = shutil.get_terminal_size((120, 30))[0]
+    config.set_line_width(line_width)
+    cls()
+    title(title_path)
+
+    try:
+        run()
+    except (KeyboardInterrupt, EOFError):
+        print('')
+        sys.exit(0)
