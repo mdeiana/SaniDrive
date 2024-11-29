@@ -41,11 +41,11 @@ def parse_arguments() -> Namespace:
                 epilog='SaniDrive by Michele Deiana (github.com/mdeiana). Governo pls fix sanita\'',
                 formatter_class=BetterFormatter
                 )
-    parser.add_argument('--file', '-f', dest='credFile', default='../../data/credenziali.json', metavar='FILE',
+    parser.add_argument('--file', '-f', dest='credFile', default='', metavar='FILE',
         help=f'Specifica il percorso del file con le credenziali. E\' bene usare un percorso assoluto '+
         'per garantire l\'uso del file corretto. Il percorso di default e\' "../../data/credenziali.json", '+
         'relativamente alla directory da cui e\' eseguito SaniDrive.\n')
-    parser.add_argument('--driver', dest='driverFile', default='../../data/chromedriver-win64/chromedriver.exe', metavar='FILE',
+    parser.add_argument('--driver', dest='driverFile', default='', metavar='FILE',
         help='Specifica il percorso dell\'eseguibile di ChromeDriver. E\' bene usare un percorso assoluto '+
         'per garantire l\'uso del file corretto. Il percorso di default e\' "../../data/chromedriver-win64/chromedriver.exe", '+
         'relativamente alla directory da cui e\' eseguito SaniDrive. Scarica la versione di ChromeDriver '+
@@ -124,7 +124,7 @@ def download_chromedriver(dir_path: str) -> str:
     p("Se non hai indicato manualmente il percorso di chromedriver.exe, "+
       "probabilmente non hai scaricato ChromeDriver. SaniDrive puo' "+
       "scaricarlo automaticamente per te nella cartella di default o "+
-      "in quella specificata se ne hai scelta una.")
+      "in quella specificata se ne hai scelta una da linea di comando.")
     print('\n')
 
     c = 0
@@ -165,7 +165,9 @@ def download_chromedriver(dir_path: str) -> str:
         _fail('automatic_download')
     print('fatto.')
 
-    print(f'\nDownload da {dl_url}... '); sys.stdout.flush()
+    print(f'\nDownload in corso', end=''); sys.stdout.flush()
+    chunks_per_dot = 36
+    count = 0
     sleep(1)
     try:
         response = requests.get(dl_url, stream=True)
@@ -176,7 +178,10 @@ def download_chromedriver(dir_path: str) -> str:
                 if not chunk:
                     break
                 f.write(chunk)
-        print('fatto.')
+                if count % chunks_per_dot == 0:
+                    sys.stdout.write('.'); sys.stdout.flush()
+                count += 1
+        print(' fatto.')
     except:
         _fail('automatic_download')
         sys.exit(1)
@@ -194,7 +199,7 @@ def download_chromedriver(dir_path: str) -> str:
     sleep(1)
     try:
         os.remove(archive_path)
-        print("completata.")
+        print("fatto.")
     except:
         print("non riuscita. Passaggio non vitale, procediamo...\n")
 
@@ -341,7 +346,7 @@ def _fail(reason: str = '', masculine: bool = True) -> None:
     ----------
     reason : str
         Valid strings are 'layout', 'date', 'session', 'automatic_download',
-        ''.
+        'driver_path', ''.
     """
     p = lambda s: _center(s, config.line_width)
     start = 'non riuscito.\n' if masculine else 'non riuscita.\n'
@@ -362,6 +367,10 @@ def _fail(reason: str = '', masculine: bool = True) -> None:
         print(start); p("Qualcosa e' andato storto. Per favore riprova, e se "+
               "il problema persiste contattami con email a "+
               "michele.deiana.dev@gmail.com")
+    if reason =='driver_path':
+        p("Errore: il percorso specificato per l'eseguibile di ChromeDriver " \
+          "deve essere un file o una cartella esistente; se si sepecifica " \
+          "una cartella, ChromeDriver verra' scaricato nella stessa.")
     if reason == '':
         print("Errore generico: qualcosa e' andato storto.")
     sys.exit(1)
