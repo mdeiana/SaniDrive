@@ -19,17 +19,39 @@ __version__ = '1.3'
 def run():
     # parse arguments, get absolute directories for files
     args = parse_arguments()
-    cred_path = os.path.join(root, args.credFile)
-    audio_path = os.path.join(root, args.audioFile)
+    audio_path = os.path.abspath(os.path.join(root, args.audioFile))
     audio_exists = os.path.isfile(audio_path)
-    driver_path = os.path.join(root, args.driverFile)
     list_reload_interval = int(args.interval)
 
-    # download the latest version of chromedriver if it's not in provided path
-    if not os.path.isfile(driver_path):
-        if not os.path.exists(os.path.dirname(driver_path)):
-            os.mkdir(os.path.dirname(driver_path))
-        driver_path = download_chromedriver(os.path.dirname(driver_path))
+    # sort out paths from cli arguments
+    # credentials file
+    default_cred_path = '../../data/credenziali.json'
+    if args.credFile == '':
+        cred_path = os.path.abspath(os.path.join(root, default_cred_path))
+    else:
+        cred_path = os.path.abspath(args.credFile)
+    # driver path
+    default_driver_dir = '../../data'
+    default_driver_subdir = 'chromedriver-win64/chromedriver.exe'
+    if args.driverFile == '':
+        driver_path = os.path.abspath(os.path.join(root, default_driver_dir))
+        if not os.path.exists(driver_path):
+            os.mkdir(driver_path)
+    else:
+        driver_path = os.path.abspath(args.driverFile)
+    
+    # download latest stable chromedriver if path to .exe isn't specified
+    if os.path.isdir(driver_path):
+        check_path1 = os.path.join(driver_path, default_driver_subdir)
+        check_path2 = os.path.join(driver_path, 'chromedriver.exe')
+        if os.path.isfile(check_path1):
+            driver_path = check_path1
+        elif os.path.isfile(check_path2):
+            driver_path = check_path2
+        else:
+            driver_path = download_chromedriver(driver_path)
+    elif not os.path.exists(driver_path):
+        _fail('driver_path')
 
     # read prescriptions from file and choose which to track
     prescriptions = read_prescriptions(cred_path)
@@ -117,17 +139,24 @@ def run():
                     os.system(f'{audio_path}')
 
                 if not args.nonstop:
+                    appnt_str = appointments[0].__str__().replace('\t', '    ')
+                    pc = 0 # printed_characters
                     print('')
-                    p('|||   NUOVO APPUNTAMENTO TROVATO   |||')
+                    pc += p('|||   NUOVO APPUNTAMENTO TROVATO   |||')
                     print('')
-                    _center('Trovato un appuntamento per prima della data '+
-                    'specificata. '+
-                    'Effettua la prenotazione dalla finestra di ChromeDriver '+
-                    'oppure premi Invio per continuare a cercare usando la '+
-                    'data di questo prossimo appuntamento come nuova data.'
-                    , line_width)
+                    pc += p('Trovato un appuntamento per prima della data '+
+                        'specificata:')
+                    print('')
+                    p('-' * int(line_width * 4/5))
+                    pc += p(appnt_str)
+                    p('-' * int(line_width * 4/5))
+                    print('\n')
+                    pc += _center('Effettua la prenotazione dalla finestra ' \
+                    'di ChromeDriver oppure premi Invio per continuare a ' \
+                    'cercare usando la data di questo prossimo appuntamento ' \
+                    'come nuova data di riferimento.', line_width, True, True)
                     input('')
-                    backline(6)
+                    backline(6 + pc)
                     latest_appointment = appointments[0]
                     ldate = ' '.join(appointments[0].date.split()[1:])
             pass
