@@ -1,0 +1,4 @@
+plyer
+selenium
+requests
+bs4
