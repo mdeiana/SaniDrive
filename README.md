@@ -14,7 +14,11 @@ Sanidrive è un programma scritto con Python. Per poterlo usare, devi installare
 
 Installa i seguenti pacchetti con `pip install`:
 ```
-plyer, selenium, shutil, requests, bs4
+plyer, selenium, requests, bs4
+```
+oppure, dalla root del progetto,
+```
+pip install -r requirements.txt
 ```
 
 SaniDrive funziona grazie a un programma che si chiama ChromeDriver, che deve essere scaricato sul tuo computer ed essere della stessa versione di Google Chrome; normalmente non c'è bisogno che tu te ne preoccupi, perché SaniDrive rileverà la sua assenza e potrà scaricare automaticamente l'ultima versione.
