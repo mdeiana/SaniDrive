@@ -61,7 +61,7 @@ def read_prescriptions(path: str) -> list[Prescription]:
     list[Prescription]
         The read prescriptions as returned from pop_prescription() function.
     """
-    prescriptions : Prescription = []
+    prescriptions : list[Prescription] = []
     print("Lettura impegnative... ", end='')
 
     try:
@@ -124,7 +124,7 @@ def pop_prescriptions(path: str) -> list[Prescription]:
             f.seek(0, 0)
             data = json.load(f)
     
-    prescriptions : Prescription = []
+    prescriptions : list[Prescription] = []
     for cf, dict in data.items():
         for nre, meta in dict.items():
             name = meta['nome']

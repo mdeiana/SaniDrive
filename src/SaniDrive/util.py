@@ -142,7 +142,7 @@ def download_chromedriver(dir_path: str) -> str:
     try:
         response = requests.get(driver_version_page)
         soup = BeautifulSoup(response.text, 'html.parser')
-        version = soup.find('code').text
+        version = soup.find('code').text                        #type: ignore
     except:
         _fail('automatic_download')
     print(f"trovata versione {version}.\n")
@@ -186,7 +186,7 @@ def download_chromedriver(dir_path: str) -> str:
         _fail('automatic_download')
         sys.exit(1)
 
-    print(f'\nDecompressione archivio... ', end=''), sys.stdout.flush()
+    print(f'\nDecompressione archivio... ', end=''); sys.stdout.flush()
     sleep(1)
     try:
         with zipfile.ZipFile(archive_path, 'r') as zip:
@@ -195,7 +195,7 @@ def download_chromedriver(dir_path: str) -> str:
         _fail('automatic_download', masculine=False)
     print('fatto.')
 
-    print("Rimozione archivio... ", end=''), sys.stdout.flush()
+    print("Rimozione archivio... ", end=''); sys.stdout.flush()
     sleep(1)
     try:
         os.remove(archive_path)

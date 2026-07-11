@@ -2,3 +2,4 @@ plyer
 selenium
 requests
 bs4
+platformdirs
