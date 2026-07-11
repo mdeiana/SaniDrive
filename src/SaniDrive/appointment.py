@@ -152,11 +152,11 @@ class Appointment:
             return cls('','','','')
 
         # determine if date is properly formatted
-        valid, date = Appointment.date_is_valid(date)
+        valid, fdate = Appointment.date_is_valid(date)
         if not valid:
             return None
 
-        appnt = cls('', date, '', '')
+        appnt = cls('', fdate, '', '')
         return appnt
     
     @staticmethod
@@ -305,7 +305,8 @@ def interactive_latest_appointment() -> Appointment:
     while True:
         
         print(f'\x1b[{lines_printed+1}F\x1b[2K', end='')
-        _center('Inserisci la data: ', line_width * 13/14, True, False, False)
+        _center('Inserisci la data: ', line_width * 13 // 14,
+                True, False, False)
         date = input()
 
         print(f'\x1b[{lines_printed}E')
@@ -338,9 +339,9 @@ def interactive_latest_appointment() -> Appointment:
                 print("Questo giorno non e' valido.")
                 lines_printed += 1
             case 'argument_number', 'format_error':
-                lines_printed += p("Sembra che tu abbia abbia "+
-            "sbagliato qualcosa. Devono comparire tre numeri separati da "+
-            "spazio, - o /, oppure il numero del giorno, il nome del mese, "+
+                lines_printed += p("Sembra che tu abbia sbagliato qualcosa. "+
+            "Devono comparire tre numeri separati da spazio, "+
+            "- o /, oppure il numero del giorno, il nome del mese, "+
             "e il numero dell'anno. ")
                 lines_printed += p("Non mischiare spazi, - e /, e "+
             "se scrivi il nome del mese per intero usa solo spazi e non "+
@@ -352,11 +353,13 @@ def interactive_latest_appointment() -> Appointment:
                       "combinato, complimenti. Comunque riprova.")
                 lines_printed += 1
     
-    return Appointment.latest(date)
+    latest = Appointment.latest(date)
+    assert latest is not None
+    return latest
 
 def send_notif(appnt: Appointment) -> None:
     """Send desktop notification with appointment information"""
-    notification.notify(
+    notification.notify(                                        #type: ignore
             title='SaniDrive ha trovato qualcosa!',
             message=appnt.date + ' ' + appnt.place,
             app_name='SaniDrive',

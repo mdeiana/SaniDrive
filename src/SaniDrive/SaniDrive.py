@@ -67,7 +67,7 @@ def run():
         latest_appointment = interactive_latest_appointment()
 
     # set up variable for easier printing later
-    ldate = latest_appointment.date[7:]
+    ldate = latest_appointment.date[7:]                         #type: ignore
     if ldate == '':
         ldate = 'non specificata'
 
@@ -132,7 +132,7 @@ def run():
                 earliest_appointment = appointments[0]
                 found_on_refresh = refresh_counter
 
-            if appointments[0].is_sooner_than(latest_appointment):
+            if appointments[0].is_sooner_than(latest_appointment):#type: ignore
                 send_notif(appointments[0])
                 
                 if audio_exists:
