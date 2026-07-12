@@ -43,11 +43,11 @@ def parse_arguments() -> Namespace:
                 )
     parser.add_argument('--file', '-f', dest='credFile', default='', metavar='FILE',
         help=f'Specifica il percorso del file con le credenziali. E\' bene usare un percorso assoluto '+
-        'per garantire l\'uso del file corretto. Il percorso di default e\' "../../data/credenziali.json", '+
+        'per garantire l\'uso del file corretto. Il percorso di default e\' "../../data/credenziali.json", '+ #FIXME
         'relativamente alla directory da cui e\' eseguito SaniDrive.\n')
     parser.add_argument('--driver', dest='driverFile', default='', metavar='FILE',
         help='Specifica il percorso dell\'eseguibile di ChromeDriver. E\' bene usare un percorso assoluto '+
-        'per garantire l\'uso del file corretto. Il percorso di default e\' "../../data/chromedriver-win64/chromedriver.exe", '+
+        'per garantire l\'uso del file corretto. Il percorso di default e\' "../../data/chromedriver-win64/chromedriver.exe", '+ #FIXME 
         'relativamente alla directory da cui e\' eseguito SaniDrive. Scarica la versione di ChromeDriver '+
         'che combacia a quella del tuo browser Chrome da https://googlechromelabs.github.io/chrome-for-testing/\n')
     parser.add_argument('--visibile', '--visible', '-v', dest='visible', default=False, action='store_true', help=
