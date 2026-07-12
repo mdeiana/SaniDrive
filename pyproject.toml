@@ -20,3 +20,6 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/mdeiana/sanidrive"
 Issues = "https://github.com/mdeiana/sanidrive/issues"
+
+[project.scripts]
+sanidrive = "sanidrive.sanidrive:main"

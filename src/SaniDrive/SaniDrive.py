@@ -4,42 +4,54 @@ import os
 import sys
 import shutil
 from time import sleep
+from importlib import resources
 
-import config
-from util import cls, title, _center, backline, divider, _fail
-from util import parse_arguments, download_chromedriver
-from prescription import read_prescriptions, choose_prescription
-from appointment import Appointment, interactive_latest_appointment, send_notif
-from driver import By
-from driver import name_class_appointment
-from driver import init_driver, get_appointments_page, expand_list
+from . import config
+from .util import cls, title, _center, backline, divider, _fail
+from .util import parse_arguments, download_chromedriver
+from .prescription import read_prescriptions, choose_prescription
+from .appointment import Appointment, interactive_latest_appointment, send_notif
+from .driver import By
+from .driver import name_class_appointment
+from .driver import init_driver, get_appointments_page, expand_list
 
-__version__ = '1.3'
+__version__ = '1.4.0'
+
+#root = os.path.dirname(os.path.realpath(__file__))
+data_dir = config.data_dir
+appdata_dir = config.appdata_dir
+driver_dir = config.driver_dir
+driver_path = config.driver_path
+audio_path = config.audio_path
+title_path = config.title_path
+creds_path = config.creds_path
 
 def run():
     # parse arguments, get absolute directories for files
     args = parse_arguments()
-    audio_path = os.path.abspath(os.path.join(root, args.audioFile))
-    audio_exists = os.path.isfile(audio_path)
+    assert audio_path.is_file()
     list_reload_interval = int(args.interval)
 
     # sort out paths from cli arguments
     # credentials file
-    default_cred_path = '../../data/credenziali.json'
-    if args.credFile == '':
-        cred_path = os.path.abspath(os.path.join(root, default_cred_path))
-    else:
-        cred_path = os.path.abspath(args.credFile)
+    if args.credFile != '':
+        if os.path.exists(args.credFile):
+            cred_path = os.path.abspath(args.credFile)
+        else:
+            print('File credenziali specificato non esiste, uso default...')
     # driver path
     default_driver_dir = '../../data'
     default_driver_subdir = 'chromedriver-win64/chromedriver.exe'
-    if args.driverFile == '':
-        driver_path = os.path.abspath(os.path.join(root, default_driver_dir))
-        if not os.path.exists(driver_path):
-            os.mkdir(driver_path)
+    if args.driverFile != '':
+        if os.path.exists(args.driverFile):
+            driver_path = os.path.abspath(args.driverFile)
+        else:
+            print('Eseguibile ChromeDriver specificato non esiste, ' +
+                  'uso default...')
     else:
-        driver_path = os.path.abspath(args.driverFile)
+        os.makedirs(driver_dir, exist_ok=True)
     
+    #RESUME #CHECKPOINT
     # download latest stable chromedriver if path to .exe isn't specified
     if os.path.isdir(driver_path):
         check_path1 = os.path.join(driver_path, default_driver_subdir)
@@ -134,9 +146,7 @@ def run():
 
             if appointments[0].is_sooner_than(latest_appointment):#type: ignore
                 send_notif(appointments[0])
-                
-                if audio_exists:
-                    os.system(f'{audio_path}')
+                os.system(f'{audio_path}')
 
                 if not args.nonstop:
                     appnt_str = appointments[0].__str__().replace('\t', '    ')
@@ -206,11 +216,8 @@ def run():
         get_appointments_page(driver, *prescriptions[c].get_creds())
         expand_list(driver)
 
-if __name__ == "__main__":
-    # parse arguments, get absolute directories for files
-    root = os.path.dirname(os.path.realpath(__file__))
-    title_path = os.path.join(root, '../../data/title.txt')
-
+def main():
+    """Wrapper entrypoint for pyproject.toml [project.scripts]"""
     # get screen dimensions and print title
     line_width = shutil.get_terminal_size((120, 30))[0]
     config.set_line_width(line_width)
@@ -222,3 +229,6 @@ if __name__ == "__main__":
     except (KeyboardInterrupt, EOFError):
         print('')
         sys.exit(0)
+
+if __name__ == "__main__":
+    main()
