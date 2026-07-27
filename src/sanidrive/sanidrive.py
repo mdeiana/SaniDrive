@@ -17,7 +17,6 @@ from .driver import init_driver, get_appointments_page, expand_list
 
 __version__ = '1.4.0'
 
-#root = os.path.dirname(os.path.realpath(__file__))
 data_dir = config.data_dir
 appdata_dir = config.appdata_dir
 driver_dir = config.driver_dir
@@ -30,23 +29,23 @@ line_width = shutil.get_terminal_size((120, 30))[0]
 
 if TYPE_CHECKING:
     from pathlib import Path
+    from argparse import Namespace
+
+args: Namespace
 
 def run():
     global driver_path, creds_path
-    # parse arguments, get absolute directories for files
-    args = parse_arguments()
-    assert audio_path.is_file()
     list_reload_interval = int(args.interval)
 
     # sort out paths from cli arguments
-    # credentials file
+        # credentials file
     if args.credFile != '':
         if os.path.exists(args.credFile):
             creds_path = os.path.abspath(args.credFile)
         else:
             print('File credenziali specificato non esiste, uso default...')
-    # driver path
-    default_driver_subdir = 'chromedriver-win64/chromedriver.exe'
+    
+        # driver path
     if args.driverFile != '':
         if os.path.exists(args.driverFile):
             driver_path = os.path.abspath(args.driverFile)
@@ -212,8 +211,10 @@ def run():
 
 def main():
     """Wrapper entrypoint for pyproject.toml [project.scripts]"""
+    global args
     # set screen dimensions and print title
     config.set_line_width(line_width)
+    args = parse_arguments()
     cls()
 
     try:
