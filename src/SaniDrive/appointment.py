@@ -2,12 +2,10 @@
 Provides class and routines to store, manage, compare and convert appointments
 as parsed from the CUP website into useful, structured objects.
 """
-
-import config
-from config import MONTH, DAYS
-from util import divider, _center, backline, cls
-
 from plyer import notification
+
+from .config import MONTH, DAYS, line_width
+from .util import divider, _center, backline, cls
 
 class Appointment:
     """
@@ -282,7 +280,7 @@ def interactive_latest_appointment() -> Appointment:
         `is_sooner_than` method for later comparison.
         Said format is: 'str int str int'
     """
-    line_width = config.line_width
+
     valid = False
     lines_printed = -1
     p = lambda s: _center(s, line_width, False, False)

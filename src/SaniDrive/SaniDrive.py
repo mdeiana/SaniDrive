@@ -4,7 +4,7 @@ import os
 import sys
 import shutil
 from time import sleep
-from importlib import resources
+from typing import TYPE_CHECKING
 
 from . import config
 from .util import cls, title, _center, backline, divider, _fail
@@ -26,7 +26,13 @@ audio_path = config.audio_path
 title_path = config.title_path
 creds_path = config.creds_path
 
+line_width = shutil.get_terminal_size((120, 30))[0]
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
 def run():
+    global driver_path, creds_path
     # parse arguments, get absolute directories for files
     args = parse_arguments()
     assert audio_path.is_file()
@@ -36,11 +42,10 @@ def run():
     # credentials file
     if args.credFile != '':
         if os.path.exists(args.credFile):
-            cred_path = os.path.abspath(args.credFile)
+            creds_path = os.path.abspath(args.credFile)
         else:
             print('File credenziali specificato non esiste, uso default...')
     # driver path
-    default_driver_dir = '../../data'
     default_driver_subdir = 'chromedriver-win64/chromedriver.exe'
     if args.driverFile != '':
         if os.path.exists(args.driverFile):
@@ -50,24 +55,13 @@ def run():
                   'uso default...')
     else:
         os.makedirs(driver_dir, exist_ok=True)
-    
-    #RESUME #CHECKPOINT
-    # download latest stable chromedriver if path to .exe isn't specified
-    if os.path.isdir(driver_path):
-        check_path1 = os.path.join(driver_path, default_driver_subdir)
-        check_path2 = os.path.join(driver_path, 'chromedriver.exe')
-        if os.path.isfile(check_path1):
-            driver_path = check_path1
-        elif os.path.isfile(check_path2):
-            driver_path = check_path2
-        else:
-            driver_path = download_chromedriver(driver_path)
-    elif not os.path.exists(driver_path):
-        _fail('driver_path')
+    if not os.path.isfile(driver_path):
+        print('Eseguibile ChromeDriver non trovato, scarico...')
+        driver_path = download_chromedriver(appdata_dir)
 
     # read prescriptions from file and choose which to track
-    prescriptions = read_prescriptions(cred_path)
-    c = choose_prescription(prescriptions, cred_path)
+    prescriptions = read_prescriptions(creds_path)
+    c = choose_prescription(prescriptions, creds_path)
 
     # set up latest date appointment if date is defined by command line
     if args.latestDate != '':
@@ -84,7 +78,7 @@ def run():
         ldate = 'non specificata'
 
     # initialize driver
-    driver = init_driver(driver_path, args.visible)
+    driver = init_driver(driver_path, args.visible)             #type: ignore
 
     # get the page with the list of all the appointments and expand the list
     get_appointments_page(driver, *prescriptions[c].get_creds())
@@ -218,11 +212,10 @@ def run():
 
 def main():
     """Wrapper entrypoint for pyproject.toml [project.scripts]"""
-    # get screen dimensions and print title
-    line_width = shutil.get_terminal_size((120, 30))[0]
+    # set screen dimensions and print title
     config.set_line_width(line_width)
     cls()
-    title(title_path)
+    title(title_path.__str__())
 
     try:
         run()

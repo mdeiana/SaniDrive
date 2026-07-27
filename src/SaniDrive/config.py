@@ -14,8 +14,8 @@ DAYS = {1:31, 2:28, 3:31, 4:30, 5:31, 6:30, 7:31, 8:31, 9:30, 10:31, 11:30, 12:3
 line_width = 120
 
 data_dir = resources.files('sanidrive').joinpath('data')
-appdata_dir = user_data_path('SaniDrive')
-driver_dir = user_data_path('SaniDrive').joinpath('chromedriver-win64')
+appdata_dir = user_data_path('SaniDrive', False)
+driver_dir = appdata_dir.joinpath('chromedriver-win64')
 
 title_path = data_dir.joinpath('title.txt')#.read_text()
 audio_path = data_dir.joinpath('emmescingue.mpeg')

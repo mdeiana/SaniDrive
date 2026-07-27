@@ -7,13 +7,15 @@ automatically download ChromeDriver.
 import os
 import sys
 import json
-import config
 import zipfile
 import requests
 import argparse
 from time import sleep
+from pathlib import Path
 from bs4 import BeautifulSoup
 from argparse import Namespace
+
+from . import config
 
 # Constant Values
 driver_version_page = 'https://googlechromelabs.github.io/chrome-for-testing/'
@@ -42,14 +44,14 @@ def parse_arguments() -> Namespace:
                 formatter_class=BetterFormatter
                 )
     parser.add_argument('--file', '-f', dest='credFile', default='', metavar='FILE',
-        help=f'Specifica il percorso del file con le credenziali. E\' bene usare un percorso assoluto '+
-        'per garantire l\'uso del file corretto. Il percorso di default e\' "../../data/credenziali.json", '+ #FIXME
+        help='Specifica il percorso del file con le credenziali. E\' bene usare un percorso assoluto '+
+        'per garantire l\'uso del file corretto. Il percorso di default e\' "LOCALAPPDATA/SaniDrive/credenziali.json", '
         'relativamente alla directory da cui e\' eseguito SaniDrive.\n')
     parser.add_argument('--driver', dest='driverFile', default='', metavar='FILE',
         help='Specifica il percorso dell\'eseguibile di ChromeDriver. E\' bene usare un percorso assoluto '+
-        'per garantire l\'uso del file corretto. Il percorso di default e\' "../../data/chromedriver-win64/chromedriver.exe", '+ #FIXME 
-        'relativamente alla directory da cui e\' eseguito SaniDrive. Scarica la versione di ChromeDriver '+
-        'che combacia a quella del tuo browser Chrome da https://googlechromelabs.github.io/chrome-for-testing/\n')
+        'per garantire l\'uso del file corretto. Il percorso di default e\' "LOCALAPPDATA/SaniDrive/chromedriver-win64/chromedriver.exe", '+
+        'se l\'eseguibile non e\' trovato al percorso specificato, quello di default e\' usato; se anche li\' non esiste, ChromeDriver e\' ' +
+        'scaricato automaticamente al percorso di default.\n')
     parser.add_argument('--visibile', '--visible', '-v', dest='visible', default=False, action='store_true', help=
         'Di default, il driver e\' eseguito in modalita\' headless, ovvero la finestra del browser '+
         'e\' nascosta per evitare di interagirci accidentalmente. Specificare questa opzione la rende visible.\n')
@@ -94,7 +96,7 @@ def parse_arguments() -> Namespace:
 
     return args
 
-def download_chromedriver(dir_path: str) -> str:
+def download_chromedriver(dir_path: Path | str) -> str:
     """
     Download the latest stable version of ChromeDriver automatically.
 
@@ -367,7 +369,7 @@ def _fail(reason: str = '', masculine: bool = True) -> None:
         print(start); p("Qualcosa e' andato storto. Per favore riprova, e se "+
               "il problema persiste contattami con email a "+
               "michele.deiana.dev@gmail.com")
-    if reason =='driver_path':
+    if reason =='driver_path': #deprecated, unused
         p("Errore: il percorso specificato per l'eseguibile di ChromeDriver " \
           "deve essere un file o una cartella esistente; se si sepecifica " \
           "una cartella, ChromeDriver verra' scaricato nella stessa.")
