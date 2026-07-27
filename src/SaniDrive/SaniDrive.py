@@ -215,9 +215,9 @@ def main():
     # set screen dimensions and print title
     config.set_line_width(line_width)
     cls()
-    title(title_path.__str__())
 
     try:
+        title(title_path.__str__())
         run()
     except (KeyboardInterrupt, EOFError):
         print('')
