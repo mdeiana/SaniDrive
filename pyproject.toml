@@ -6,6 +6,9 @@ build-backend = "setuptools.build_meta"
 packages = ["sanidrive"]
 package-dir = {"sanidrive" = "src/sanidrive"}
 
+[tool.setuptools.package-data]
+"sanidrive" = ["data/*", "data/**/*"]
+
 [project]
 name = "sanidrive"
 version = "1.4.0"
