@@ -7,12 +7,14 @@ See Also
 :py:mod:`appointment`
 """
 
-import config
-from util import divider, backline, cls
 
 import os
 import sys
 import json
+from pathlib import Path
+
+from . import config
+from .util import divider, backline, cls
 
 class FileEmptyError(Exception):
     pass
@@ -46,7 +48,7 @@ class Prescription:
         """Returns relevant information for login as tuple."""
         return self.cf, self.nre
     
-def read_prescriptions(path: str) -> list[Prescription]:
+def read_prescriptions(path: Path | str) -> list[Prescription]:
     """
     Open file and populate prescriptions. Used to handle sending
     correct messages to user depending on condition of the specified file.
@@ -69,27 +71,27 @@ def read_prescriptions(path: str) -> list[Prescription]:
         print("fatto.")
     except FileNotFoundError:
         print(f"il file specificato non esiste.\nInserisci un'impegnativa nuova "+
-              f"al passaggio successivo per crearlo e salvarla.")
+              f"al passaggio successivo per crearlo e salvarla.\n")
         pass
     except FileEmptyError:
         print(f"il file specificato e' vuoto.\nInserisci un'impegnativa nuova "+
-              f"al passaggio successivo per salvarla nel file.")
+              f"al passaggio successivo per salvarla nel file.\n")
         pass
     except json.decoder.JSONDecodeError:
         print(f"non riuscita.\nIl file specificato non contiene json valido.\n"+
               f"Specifica un altro file oppure rimuovi il parametro --file per "+
-              f"usare il percorso di default (data/credenziali.json).")
+              f"usare il percorso di default (data/credenziali.json).\n")
         sys.exit(1)
     except KeyError:
         print(f"non riuscita.\nIl file specificato non e' nel formato corretto "+
-              f"oppure e' corrotto. Per favore specificane uno nuovo o vuoto.")
+              f"oppure e' corrotto. Per favore specificane uno nuovo o vuoto.\n")
         sys.exit(1)
     except Exception:
-        print("non riuscita.\nQualcosa e' andato storto.")
+        print("non riuscita.\nQualcosa e' andato storto.\n")
         sys.exit(1)
     return prescriptions
 
-def pop_prescriptions(path: str) -> list[Prescription]:
+def pop_prescriptions(path: Path | str) -> list[Prescription]:
     """
     Populates list of prescription objects with attributes as read from
     .json file and return the list.
@@ -134,7 +136,7 @@ def pop_prescriptions(path: str) -> list[Prescription]:
 
     return prescriptions
 
-def choose_prescription(prescrs: list[Prescription], path: str) -> int:
+def choose_prescription(prescrs: list[Prescription], path: Path | str) -> int:
     """
     Prints all prescriptions, takes user input to choose which one to
     select and start querying the website for. If there are no saved
@@ -225,7 +227,8 @@ def add_prescription() -> Prescription:
     p = Prescription(cf, nre, name, note)
     return p
 
-def write_prescriptions(prescr_list: list[Prescription], path: str) -> None:
+def write_prescriptions(prescr_list: list[Prescription],
+                        path: Path | str) -> None:
     """
     Starting from a list of read prescriptions, generate the correct
     dictionary object to write to .json file

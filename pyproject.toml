@@ -1,6 +1,10 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["sanidrive"]
+package-dir = {"sanidrive" = "src/sanidrive"}
 
 [project]
 name = "sanidrive"
@@ -12,9 +16,16 @@ description = "Automate appointment lookup on Sardinian public health website"
 readme = "README.md"
 requires-python = ">=3.12.3"
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: Windows",
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: Windows 64bit",
+]
+dependencies = [
+  "plyer",
+  "selenium",
+  "requests",
+  "bs4",
+  "platformdirs"
 ]
 
 [project.urls]

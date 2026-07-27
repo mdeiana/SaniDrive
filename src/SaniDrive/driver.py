@@ -3,8 +3,6 @@ Defines variables that store URLs and DOM object names and provides routines
 to navigate the CUP website and extract information from it using Selenium.
 """
 
-from util import backline, _fail
-
 import os
 import sys
 from time import sleep
@@ -20,6 +18,8 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import StaleElementReferenceException as SERE
 from selenium.common.exceptions import ElementClickInterceptedException as ECI
+
+from .util import backline, _fail
 
 login_page = 'https://cupweb.sardegnasalute.it/web/guest/ricetta-elettronica?'
 id_cf = '_ricettaelettronica_WAR_cupprenotazione_:ePrescriptionSearchForm:CFInput'
