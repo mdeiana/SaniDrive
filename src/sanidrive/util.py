@@ -79,7 +79,7 @@ def parse_arguments() -> Namespace:
         "prodotta comunque.")
     parser.add_argument('--exec', '--esegui', '-e', '--suono', '--suoneria',
         '-s', '--avviso', dest='audioFile',
-        default='../../data/emmescingue.mpeg',
+        default='',
         action='store', help="Specifica il percorso di un file "+
         "da eseguire quando un appuntamento precedente la data scelta con "+
         "--data e' trovato. L'utilizzo inteso e' quello di riprodurre un "+
@@ -352,6 +352,11 @@ def _fail(reason: str = '', masculine: bool = True) -> None:
     """
     p = lambda s: _center(s, config.line_width)
     start = 'non riuscito.\n' if masculine else 'non riuscita.\n'
+    if reason == 'loading':
+        print(start); p("Errore durante la gestione del caricamento della "+
+            "pagina. Per favore riprova, "+
+            "e se il problema persiste avvisami con email a "+
+            "michele.deiana.dev@gmail.com")
     if reason == 'layout':
         print(start); p("Probabilmente il layout della pagina e' "+
             "cambiato, per favore avvisami con email a "+

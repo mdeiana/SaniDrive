@@ -111,8 +111,9 @@ def init_driver(path: str, visible: bool) -> WebDriver:
         # chrome_service isn't included as the second argument because
         # Selenium bugs out if it is as of version 4.20.0
         driver = webdriver.Chrome(chrome_options)
-        backline(1)
-        print("\x1b[1A\x1b[33Cfatto.")
+        #backline(1)
+        #print("\x1b[1A\x1b[33Cfatto.")
+        print("fatto.")
         sys.stdout.flush()
     except Exception as e:
         print("non riuscita.\nQualcosa e' andato storto. Assicurati di aver "+
@@ -191,7 +192,7 @@ def get_appointments_page(driver: WebDriver, cf: str, nre: str) -> None:
         _fail(reason='layout')
     return
 
-def expand_list(driver: WebDriver):
+def expand_list(driver: WebDriver) -> None:
     """
     Instructs driver to click the button that loads all appointments
     
@@ -202,29 +203,43 @@ def expand_list(driver: WebDriver):
     """
     print("Espansione lista appuntamenti... ", end='')
     sys.stdout.flush()
-    retries = 0; retry = True
+
+    # wait for loading to be done, page is surprisingly slow to load
+    try:
+        WebDriverWait(driver, 20).until(EC.presence_of_element_located((
+            By.ID, "blocking")))
+        print('found loading element... ', end='', flush=True)
+        WebDriverWait(driver, 20).until(EC.invisibility_of_element_located((
+            By.ID, "blocking")))
+        print('loading element invis... ', end='', flush=True)
+    except TimeoutException:
+        input()
+        _fail(reason='loading', masculine=False)
 
     # unfortunately button names are dynamically assigned so we have to
-    # get every button and click the one that has text = 'Altre disponibilità'
-    while retry:
+    # get every button and click the one that has the right text
+    retries = 0
+    max_retires = 5
+    while True:
         try:
             buttons = driver.find_elements(By.XPATH, './/button')
             for b in buttons:
-                if b.text == 'Altre disponibilità':
+                if b.text == 'Altri appuntamenti disponibili':
                     b.click()
-                    retry = False
-                    print('fatto.')
-                    sys.stdout.flush()
-            sleep(2)
+                    print('fatto.'); sys.stdout.flush()
+                    return
+            retries += 1
+            if retries >= max_retires:
+                _fail(reason='layout', masculine=False)
+            sleep(3)
         except ECI:
             driver.execute_script("window.scrollBy(0, -200);")
             sleep(0.2)
             pass
         except SERE:
             retries += 1
-            if retries >= 5:
+            if retries >= max_retires:
                 _fail(reason='session', masculine=False)
         except Exception:
             _fail(reason='layout', masculine=False)
-    return
 

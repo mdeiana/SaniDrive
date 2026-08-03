@@ -5,8 +5,11 @@ import sys
 import shutil
 from time import sleep
 from typing import TYPE_CHECKING
+from selenium.common.exceptions import InvalidSessionIdException as ISIDE
 
 from . import config
+from .config import (data_dir, appdata_dir, driver_dir, driver_path,
+                     audio_path, title_path, creds_path)
 from .util import cls, title, _center, backline, divider, _fail
 from .util import parse_arguments, download_chromedriver
 from .prescription import read_prescriptions, choose_prescription
@@ -17,14 +20,6 @@ from .driver import init_driver, get_appointments_page, expand_list
 
 __version__ = '1.4.0'
 
-data_dir = config.data_dir
-appdata_dir = config.appdata_dir
-driver_dir = config.driver_dir
-driver_path = config.driver_path
-audio_path = config.audio_path
-title_path = config.title_path
-creds_path = config.creds_path
-
 line_width = shutil.get_terminal_size((120, 30))[0]
 
 if TYPE_CHECKING:
@@ -34,7 +29,7 @@ if TYPE_CHECKING:
 args: Namespace
 
 def run():
-    global driver_path, creds_path
+    global driver_path, creds_path, audio_path, driver
     list_reload_interval = int(args.interval)
 
     # sort out paths from cli arguments
@@ -44,7 +39,16 @@ def run():
             creds_path = os.path.abspath(args.credFile)
         else:
             print('File credenziali specificato non esiste, uso default...')
-    
+            sleep(1)
+
+        # custom file to execute
+    if args.audioFile != '':
+        if os.path.exists(args.audioFile):
+            audio_path = os.path.abspath(args.audioFile)
+        else:
+            print('File eseguibile specificato non esiste, uso default...')
+            sleep(1)
+
         # driver path
     if args.driverFile != '':
         if os.path.exists(args.driverFile):
@@ -52,6 +56,7 @@ def run():
         else:
             print('Eseguibile ChromeDriver specificato non esiste, ' +
                   'uso default...')
+            sleep(1)
     else:
         os.makedirs(driver_dir, exist_ok=True)
     if not os.path.isfile(driver_path):
@@ -211,7 +216,8 @@ def run():
 
 def main():
     """Wrapper entrypoint for pyproject.toml [project.scripts]"""
-    global args
+    global args, driver
+    
     # set screen dimensions and print title
     config.set_line_width(line_width)
     args = parse_arguments()
@@ -221,8 +227,14 @@ def main():
         title(title_path.__str__())
         run()
     except (KeyboardInterrupt, EOFError):
+        if driver:
+            driver.service.process.kill()
         print('')
         sys.exit(0)
+    except ISIDE:
+        print('\n\nErrore di sessione ChromeDriver. Hai forse chiuso ' +
+              'la finestra?')
+        sys.exit(1)    
 
 if __name__ == "__main__":
     main()
