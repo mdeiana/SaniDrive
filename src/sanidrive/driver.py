@@ -10,6 +10,7 @@ from threading import Timer
 from argparse import Namespace
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -192,54 +193,65 @@ def get_appointments_page(driver: WebDriver, cf: str, nre: str) -> None:
         _fail(reason='layout')
     return
 
+class button_with_text_detected:
+    """
+    Custom ExpectedCondition to wait for dynamically classed buttons.
+
+    Works by getting a list of all buttons and cycling through their text;
+    if a button with matching text is found, it is returned, otherwise False
+    is returned as per functionality expected by WebDriverWait.
+    
+    Parameters
+    ----------
+    target_text : str
+        Exact match of the text the button possesses.
+    """
+    def __init__(self, target_text: str):
+        self.target_text = target_text
+
+    def __call__(self, driver: WebDriver):
+        buttons : list[WebElement] = driver.find_elements(By.XPATH,
+                                                          './/button')
+        for b in buttons:
+            if b.text == self.target_text:
+                return b
+        return False
+        
+
 def expand_list(driver: WebDriver) -> None:
     """
-    Instructs driver to click the button that loads all appointments
+    Instructs driver to click the button that loads all appointments.
     
     Parameters
     ----------
     driver : WebDriver
-        The driver, which must already be on the correct page
+        The driver, which must already be on the correct page.
     """
     print("Espansione lista appuntamenti... ", end='')
     sys.stdout.flush()
 
-    # wait for loading to be done, page is surprisingly slow to load
-    try:
-        WebDriverWait(driver, 20).until(EC.presence_of_element_located((
-            By.ID, "blocking")))
-        print('found loading element... ', end='', flush=True)
-        WebDriverWait(driver, 20).until(EC.invisibility_of_element_located((
-            By.ID, "blocking")))
-        print('loading element invis... ', end='', flush=True)
-    except TimeoutException:
-        input()
-        _fail(reason='loading', masculine=False)
+    button_xpath = "//button[normalize-space(text())=" +\
+                    "'Altri appuntamenti disponibili']"
 
-    # unfortunately button names are dynamically assigned so we have to
-    # get every button and click the one that has the right text
     retries = 0
-    max_retires = 5
-    while True:
+    max_retries = 5
+    while retries < max_retries:
         try:
-            buttons = driver.find_elements(By.XPATH, './/button')
-            for b in buttons:
-                if b.text == 'Altri appuntamenti disponibili':
-                    b.click()
-                    print('fatto.'); sys.stdout.flush()
-                    return
+            button = WebDriverWait(driver, 5).until(button_with_text_detected(
+                'Altri appuntamenti disponibili'))
+            assert isinstance(button, WebElement)
+            button.click()
+            print('fatto.', flush=True)
+            return
+        except (ECI, TimeoutException):
+            driver.execute_script("window.scrollBy(0, 300);")
             retries += 1
-            if retries >= max_retires:
-                _fail(reason='layout', masculine=False)
-            sleep(3)
-        except ECI:
-            driver.execute_script("window.scrollBy(0, -200);")
             sleep(0.2)
-            pass
         except SERE:
             retries += 1
-            if retries >= max_retires:
-                _fail(reason='session', masculine=False)
-        except Exception:
+        except Exception as e:
+            print(e)
             _fail(reason='layout', masculine=False)
-
+        finally:
+            if retries >= 5:
+                _fail(reason='session', masculine=False)

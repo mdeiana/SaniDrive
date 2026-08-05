@@ -54,7 +54,8 @@ def parse_arguments() -> Namespace:
         'scaricato automaticamente al percorso di default.\n')
     parser.add_argument('--visibile', '--visible', '-v', dest='visible', default=False, action='store_true', help=
         'Di default, il driver e\' eseguito in modalita\' headless, ovvero la finestra del browser '+
-        'e\' nascosta per evitare di interagirci accidentalmente. Specificare questa opzione la rende visible.\n')
+        'e\' nascosta per evitare di interagirci accidentalmente. Specificare questa opzione la rende visible. '+
+        'Questo permette di completare la prenotazione quando un appuntamento idoneo e\' rilevato.\n')
     parser.add_argument('--log', '-l', dest='logFile', default=None, action='store', metavar='FILE', help='Specifica il percorso '+
         'del file in cui salvare il log di ChromeDriver. Se il parametro non e\' specificato, i log '+
         'non sono salvati. Questo parametro e\' correntemente disabilitato per un bug in Selenium.\n')
