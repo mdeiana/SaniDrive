@@ -50,7 +50,8 @@ options:
   --visibile, --visible, -v
                         Di default, il driver e' eseguito in modalita' headless, ovvero la finestra del browser e'
                         nascosta per evitare di interagirci accidentalmente. Specificare questa opzione la rende
-                        visible.
+                        visible. Questo permette di completare la prenotazione quando un appuntamento idoneo e'
+                        rilevato.
 
   --log, -l FILE        Specifica il percorso del file in cui salvare il log di ChromeDriver. Se il parametro non e'
                         specificato, i log non sono salvati. Questo parametro e' correntemente disabilitato per un bug

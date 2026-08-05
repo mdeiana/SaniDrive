@@ -3,6 +3,7 @@
 import os
 import sys
 import shutil
+import subprocess
 from time import sleep
 from typing import TYPE_CHECKING
 from selenium.common.exceptions import InvalidSessionIdException as ISIDE
@@ -214,6 +215,23 @@ def run():
         get_appointments_page(driver, *prescriptions[c].get_creds())
         expand_list(driver)
 
+def force_kill_driver():
+    """Terminates chromedriver.exe and all child chrome.exe processes using
+    Windows native taskkill.
+    
+    Works using global `driver` instance since the architecture of the program
+    is more alike a script and already used global instancing."""
+    global driver
+
+    ps_command = ("Get-CimInstance Win32_Process -Filter \"Name='chrome.exe' "
+                  "AND CommandLine LIKE '%9222%'\" | Remove-CimInstance")
+
+    subprocess.run(
+        ["powershell", "-Command", ps_command],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL)
+
+
 def main():
     """Wrapper entrypoint for pyproject.toml [project.scripts]"""
     global args, driver
@@ -227,9 +245,8 @@ def main():
         title(title_path.__str__())
         run()
     except (KeyboardInterrupt, EOFError):
-        if driver:
-            driver.service.process.kill()
-        print('')
+        force_kill_driver()
+        print('SaniDrive terminato con successo da input utente.')
         sys.exit(0)
     except ISIDE:
         print('\n\nErrore di sessione ChromeDriver. Hai forse chiuso ' +
