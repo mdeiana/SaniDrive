@@ -3,8 +3,6 @@ Defines variables that store URLs and DOM object names and provides routines
 to navigate the CUP website and extract information from it using Selenium.
 """
 
-from util import backline, _fail
-
 import os
 import sys
 from time import sleep
@@ -12,6 +10,7 @@ from threading import Timer
 from argparse import Namespace
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -20,6 +19,8 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import StaleElementReferenceException as SERE
 from selenium.common.exceptions import ElementClickInterceptedException as ECI
+
+from .util import backline, _fail
 
 login_page = 'https://cupweb.sardegnasalute.it/web/guest/ricetta-elettronica?'
 id_cf = '_ricettaelettronica_WAR_cupprenotazione_:ePrescriptionSearchForm:CFInput'
@@ -111,8 +112,9 @@ def init_driver(path: str, visible: bool) -> WebDriver:
         # chrome_service isn't included as the second argument because
         # Selenium bugs out if it is as of version 4.20.0
         driver = webdriver.Chrome(chrome_options)
-        backline(1)
-        print("\x1b[1A\x1b[33Cfatto.")
+        #backline(1)
+        #print("\x1b[1A\x1b[33Cfatto.")
+        print("fatto.")
         sys.stdout.flush()
     except Exception as e:
         print("non riuscita.\nQualcosa e' andato storto. Assicurati di aver "+
@@ -191,40 +193,65 @@ def get_appointments_page(driver: WebDriver, cf: str, nre: str) -> None:
         _fail(reason='layout')
     return
 
-def expand_list(driver: WebDriver):
+class button_with_text_detected:
     """
-    Instructs driver to click the button that loads all appointments
+    Custom ExpectedCondition to wait for dynamically classed buttons.
+
+    Works by getting a list of all buttons and cycling through their text;
+    if a button with matching text is found, it is returned, otherwise False
+    is returned as per functionality expected by WebDriverWait.
+    
+    Parameters
+    ----------
+    target_text : str
+        Exact match of the text the button possesses.
+    """
+    def __init__(self, target_text: str):
+        self.target_text = target_text
+
+    def __call__(self, driver: WebDriver):
+        buttons : list[WebElement] = driver.find_elements(By.XPATH,
+                                                          './/button')
+        for b in buttons:
+            if b.text == self.target_text:
+                return b
+        return False
+        
+
+def expand_list(driver: WebDriver) -> None:
+    """
+    Instructs driver to click the button that loads all appointments.
     
     Parameters
     ----------
     driver : WebDriver
-        The driver, which must already be on the correct page
+        The driver, which must already be on the correct page.
     """
     print("Espansione lista appuntamenti... ", end='')
     sys.stdout.flush()
-    retries = 0; retry = True
 
-    # unfortunately button names are dynamically assigned so we have to
-    # get every button and click the one that has text = 'Altre disponibilità'
-    while retry:
+    button_xpath = "//button[normalize-space(text())=" +\
+                    "'Altri appuntamenti disponibili']"
+
+    retries = 0
+    max_retries = 5
+    while retries < max_retries:
         try:
-            buttons = driver.find_elements(By.XPATH, './/button')
-            for b in buttons:
-                if b.text == 'Altre disponibilità':
-                    b.click()
-                    retry = False
-                    print('fatto.')
-                    sys.stdout.flush()
-            sleep(2)
-        except ECI:
-            driver.execute_script("window.scrollBy(0, -200);")
+            button = WebDriverWait(driver, 5).until(button_with_text_detected(
+                'Altri appuntamenti disponibili'))
+            assert isinstance(button, WebElement)
+            button.click()
+            print('fatto.', flush=True)
+            return
+        except (ECI, TimeoutException):
+            driver.execute_script("window.scrollBy(0, 300);")
+            retries += 1
             sleep(0.2)
-            pass
         except SERE:
             retries += 1
+        except Exception as e:
+            print(e)
+            _fail(reason='layout', masculine=False)
+        finally:
             if retries >= 5:
                 _fail(reason='session', masculine=False)
-        except Exception:
-            _fail(reason='layout', masculine=False)
-    return
-

@@ -7,13 +7,15 @@ automatically download ChromeDriver.
 import os
 import sys
 import json
-import config
 import zipfile
 import requests
 import argparse
 from time import sleep
+from pathlib import Path
 from bs4 import BeautifulSoup
 from argparse import Namespace
+
+from . import config
 
 # Constant Values
 driver_version_page = 'https://googlechromelabs.github.io/chrome-for-testing/'
@@ -42,17 +44,18 @@ def parse_arguments() -> Namespace:
                 formatter_class=BetterFormatter
                 )
     parser.add_argument('--file', '-f', dest='credFile', default='', metavar='FILE',
-        help=f'Specifica il percorso del file con le credenziali. E\' bene usare un percorso assoluto '+
-        'per garantire l\'uso del file corretto. Il percorso di default e\' "../../data/credenziali.json", '+
+        help='Specifica il percorso del file con le credenziali. E\' bene usare un percorso assoluto '+
+        'per garantire l\'uso del file corretto. Il percorso di default e\' "LOCALAPPDATA/SaniDrive/credenziali.json", '
         'relativamente alla directory da cui e\' eseguito SaniDrive.\n')
     parser.add_argument('--driver', dest='driverFile', default='', metavar='FILE',
         help='Specifica il percorso dell\'eseguibile di ChromeDriver. E\' bene usare un percorso assoluto '+
-        'per garantire l\'uso del file corretto. Il percorso di default e\' "../../data/chromedriver-win64/chromedriver.exe", '+
-        'relativamente alla directory da cui e\' eseguito SaniDrive. Scarica la versione di ChromeDriver '+
-        'che combacia a quella del tuo browser Chrome da https://googlechromelabs.github.io/chrome-for-testing/\n')
+        'per garantire l\'uso del file corretto. Il percorso di default e\' "LOCALAPPDATA/SaniDrive/chromedriver-win64/chromedriver.exe", '+
+        'se l\'eseguibile non e\' trovato al percorso specificato, quello di default e\' usato; se anche li\' non esiste, ChromeDriver e\' ' +
+        'scaricato automaticamente al percorso di default.\n')
     parser.add_argument('--visibile', '--visible', '-v', dest='visible', default=False, action='store_true', help=
         'Di default, il driver e\' eseguito in modalita\' headless, ovvero la finestra del browser '+
-        'e\' nascosta per evitare di interagirci accidentalmente. Specificare questa opzione la rende visible.\n')
+        'e\' nascosta per evitare di interagirci accidentalmente. Specificare questa opzione la rende visible. '+
+        'Questo permette di completare la prenotazione quando un appuntamento idoneo e\' rilevato.\n')
     parser.add_argument('--log', '-l', dest='logFile', default=None, action='store', metavar='FILE', help='Specifica il percorso '+
         'del file in cui salvare il log di ChromeDriver. Se il parametro non e\' specificato, i log '+
         'non sono salvati. Questo parametro e\' correntemente disabilitato per un bug in Selenium.\n')
@@ -77,7 +80,7 @@ def parse_arguments() -> Namespace:
         "prodotta comunque.")
     parser.add_argument('--exec', '--esegui', '-e', '--suono', '--suoneria',
         '-s', '--avviso', dest='audioFile',
-        default='../../data/emmescingue.mpeg',
+        default='',
         action='store', help="Specifica il percorso di un file "+
         "da eseguire quando un appuntamento precedente la data scelta con "+
         "--data e' trovato. L'utilizzo inteso e' quello di riprodurre un "+
@@ -94,7 +97,7 @@ def parse_arguments() -> Namespace:
 
     return args
 
-def download_chromedriver(dir_path: str) -> str:
+def download_chromedriver(dir_path: Path | str) -> str:
     """
     Download the latest stable version of ChromeDriver automatically.
 
@@ -142,7 +145,7 @@ def download_chromedriver(dir_path: str) -> str:
     try:
         response = requests.get(driver_version_page)
         soup = BeautifulSoup(response.text, 'html.parser')
-        version = soup.find('code').text
+        version = soup.find('code').text                        #type: ignore
     except:
         _fail('automatic_download')
     print(f"trovata versione {version}.\n")
@@ -186,7 +189,7 @@ def download_chromedriver(dir_path: str) -> str:
         _fail('automatic_download')
         sys.exit(1)
 
-    print(f'\nDecompressione archivio... ', end=''), sys.stdout.flush()
+    print(f'\nDecompressione archivio... ', end=''); sys.stdout.flush()
     sleep(1)
     try:
         with zipfile.ZipFile(archive_path, 'r') as zip:
@@ -195,7 +198,7 @@ def download_chromedriver(dir_path: str) -> str:
         _fail('automatic_download', masculine=False)
     print('fatto.')
 
-    print("Rimozione archivio... ", end=''), sys.stdout.flush()
+    print("Rimozione archivio... ", end=''); sys.stdout.flush()
     sleep(1)
     try:
         os.remove(archive_path)
@@ -350,6 +353,11 @@ def _fail(reason: str = '', masculine: bool = True) -> None:
     """
     p = lambda s: _center(s, config.line_width)
     start = 'non riuscito.\n' if masculine else 'non riuscita.\n'
+    if reason == 'loading':
+        print(start); p("Errore durante la gestione del caricamento della "+
+            "pagina. Per favore riprova, "+
+            "e se il problema persiste avvisami con email a "+
+            "michele.deiana.dev@gmail.com")
     if reason == 'layout':
         print(start); p("Probabilmente il layout della pagina e' "+
             "cambiato, per favore avvisami con email a "+
@@ -367,7 +375,7 @@ def _fail(reason: str = '', masculine: bool = True) -> None:
         print(start); p("Qualcosa e' andato storto. Per favore riprova, e se "+
               "il problema persiste contattami con email a "+
               "michele.deiana.dev@gmail.com")
-    if reason =='driver_path':
+    if reason =='driver_path': #deprecated, unused
         p("Errore: il percorso specificato per l'eseguibile di ChromeDriver " \
           "deve essere un file o una cartella esistente; se si sepecifica " \
           "una cartella, ChromeDriver verra' scaricato nella stessa.")

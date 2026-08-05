@@ -3,59 +3,70 @@
 import os
 import sys
 import shutil
+import subprocess
 from time import sleep
+from typing import TYPE_CHECKING
+from selenium.common.exceptions import InvalidSessionIdException as ISIDE
 
-import config
-from util import cls, title, _center, backline, divider, _fail
-from util import parse_arguments, download_chromedriver
-from prescription import read_prescriptions, choose_prescription
-from appointment import Appointment, interactive_latest_appointment, send_notif
-from driver import By
-from driver import name_class_appointment
-from driver import init_driver, get_appointments_page, expand_list
+from . import config
+from .config import (data_dir, appdata_dir, driver_dir, driver_path,
+                     audio_path, title_path, creds_path)
+from .util import cls, title, _center, backline, divider, _fail
+from .util import parse_arguments, download_chromedriver
+from .prescription import read_prescriptions, choose_prescription
+from .appointment import Appointment, interactive_latest_appointment, send_notif
+from .driver import By
+from .driver import name_class_appointment
+from .driver import init_driver, get_appointments_page, expand_list
 
-__version__ = '1.3'
+__version__ = '1.4.0'
+
+line_width = shutil.get_terminal_size((120, 30))[0]
+
+if TYPE_CHECKING:
+    from pathlib import Path
+    from argparse import Namespace
+
+args: Namespace
 
 def run():
-    # parse arguments, get absolute directories for files
-    args = parse_arguments()
-    audio_path = os.path.abspath(os.path.join(root, args.audioFile))
-    audio_exists = os.path.isfile(audio_path)
+    global driver_path, creds_path, audio_path, driver
     list_reload_interval = int(args.interval)
 
     # sort out paths from cli arguments
-    # credentials file
-    default_cred_path = '../../data/credenziali.json'
-    if args.credFile == '':
-        cred_path = os.path.abspath(os.path.join(root, default_cred_path))
-    else:
-        cred_path = os.path.abspath(args.credFile)
-    # driver path
-    default_driver_dir = '../../data'
-    default_driver_subdir = 'chromedriver-win64/chromedriver.exe'
-    if args.driverFile == '':
-        driver_path = os.path.abspath(os.path.join(root, default_driver_dir))
-        if not os.path.exists(driver_path):
-            os.mkdir(driver_path)
-    else:
-        driver_path = os.path.abspath(args.driverFile)
-    
-    # download latest stable chromedriver if path to .exe isn't specified
-    if os.path.isdir(driver_path):
-        check_path1 = os.path.join(driver_path, default_driver_subdir)
-        check_path2 = os.path.join(driver_path, 'chromedriver.exe')
-        if os.path.isfile(check_path1):
-            driver_path = check_path1
-        elif os.path.isfile(check_path2):
-            driver_path = check_path2
+        # credentials file
+    if args.credFile != '':
+        if os.path.exists(args.credFile):
+            creds_path = os.path.abspath(args.credFile)
         else:
-            driver_path = download_chromedriver(driver_path)
-    elif not os.path.exists(driver_path):
-        _fail('driver_path')
+            print('File credenziali specificato non esiste, uso default...')
+            sleep(1)
+
+        # custom file to execute
+    if args.audioFile != '':
+        if os.path.exists(args.audioFile):
+            audio_path = os.path.abspath(args.audioFile)
+        else:
+            print('File eseguibile specificato non esiste, uso default...')
+            sleep(1)
+
+        # driver path
+    if args.driverFile != '':
+        if os.path.exists(args.driverFile):
+            driver_path = os.path.abspath(args.driverFile)
+        else:
+            print('Eseguibile ChromeDriver specificato non esiste, ' +
+                  'uso default...')
+            sleep(1)
+    else:
+        os.makedirs(driver_dir, exist_ok=True)
+    if not os.path.isfile(driver_path):
+        print('Eseguibile ChromeDriver non trovato, scarico...')
+        driver_path = download_chromedriver(appdata_dir)
 
     # read prescriptions from file and choose which to track
-    prescriptions = read_prescriptions(cred_path)
-    c = choose_prescription(prescriptions, cred_path)
+    prescriptions = read_prescriptions(creds_path)
+    c = choose_prescription(prescriptions, creds_path)
 
     # set up latest date appointment if date is defined by command line
     if args.latestDate != '':
@@ -67,12 +78,12 @@ def run():
         latest_appointment = interactive_latest_appointment()
 
     # set up variable for easier printing later
-    ldate = latest_appointment.date[7:]
+    ldate = latest_appointment.date[7:]                         #type: ignore
     if ldate == '':
         ldate = 'non specificata'
 
     # initialize driver
-    driver = init_driver(driver_path, args.visible)
+    driver = init_driver(driver_path, args.visible)             #type: ignore
 
     # get the page with the list of all the appointments and expand the list
     get_appointments_page(driver, *prescriptions[c].get_creds())
@@ -132,11 +143,9 @@ def run():
                 earliest_appointment = appointments[0]
                 found_on_refresh = refresh_counter
 
-            if appointments[0].is_sooner_than(latest_appointment):
+            if appointments[0].is_sooner_than(latest_appointment):#type: ignore
                 send_notif(appointments[0])
-                
-                if audio_exists:
-                    os.system(f'{audio_path}')
+                os.system(f'{audio_path}')
 
                 if not args.nonstop:
                     appnt_str = appointments[0].__str__().replace('\t', '    ')
@@ -206,19 +215,43 @@ def run():
         get_appointments_page(driver, *prescriptions[c].get_creds())
         expand_list(driver)
 
-if __name__ == "__main__":
-    # parse arguments, get absolute directories for files
-    root = os.path.dirname(os.path.realpath(__file__))
-    title_path = os.path.join(root, '../../data/title.txt')
+def force_kill_driver():
+    """Terminates chromedriver.exe and all child chrome.exe processes using
+    Windows native taskkill.
+    
+    Works using global `driver` instance since the architecture of the program
+    is more alike a script and already used global instancing."""
+    global driver
 
-    # get screen dimensions and print title
-    line_width = shutil.get_terminal_size((120, 30))[0]
+    ps_command = ("Get-CimInstance Win32_Process -Filter \"Name='chrome.exe' "
+                  "AND CommandLine LIKE '%9222%'\" | Remove-CimInstance")
+
+    subprocess.run(
+        ["powershell", "-Command", ps_command],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL)
+
+
+def main():
+    """Wrapper entrypoint for pyproject.toml [project.scripts]"""
+    global args, driver
+    
+    # set screen dimensions and print title
     config.set_line_width(line_width)
+    args = parse_arguments()
     cls()
-    title(title_path)
 
     try:
+        title(title_path.__str__())
         run()
     except (KeyboardInterrupt, EOFError):
-        print('')
+        force_kill_driver()
+        print('SaniDrive terminato con successo da input utente.')
         sys.exit(0)
+    except ISIDE:
+        print('\n\nErrore di sessione ChromeDriver. Hai forse chiuso ' +
+              'la finestra?')
+        sys.exit(1)    
+
+if __name__ == "__main__":
+    main()
