@@ -50,8 +50,8 @@ class Prescription:
     
 def read_prescriptions(path: Path | str) -> list[Prescription]:
     """
-    Open file and populate prescriptions. Used to handle sending
-    correct messages to user depending on condition of the specified file.
+    Open file and populate prescriptions. Handles sending the correct error
+    messages to the user depending on the specified file and its contents.
 
     Parameters
     ----------
@@ -240,32 +240,15 @@ def write_prescriptions(prescr_list: list[Prescription],
     path : str
         The file to which to write json data
     """
-    bigdict = {} # lmao
 
-    # start with a dict where keys are CFs and values are n. of NRE
-    # associated with each CF
-    cfs = {}
+    bigdict : dict[str, dict] = {}
     for prescr in prescr_list:
-        if prescr.cf in cfs:
-            cfs[prescr.cf] = cfs[prescr.cf] + 1
-        else:
-            cfs[prescr.cf] = 1
+        if prescr.cf not in bigdict.keys():
+            bigdict[prescr.cf] = {}
 
-    # loop over each unique CF
-    idx = 0
-    keys = list(cfs)
-    for cf in keys:
-        nres = {}
-        # loop for each occurrence of that CF
-        for i in range(0, cfs[cf]):
-            data = {}
-            data['nome'] = prescr_list[idx + i].name
-            data['nota'] = prescr_list[idx + i].note
-            nres[prescr_list[i].nre] = data
-        idx = i + 1
-        bigdict[cf] = nres
+        smoldict = {"nome":prescr.name, "nota":prescr.note}
+        bigdict[prescr.cf][prescr.nre] = smoldict
 
-    # dump dictionary to file and we're done
     with open(path, 'w') as f:
         json.dump(bigdict, f, indent=4)
 
