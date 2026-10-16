@@ -20,6 +20,14 @@ from . import config
 # Constant Values
 driver_version_page = 'https://googlechromelabs.github.io/chrome-for-testing/'
 driver_dl_page = 'https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json'
+CLEAR_SCREEN = "\033[2J\033[H"
+
+class InteractiveMenu():
+    def __init__(self, header: str) -> None:
+            self.header = header
+
+    def print_header(self) -> None:
+        print(self.header)
 
 def parse_arguments() -> Namespace:
     """Parse arguments using Argparse."""

@@ -10,7 +10,7 @@ from selenium.common.exceptions import InvalidSessionIdException as ISIDE
 
 from . import config
 from .config import (data_dir, appdata_dir, driver_dir, driver_path,
-                     audio_path, title_path, creds_path)
+                     audio_path, title_path, creds_path, locations_path)
 from .util import cls, title, _center, backline, divider, _fail
 from .util import parse_arguments, download_chromedriver
 from .prescription import read_prescriptions, choose_prescription
@@ -18,6 +18,7 @@ from .appointment import Appointment, interactive_latest_appointment, send_notif
 from .driver import By
 from .driver import name_class_appointment
 from .driver import init_driver, get_appointments_page, expand_list
+from .location import Location
 
 __version__ = '1.4.0'
 
@@ -81,6 +82,9 @@ def run():
     ldate = latest_appointment.date[7:]                         #type: ignore
     if ldate == '':
         ldate = 'non specificata'
+
+    # query data for maximum accepted distance
+    #location = interactive_location()
 
     # initialize driver
     driver = init_driver(driver_path, args.visible)             #type: ignore

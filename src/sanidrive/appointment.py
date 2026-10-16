@@ -9,7 +9,7 @@ from .util import divider, _center, backline, cls
 
 class Appointment:
     """
-    Class that stores information on found appointments and provides
+    Stores information on found appointments and provides
     ways of comparing and ordering them by date.
 
     Attributes

@@ -21,7 +21,7 @@ class FileEmptyError(Exception):
 
 class Prescription:
     """
-    Class used to store information on saved prescriptions.
+    Stores information on a saved prescription.
 
     Methods
     -------
