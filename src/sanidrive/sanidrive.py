@@ -85,9 +85,6 @@ def run():
 
     # query data for maximum accepted distance
     location = interactive_location()
-    print('\n\n')
-    print(location)
-    sys.exit(0)
 
     # initialize driver
     driver = init_driver(driver_path, args.visible)             #type: ignore

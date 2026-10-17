@@ -65,21 +65,12 @@ class Location:
         return (distance <= self.distance_max)
 
     def get_furthest_valid(self, count: int) -> list[str]:
-        results = ['lol']
-        distances_buff = []
-        for i in range(count):
-            distances_buff.append(0.0)
-        for comune, distance in self.distances.items():
-            if distance > self.distance_max:
-                continue
-            for i in range(count):
-                if distance > distances_buff[i]:
-                    distances_buff.insert(i, distance)
-                    distances_buff.pop()
-                    results.insert(i, comune)
-                    results.pop()
-                    continue
-        return results
+        results = [(comune, distance)
+            for comune, distance in self.distances.items()
+            if distance <= self.distance_max
+        ]
+        results.sort(key=lambda item: item[1], reverse=True)
+        return [comune for comune, distance in results[:count]]
 
     @classmethod
     def populate_names_list(cls) -> None:
@@ -183,6 +174,7 @@ def step_distance(context: dict) -> tuple[str, str]:
 def step_distance_confirm(context: dict) -> tuple[str, str]:
     comuni = ', '.join(Location(context['comune'], context['distance'], [])
               .get_furthest_valid(3))
+    
     if comuni == 'lol':
         _center('Non puoi raggiungere nessun comune percorrendo solo '
             f'{context['distance']} chilometri da {context['comune']}.',
@@ -194,10 +186,11 @@ def step_distance_confirm(context: dict) -> tuple[str, str]:
             context.pop('distance')
             return 'BACK', ''
         return 'ADVANCE', ''
+    
     _center('I comuni piu\' distanti che puoi raggiungere percorrendo '
             f'{context['distance']} chilometri sono:',
             line_width * 13 // 14, True, False, True)
-    _center(f'{comuni}.', line_width * 2 // 4, True, False)
+    _center(f'{comuni}.', line_width, True, False)
     _center('\tConfermi? (Si/no): ', line_width * 13 // 14, True, False, False)
     answer = input().capitalize().startswith('S')
     if not answer:
