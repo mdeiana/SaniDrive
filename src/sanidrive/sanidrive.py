@@ -18,9 +18,9 @@ from .appointment import Appointment, interactive_latest_appointment, send_notif
 from .driver import By
 from .driver import name_class_appointment
 from .driver import init_driver, get_appointments_page, expand_list
-from .location import Location
+from .location import Location, interactive_location
 
-__version__ = '1.4.0'
+__version__ = '1.5.0'
 
 line_width = shutil.get_terminal_size((120, 30))[0]
 
@@ -84,7 +84,10 @@ def run():
         ldate = 'non specificata'
 
     # query data for maximum accepted distance
-    #location = interactive_location()
+    location = interactive_location()
+    print('\n\n')
+    print(location)
+    sys.exit(0)
 
     # initialize driver
     driver = init_driver(driver_path, args.visible)             #type: ignore

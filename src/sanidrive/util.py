@@ -14,20 +14,83 @@ from time import sleep
 from pathlib import Path
 from bs4 import BeautifulSoup
 from argparse import Namespace
+from collections.abc import Callable
 
-from . import config
+from .config import line_width
 
 # Constant Values
 driver_version_page = 'https://googlechromelabs.github.io/chrome-for-testing/'
 driver_dl_page = 'https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json'
 CLEAR_SCREEN = "\033[2J\033[H"
+SAVE_CURS_POS = "\x1b[s"
+RESTORE_CURS_POS = "\x1b[u"
 
 class InteractiveMenu():
-    def __init__(self, header: str) -> None:
+    def __init__(self, workflow: dict, start: str, header: str,
+                 warn_buffer_lines: int = 20) -> None:
             self.header = header
+            self.start = start
+            self.workflow: dict[str, dict [str, str | Callable]] = workflow
+            self.warn_bufer_lines = warn_buffer_lines
+            self.context = {}
+            self.stack = [(start, workflow[start]['handler'])]
 
     def print_header(self) -> None:
-        print(self.header)
+        print(CLEAR_SCREEN, end='')
+        _center(self.header, line_width)
+        divider('-', line_width, '\n')
+
+    def print_context(self) -> None:
+        for k, v in self.context.items():
+            if k != 'warning':
+                print(f'\t{k.title()}:\t\t{v}')
+        print('\n', end='')
+        divider('-', line_width, '\n')
+
+    def print_warning(self) -> None:
+        warning = self.context.get('warning', False)
+        if warning:
+            print(SAVE_CURS_POS, '\n'*self.warn_bufer_lines, end='')
+            _center(warning, line_width, trailing_newline=False)
+            print(RESTORE_CURS_POS, end='')
+            self.context.pop('warning')
+
+    def run(self) -> dict | None:
+        while self.stack:
+            if not self.stack:
+                break
+            self.print_header()
+            current_step_name, current_step_handler = self.stack[-1]
+            if not (self.workflow[current_step_name]
+                    .get('suppress_context', False)):
+                self.print_context()
+            self.print_warning()
+            next_intent, branch_info = current_step_handler(self.context)
+            match next_intent:
+                case 'ADVANCE':
+                    next_step = (self.workflow[current_step_name]
+                                 .get('next', None))
+                    if next_step is None:
+                        break
+                    if callable(next_step):
+                        next_step = next_step(branch_info)
+                    self.stack.append((next_step,
+                                       self.workflow[next_step]['handler']))
+                case 'BACK':
+                    transient = True
+                    while transient:
+                        self.stack.pop()
+                        try:
+                            transient = self.workflow[self.stack[-1][0]].get(
+                                'transient', False)
+                        except IndexError:
+                            transient = False
+                    #while self.workflow[self.stack[-1][0]]['transient']:
+                case 'RETRY':
+                    pass
+                case 'END':
+                    break
+        return self.context if self.stack else None
 
 def parse_arguments() -> Namespace:
     """Parse arguments using Argparse."""
@@ -130,7 +193,7 @@ def download_chromedriver(dir_path: Path | str) -> str:
     archive_path = os.path.join(dir_path, 'chromedriver-win64.zip')
     extr_dir_path = os.path.join(dir_path, 'chromedriver-win64')
     driver_path = os.path.join(extr_dir_path, 'chromedriver.exe')
-    p = lambda s: _center(s, config.line_width)
+    p = lambda s: _center(s, line_width)
     print("Controllo presenza ChromeDriver... non rilevata.\n")
     p("Se non hai indicato manualmente il percorso di chromedriver.exe, "+
       "probabilmente non hai scaricato ChromeDriver. SaniDrive puo' "+
@@ -215,15 +278,15 @@ def download_chromedriver(dir_path: Path | str) -> str:
         print("non riuscita. Passaggio non vitale, procediamo...\n")
 
     print("\n\n")
-    _center('-'*47, config.line_width, True)
+    _center('-'*47, line_width, True)
     _center("Installazione automatica avvenuta con successo.",
-            config.line_width, True)
-    _center('-'*47, config.line_width, True)
+            line_width, True)
+    _center('-'*47, line_width, True)
     print("\n\n")
     print("L'eseguibile di ChromeDriver si trova ora nel percorso:\n"+
           f"{os.path.realpath(driver_path)}\n\n")
     
-    _center('|||   Premere Invio per continuare   |||', config.line_width,
+    _center('|||   Premere Invio per continuare   |||', line_width,
             True)
     input('')
     cls()
@@ -237,10 +300,10 @@ def cls():
 
 def title(file_path: str):
     """Print title from file if available, otherwise from string literals."""
-    p = lambda s: _center(s, config.line_width, True, False, True)
-    divider('=', config.line_width, '\n')
+    p = lambda s: _center(s, line_width, True, False, True)
+    divider('=', line_width, '\n')
 
-    if not os.path.isfile(file_path) or config.line_width < 92:
+    if not os.path.isfile(file_path) or line_width < 92:
         p(r'')
         p(r'  / ____|           (_)  __ \     (_)           ')
         p(r' | (___   __ _ _ __  _| |  | |_ __ ___   _____  ')
@@ -253,8 +316,8 @@ def title(file_path: str):
                 p(line.strip('\n'))
 
     print('\n')
-    print('by Michele Deiana, github.com/mdeiana'.rjust(config.line_width))
-    divider('=', config.line_width, '\n')
+    print('by Michele Deiana, github.com/mdeiana'.rjust(line_width))
+    divider('=', line_width, '\n')
     print('\n\n\n\n'); p('|||   Premi Invio per iniziare   |||')
     sys.stdout.write("\033[?25l"); input('')
     sys.stdout.write("\033[?25h"); cls()
@@ -359,7 +422,7 @@ def _fail(reason: str = '', masculine: bool = True) -> None:
         Valid strings are 'layout', 'date', 'session', 'automatic_download',
         'driver_path', ''.
     """
-    p = lambda s: _center(s, config.line_width)
+    p = lambda s: _center(s, line_width)
     start = 'non riuscito.\n' if masculine else 'non riuscita.\n'
     if reason == 'loading':
         print(start); p("Errore durante la gestione del caricamento della "+
