@@ -6,7 +6,7 @@ from pathlib import Path
 
 from .config import locations_path, line_width
 from .util import InteractiveMenu
-from .util import divider, backline, cls, _center, CLEAR_SCREEN
+from .util import divider, cls, _center
 
 class Location:
     """Represents a selected comune and the distances to all other comuni.
@@ -129,12 +129,10 @@ def step_comune(context: dict) -> tuple[str, str]:
             line_width * 13 // 14, True, False, False)
     query = input()
     if query == '':
-        context.pop('comune', None)
         return 'BACK', ''
     name = Location.find_match(query)
     if name == 'none':
-        context['warning'] = 'Comune non trovato. Riprova.'
-        return 'RETRY', ''
+        return 'RETRY', 'Comune non trovato. Riprova.'
     context['comune'] = name
     return 'ADVANCE', ''
 
@@ -143,7 +141,6 @@ def step_comune_confirm(context: dict) -> tuple[str, str]:
             line_width * 13 // 14, True, False, False)
     answer = input().capitalize().startswith('S')
     if not answer:
-        context.pop('comune', None)
         return 'BACK', ''
     return 'ADVANCE', ''
 
@@ -155,9 +152,6 @@ def step_distance(context: dict) -> tuple[str, str]:
             line_width, False, False, False)
     answer = input()
     if answer == '':
-        if context.get('distance', False):
-            context.pop('distance')
-        context.pop('comune')
         return 'BACK', ''
     try:
         answer = float(answer)
@@ -167,8 +161,7 @@ def step_distance(context: dict) -> tuple[str, str]:
         valid = False
 
     if not valid:
-        context['warning'] = 'Il numero inserito non e\' valido, riprova.'
-        return 'RETRY', ''
+        return 'RETRY', 'Il numero inserito non e\' valido, riprova.'
     context['distance'] = answer
     return 'ADVANCE', ''
 
@@ -184,7 +177,6 @@ def step_distance_confirm(context: dict) -> tuple[str, str]:
                 '(Si/no): ', line_width, True, True, False)
         answer = input().capitalize().startswith('S')
         if not answer:
-            context.pop('distance')
             return 'BACK', ''
         return 'ADVANCE', ''
     
@@ -195,7 +187,6 @@ def step_distance_confirm(context: dict) -> tuple[str, str]:
     _center('\tConfermi? (Si/no): ', line_width * 13 // 14, True, False, False)
     answer = input().capitalize().startswith('S')
     if not answer:
-        context.pop('distance', None)
         return 'BACK', ''
     return 'ADVANCE', ''
 
@@ -217,8 +208,7 @@ def step_forced_comuni(context: dict) -> tuple[str, str]:
         return 'ADVANCE', ''
     name = Location.find_match(answer)
     if name == 'none':
-        context['warning'] = 'Comune non trovato. Riprova.'
-        return 'RETRY', ''
+        return 'RETRY', 'Comune non trovato. Riprova.'
     elif name in comuni or name == context['comune']:
         return 'RETRY', ''
     else:

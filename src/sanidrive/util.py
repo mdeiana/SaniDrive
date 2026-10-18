@@ -6,6 +6,7 @@ automatically download ChromeDriver.
 
 import os
 import sys
+import copy
 import json
 import zipfile
 import requests
@@ -15,6 +16,7 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 from argparse import Namespace
 from collections.abc import Callable
+from typing import TypedDict, NotRequired, Optional
 
 from .config import line_width
 
@@ -25,15 +27,23 @@ CLEAR_SCREEN = "\033[2J\033[H"
 SAVE_CURS_POS = "\x1b[s"
 RESTORE_CURS_POS = "\x1b[u"
 
+class WorkflowStepDef(TypedDict):
+    handler: Callable
+    next: Optional[str]
+    transient: Optional[bool]
+    suppress_context: Optional[bool]
+
 class InteractiveMenu():
-    def __init__(self, workflow: dict, start: str, header: str,
+    def __init__(self, workflow: dict[str, WorkflowStepDef],
+                 start: str, header: str,
                  warn_buffer_lines: int = 20) -> None:
             self.header = header
             self.start = start
-            self.workflow: dict[str, dict [str, str | Callable]] = workflow
+            self.workflow = workflow
             self.warn_buffer_lines = warn_buffer_lines
-            self.context = {}
-            self.stack = [(start, workflow[start]['handler'])]
+            self.stack = [start]
+            self.warning_message = ''
+            self.context_history: list[dict] = [{}]
 
     def print_header(self) -> None:
         print(CLEAR_SCREEN, end='')
@@ -41,56 +51,62 @@ class InteractiveMenu():
         divider('-', line_width, '\n')
 
     def print_context(self) -> None:
-        for k, v in self.context.items():
-            if k != 'warning':
-                print(f'\t{k.title()}:\t\t{v}')
+        step = self.stack[-1]
+        context = self.context_history[-1]
+        if self.workflow[step].get('suppress_context', False):
+            return
+        for k, v in context.items():
+            print(f'\t{k.title()}:\t\t{v}')
         print('\n', end='')
         divider('-', line_width, '\n')
 
     def print_warning(self) -> None:
-        warning = self.context.get('warning', False)
-        if warning:
+        if self.warning_message:
             print(SAVE_CURS_POS, '\n'*self.warn_buffer_lines, end='')
-            _center(warning, line_width, trailing_newline=False)
+            _center(self.warning_message, line_width, trailing_newline=False)
             print(RESTORE_CURS_POS, end='')
-            self.context.pop('warning')
+            self.warning_message = ''
 
-    def run(self) -> dict | None:
+    def run(self) -> dict:
         while self.stack:
-            if not self.stack:
-                break
             self.print_header()
-            current_step_name, current_step_handler = self.stack[-1]
-            if not (self.workflow[current_step_name]
-                    .get('suppress_context', False)):
-                self.print_context()
+            self.print_context()
             self.print_warning()
-            next_intent, branch_info = current_step_handler(self.context)
+
+            current_step = self.stack[-1]
+            current_handler = self.workflow[current_step]['handler']
+            current_context = self.context_history[-1]
+            next_intent, branch_info = current_handler(current_context)
+
             match next_intent:
                 case 'ADVANCE':
-                    next_step = (self.workflow[current_step_name]
+                    next_step = (self.workflow[current_step]
                                  .get('next', None))
                     if next_step is None:
                         break
                     if callable(next_step):
                         next_step = next_step(branch_info)
-                    self.stack.append((next_step,
-                                       self.workflow[next_step]['handler']))
+                    if next_step not in self.workflow:
+                        print(f'ERROR: {current_step} points to '
+                              f'{next_step} but it doesn\'t exist!')
+                        break
+                    self.stack.append(next_step)
+                    self.context_history.append(copy.deepcopy(current_context))
                 case 'BACK':
                     transient = True
                     while transient:
                         self.stack.pop()
-                        try:
-                            transient = self.workflow[self.stack[-1][0]].get(
-                                'transient', False)
-                        except IndexError:
-                            transient = False
-                    #while self.workflow[self.stack[-1][0]]['transient']:
+                        self.context_history.pop()
+                        if not self.stack:
+                            current_context = {}
+                            break
+                        transient = self.workflow[self.stack[-1]].get(
+                                    'transient', False)
                 case 'RETRY':
-                    pass
+                    self.warning_message = branch_info
                 case 'END':
                     break
-        return self.context if self.stack else None
+        return current_context
 
 def parse_arguments() -> Namespace:
     """Parse arguments using Argparse."""

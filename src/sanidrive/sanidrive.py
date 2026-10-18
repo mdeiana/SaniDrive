@@ -3,7 +3,6 @@
 import os
 import sys
 import shutil
-import subprocess
 from time import sleep
 from typing import TYPE_CHECKING
 from selenium.common.exceptions import InvalidSessionIdException as ISIDE
@@ -16,7 +15,7 @@ from .util import parse_arguments, download_chromedriver
 from .prescription import read_prescriptions, choose_prescription
 from .appointment import Appointment, interactive_latest_appointment, send_notif
 from .driver import By
-from .driver import name_class_appointment
+from .driver import name_class_appointment, force_kill_driver
 from .driver import init_driver, get_appointments_page, expand_list
 from .location import Location, interactive_location
 
@@ -219,22 +218,6 @@ def run():
         print("Aggiornamento lista appuntamenti... ")
         get_appointments_page(driver, *prescriptions[c].get_creds())
         expand_list(driver)
-
-def force_kill_driver():
-    """Terminates chromedriver.exe and all child chrome.exe processes using
-    Windows native taskkill.
-    
-    Works using global `driver` instance since the architecture of the program
-    is more alike a script and already used global instancing."""
-    global driver
-
-    ps_command = ("Get-CimInstance Win32_Process -Filter \"Name='chrome.exe' "
-                  "AND CommandLine LIKE '%9222%'\" | Remove-CimInstance")
-
-    subprocess.run(
-        ["powershell", "-Command", ps_command],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL)
 
 
 def main():
