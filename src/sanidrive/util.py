@@ -31,7 +31,7 @@ class InteractiveMenu():
             self.header = header
             self.start = start
             self.workflow: dict[str, dict [str, str | Callable]] = workflow
-            self.warn_bufer_lines = warn_buffer_lines
+            self.warn_buffer_lines = warn_buffer_lines
             self.context = {}
             self.stack = [(start, workflow[start]['handler'])]
 
@@ -50,7 +50,7 @@ class InteractiveMenu():
     def print_warning(self) -> None:
         warning = self.context.get('warning', False)
         if warning:
-            print(SAVE_CURS_POS, '\n'*self.warn_bufer_lines, end='')
+            print(SAVE_CURS_POS, '\n'*self.warn_buffer_lines, end='')
             _center(warning, line_width, trailing_newline=False)
             print(RESTORE_CURS_POS, end='')
             self.context.pop('warning')

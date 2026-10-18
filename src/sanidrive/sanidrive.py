@@ -130,11 +130,12 @@ def run():
             time_fields = time_obj.find_elements(By.XPATH, './*')
             place_obj = appnt.find_element(By.CLASS_NAME, 'unita-address')
             place = place_obj.text
-            # note support to be added
+            # note support to be added (17/10/26: xddddd)
 
-            # store information in new instance
-            appointments.append(Appointment(place, time_fields[0].text.strip(),
-                                            time_fields[2].text, ''))
+            loc_name = place.split('-')[1].split('(')[0].strip().title()
+            if location.can_reach(loc_name):
+                appointments.append(Appointment(place,
+                    time_fields[0].text.strip(), time_fields[2].text, ''))
 
         # find out if something changed, send a notif and move on
         if appointments != old_appointments:
@@ -164,9 +165,9 @@ def run():
                     pc += p(appnt_str)
                     p('-' * int(line_width * 4/5))
                     print('\n')
-                    pc += _center('Effettua la prenotazione dalla finestra ' \
-                    'di ChromeDriver oppure premi Invio per continuare a ' \
-                    'cercare usando la data di questo prossimo appuntamento ' \
+                    pc += _center('Effettua la prenotazione dalla finestra '
+                    'di ChromeDriver oppure premi Invio per continuare a '
+                    'cercare usando la data di questo prossimo appuntamento '
                     'come nuova data di riferimento.', line_width, True, True)
                     input('')
                     backline(6 + pc)

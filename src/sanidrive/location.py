@@ -60,7 +60,8 @@ class Location:
             return True
         distance = self.distances.get(self.find_match(name), None)
         if distance is None:
-            print('WARN: comune letto da lista appuntamenti non combacia')
+            print(f'WARN: comune letto come {name} da lista appuntamenti '
+                  'non combacia nel database!')
             return True
         return (distance <= self.distance_max)
 
@@ -89,7 +90,7 @@ class Location:
     def find_match(cls, query: str) -> str:
         cls.populate_names_list()
         matches = difflib.get_close_matches(
-            query, cls.comuni_names, n=1, cutoff=0.6)
+            query.title(), cls.comuni_names, n=1, cutoff=0.6)
         if len(matches) == 0:
             return 'none'
         else:
@@ -235,16 +236,19 @@ def interactive_location() -> Location:
     workflow = {
         'comune': {
             'handler': step_comune,
-            'next': 'comune_confirm'
+            'next': 'comune_confirm',
+            'suppress_context': True
         },
         'comune_confirm': {
             'handler': step_comune_confirm,
             'next': 'distance',
-            'transient': True
+            'transient': True,
+            'suppress_context': True
         },
         'distance': {
             'handler': step_distance,
-            'next': 'distance_confirm'
+            'next': 'distance_confirm',
+            'suppress_context': True
         },
         'distance_confirm': {
             'handler': step_distance_confirm,
