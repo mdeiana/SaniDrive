@@ -5,7 +5,7 @@ import difflib
 from pathlib import Path
 
 from .config import locations_path, line_width
-from .util import InteractiveMenu
+from .util import InteractiveMenu, WorkflowStepDef
 from .util import divider, cls, _center
 
 class Location:
@@ -116,7 +116,7 @@ class LocationPickMenu(InteractiveMenu):
         "e OpenStreetMap sulle strade sarde e da Istat sui comuni "
         "al 14/10/2026). Se "
         "vuoi essere notificato a prescindere dal comune dell'appuntamento, "
-        "premi Invio lasciando il campo vuoto per saltare questo passaggio.")
+        "premi Invio lasciando il campo vuoto per saltare questo passaggio.\n")
         divider('-', line_width, '\n')
         #print('\n\n')
         #_center('-'*48, line_width, True); print('')
@@ -223,7 +223,7 @@ def interactive_location() -> Location:
     to help them determine the maximum distance they are willing to travel
     to reach an appointment in another comune.
     """
-    workflow = {
+    workflow: dict[str, WorkflowStepDef] = {
         'comune': {
             'handler': step_comune,
             'next': 'comune_confirm',
@@ -257,6 +257,21 @@ def interactive_location() -> Location:
 
     if config:
         return Location(config['comune'], float(config['distance']),
-                        config['forced_comuni'])
+                        config.get('forced_comuni', []))
     return Location('mock', 0.0, [])
-    
+
+def interactive_location_v2() -> list[Location]:
+    """
+    Prompt the user to interactively select any amount of Comuni and a distance
+    from each, which will be used as filters for appointment collection.
+    """
+    workflow = {
+        'comune': {},
+        'distance': {},
+        'add_more': {
+            'handler': None
+
+        },
+        'forced_comuni': {}
+    }
+    return [Location('lol', 0, [])]

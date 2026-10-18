@@ -123,6 +123,7 @@ def run():
             appnts = appnts[1:]
 
         for appnt in appnts:
+            # already_added = False
             # extract information
             time_obj = appnt.find_element(By.CLASS_NAME,
                                           'captionAppointment-dateApp')
@@ -130,8 +131,10 @@ def run():
             place_obj = appnt.find_element(By.CLASS_NAME, 'unita-address')
             place = place_obj.text
             # note support to be added (17/10/26: xddddd)
-
+            # add appointment to list if it's close enough
             loc_name = place.split('-')[1].split('(')[0].strip().title()
+            # for location in locations:
+            #   if not already_added:
             if location.can_reach(loc_name):
                 appointments.append(Appointment(place,
                     time_fields[0].text.strip(), time_fields[2].text, ''))
@@ -176,18 +179,16 @@ def run():
         except IndexError:
             pass
 
-        # print prescription column info
-        print(f'APPUNTAMENTI'.center(line_width), '\n')
-        print(f'Numero\t\t Data\t\t\t\t Ora\t\t\tVia')
-        sys.stdout.flush()
-
-        # print all available appointments
-        if len(appointments) == 0:
-            print("\t\t\t\t\tNessun appuntamento.")
-            pretty = 1
-        else:
+        # print available appointments
+        if appointments:
+            print(f'APPUNTAMENTI'.center(line_width), '\n')
+            print(f'Numero\t\t Data\t\t\t\t Ora\t\t\tVia')
+            sys.stdout.flush()
             for i, a in enumerate(appointments):
                 print(f"{i+1}\t", a)
+        else:
+            _center("Nessun appuntamento in questo momento.", line_width, True)
+            pretty = 1
 
         # print some statistics
         print('\n')

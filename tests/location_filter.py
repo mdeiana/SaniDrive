@@ -88,6 +88,12 @@ class TestLocationFiltering(unittest.TestCase):
         self.helper_location_config_check(location, config, expected_config)
 
 
+    def test_is_location_filtering_accurate(self) -> None:
+        # download page with many comuni of known distances
+        # spoof sanidrive.driver to use that page somehow
+        # check results
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()

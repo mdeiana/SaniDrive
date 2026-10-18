@@ -29,34 +29,70 @@ RESTORE_CURS_POS = "\x1b[u"
 
 class WorkflowStepDef(TypedDict):
     handler: Callable
-    next: Optional[str]
-    transient: Optional[bool]
-    suppress_context: Optional[bool]
+    next: NotRequired[Optional[str | Callable]]
+    transient: NotRequired[bool]
+    suppress_context: NotRequired[bool]
 
 class InteractiveMenu():
+    """
+    A stack-based state machine for rendering interactive CLI menus.
+
+    Supports automatic context history and backwards navigation; forwards
+    navigation uses the input `workflow` dictionary to fetch the name of the
+    next step and its handle to the function that executes, according to the
+    WorkflowStepDef interface. Branching is supported and achieved by passing
+    a lambda funciton instead of the name of the next step that executes logic
+    based on the previous function's output.
+
+    Parameters
+    ----------
+    workflow : dict of str to WorkflowStepDef
+        A mapping of state names to their configuration dictionaries, which
+        include the handler function and routing logic.
+    start : str
+        The dictionary key for the initial state to begin the workflow.
+    header : str
+        The persistent text title to display at the top of the menu.
+    warn_buffer_lines : int, optional
+        The number of empty vertical lines to reserve for temporary warning
+        messages (default is 20).
+
+    Attributes
+    ----------
+    context_history : list of dict
+        The accumulated user session data.
+    stack : list of tuples
+        The history stack tracking the active path. Each item is a tuple 
+        containing the state name and its handler function.
+    warning_message : str
+        Set to the second element of a step function's returned tuple when the
+        the first element is 'RETRY'
+    """
     def __init__(self, workflow: dict[str, WorkflowStepDef],
                  start: str, header: str,
                  warn_buffer_lines: int = 20) -> None:
-            self.header = header
-            self.start = start
-            self.workflow = workflow
-            self.warn_buffer_lines = warn_buffer_lines
-            self.stack = [start]
-            self.warning_message = ''
-            self.context_history: list[dict] = [{}]
+        self.workflow = workflow
+        self.start = start
+        self.header = header
+        self.warn_buffer_lines = warn_buffer_lines
+        self.stack = [start]
+        self.context_history: list[dict] = [{}]
+        self.warning_message = ''
 
     def print_header(self) -> None:
         print(CLEAR_SCREEN, end='')
         _center(self.header, line_width)
         divider('-', line_width, '\n')
 
-    def print_context(self) -> None:
-        step = self.stack[-1]
-        context = self.context_history[-1]
-        if self.workflow[step].get('suppress_context', False):
-            return
+    def _context_fn(self, context) -> None:
+        """ Internal helper to allow overriding with custom context print """
         for k, v in context.items():
             print(f'\t{k.title()}:\t\t{v}')
+    
+    def print_context(self) -> None:
+        if self.workflow[self.stack[-1]].get('suppress_context', False):
+            return
+        self._context_fn(self.context_history[-1])
         print('\n', end='')
         divider('-', line_width, '\n')
 
@@ -68,6 +104,17 @@ class InteractiveMenu():
             self.warning_message = ''
 
     def run(self) -> dict:
+        """
+        Executes the main interactive menu loop, evaluating user inputs and
+        navigating the workflow graph until completion or manual exit.
+
+        Returns
+        -------
+        dict
+            The collected session context as altered by the step functions
+            if the workflow completes successfully, or an empty dict if the
+            user backs out of the initial state.
+        """
         while self.stack:
             self.print_header()
             self.print_context()
@@ -82,7 +129,7 @@ class InteractiveMenu():
                 case 'ADVANCE':
                     next_step = (self.workflow[current_step]
                                  .get('next', None))
-                    if next_step is None:
+                    if not next_step:
                         break
                     if callable(next_step):
                         next_step = next_step(branch_info)
@@ -97,16 +144,14 @@ class InteractiveMenu():
                     while transient:
                         self.stack.pop()
                         self.context_history.pop()
-                        if not self.stack:
-                            current_context = {}
-                            break
+                        if not self.stack: break
                         transient = self.workflow[self.stack[-1]].get(
                                     'transient', False)
                 case 'RETRY':
                     self.warning_message = branch_info
                 case 'END':
                     break
-        return current_context
+        return current_context if self.context_history else {}
 
 def parse_arguments() -> Namespace:
     """Parse arguments using Argparse."""
