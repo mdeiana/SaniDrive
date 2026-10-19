@@ -17,7 +17,7 @@ from .appointment import Appointment, interactive_latest_appointment, send_notif
 from .driver import By
 from .driver import name_class_appointment, force_kill_driver
 from .driver import init_driver, get_appointments_page, expand_list
-from .location import Location, interactive_location
+from .location import Location, interactive_location, interactive_location_v2
 
 __version__ = '1.5.0'
 
@@ -84,6 +84,8 @@ def run():
 
     # query data for maximum accepted distance
     location = interactive_location()
+    print(location, '\n', location.distances); sys.exit(0)
+    locations = interactive_location_v2()
 
     # initialize driver
     driver = init_driver(driver_path, args.visible)             #type: ignore
@@ -123,7 +125,7 @@ def run():
             appnts = appnts[1:]
 
         for appnt in appnts:
-            # already_added = False
+            already_added = False
             # extract information
             time_obj = appnt.find_element(By.CLASS_NAME,
                                           'captionAppointment-dateApp')
@@ -133,11 +135,16 @@ def run():
             # note support to be added (17/10/26: xddddd)
             # add appointment to list if it's close enough
             loc_name = place.split('-')[1].split('(')[0].strip().title()
-            # for location in locations:
-            #   if not already_added:
-            if location.can_reach(loc_name):
+
+            for location in locations:
+                if not already_added:
+                    if location.can_reach(loc_name):
+                        appointments.append(Appointment(place,
+                        time_fields[0].text.strip(), time_fields[2].text, ''))
+                    already_added = True
+            """ if location.can_reach(loc_name):
                 appointments.append(Appointment(place,
-                    time_fields[0].text.strip(), time_fields[2].text, ''))
+                    time_fields[0].text.strip(), time_fields[2].text, '')) """
 
         # find out if something changed, send a notif and move on
         if appointments != old_appointments:

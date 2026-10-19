@@ -68,7 +68,7 @@ class Location:
     def get_furthest_valid(self, count: int) -> list[str]:
         results = [(comune, distance)
             for comune, distance in self.distances.items()
-            if distance <= self.distance_max
+            if distance <= self.distance_max and comune != self.selected_comune
         ]
         results.sort(key=lambda item: item[1], reverse=True)
         return [comune for comune, distance in results[:count]]
@@ -90,7 +90,7 @@ class Location:
     def find_match(cls, query: str) -> str:
         cls.populate_names_list()
         matches = difflib.get_close_matches(
-            query.title(), cls.comuni_names, n=1, cutoff=0.6)
+            query.strip().title(), cls.comuni_names, n=1, cutoff=0.6)
         if len(matches) == 0:
             return 'none'
         else:
@@ -118,8 +118,38 @@ class LocationPickMenu(InteractiveMenu):
         "vuoi essere notificato a prescindere dal comune dell'appuntamento, "
         "premi Invio lasciando il campo vuoto per saltare questo passaggio.\n")
         divider('-', line_width, '\n')
-        #print('\n\n')
-        #_center('-'*48, line_width, True); print('')
+
+    
+class LocationPickMenuV2(InteractiveMenu):
+    def __init__(self, *args, **kwargs) -> None:
+        self.p = lambda s: _center(s, line_width, False, False)
+        super().__init__(*args, **kwargs)
+    
+    def print_header(self) -> None:
+        p = self.p
+        cls()
+        divider('=', line_width, '\n')
+        _center("IMPOSTA LOCALITA', DISTANZA MASSIMA\n", line_width, True)
+        p("SaniDrive permette di filtrare gli appuntamenti che ti propone in "
+        "base a quanto il tuo comune dista dal luogo di ogni appuntamento "
+        "disponibile sul portale CUPWeb, stimando i chilometri da percorrere "
+        "(in macchina) per raggiungerlo.\n")
+        p("Per farlo, puoi impostare il comune in cui risiedi e specificare "
+        "la distanza massima che sei disposto a guidare per l'appuntamento "
+        "(calcolata approssimativamente dai dati offerti da OpenRouteService "
+        "e OpenStreetMap sulle strade sarde e da Istat sui comuni "
+        "al 14/10/2026). Se "
+        "vuoi essere notificato a prescindere dal comune dell'appuntamento, "
+        "premi Invio lasciando il campo vuoto per saltare questo passaggio.\n")
+        divider('-', line_width, '\n')
+
+    def _context_print_fn(self, context: dict) -> None:
+        context_string = ''
+        for comune, distance in zip(context['comuni'], context['distances']):
+            context_string += f'{comune} ({distance}km); '
+        _center('Finora hai indicato:', line_width, True)
+        _center(context_string.rsplit('; ', 1)[0], line_width, True)
+        print('')
 
 
 # ============= Step functions for interactive location selection =============
@@ -166,10 +196,11 @@ def step_distance(context: dict) -> tuple[str, str]:
     return 'ADVANCE', ''
 
 def step_distance_confirm(context: dict) -> tuple[str, str]:
-    comuni = ', '.join(Location(context['comune'], context['distance'], [])
-              .get_furthest_valid(3))
+    results = Location(context['comune'], context['distance'],
+                       []).get_furthest_valid(3)
+    comuni = ', '.join(results)
     
-    if comuni == 'lol':
+    if not comuni:
         _center('Non puoi raggiungere nessun comune percorrendo solo '
             f'{context['distance']} chilometri da {context['comune']}.',
             line_width, True)
@@ -215,7 +246,90 @@ def step_forced_comuni(context: dict) -> tuple[str, str]:
         comuni.append(name)
         context['forced_comuni'] = comuni
         return 'RETRY', ''
+
+def step_comune_v2(context: dict) -> tuple[str, str]:
+    comuni = context.get('comuni', [])
+    if context.get('looped', False):
+        s = 'tornare indietro:\n'
+    else:
+        s = 'cercare in tutta la sardegna:\n'
+    _center('Inserisci un tuo comune in cui ti basi o premi Invio per ' + s,
+            line_width, True, False, True)
+    _center(' ', line_width * 5 // 6, True, True, False)
+    query = input()
+    if query == '':
+        return 'BACK', ''
+    name = Location.find_match(query)
+    if name == 'none':
+        return 'RETRY', 'Comune non trovato. Riprova.'
+    comuni.append(name)
+    context['comuni'] = comuni
+    return 'ADVANCE', ''
+
+def step_distance_v2(context: dict) -> tuple[str, str]:
+    distances = context.get('distances', [])
+    valid = True
+    _center('Indica la distanza massima (in chilometri) che sei disposto a '
+            f'viaggiare in macchina da {context['comuni'][-1]} al luogo dell\''
+            'appuntamento o lascia il campo vuoto per cambiare comune.',
+            line_width, True, True, True)
+    print('')
+    _center('Distanza: ', line_width * 14 // 15, True, False, False)
+    answer = input()
+    if answer == '':
+        return 'BACK', ''
+    try:
+        answer = float(answer)
+        if answer < 0:
+            valid = False
+    except ValueError:
+        valid = False
+
+    if not valid:
+        return 'RETRY', 'Il numero inserito non e\' valido, riprova.'
+    distances.append(answer)
+    context['distances'] = distances
+    return 'ADVANCE', ''
+
+def step_distance_confirm_v2(context: dict) -> tuple[str, str]:
+    results = Location(context['comuni'][-1], context['distances'][-1],
+                       []).get_furthest_valid(4)
+    comuni = ', '.join(results)
     
+    if not comuni:
+        if context['distances'][-1] != 0:
+            _center('Non puoi raggiungere nessun comune percorrendo solo '
+                f'{context['distances'][-1]} chilometri da '
+                f'{context['comuni'][-1]}.', line_width, True)
+        _center(f'Vuoi cercare appuntamenti solo a {context['comuni'][-1]}? '
+                '(Si/no): ', line_width, True, True, False)
+        answer = input().capitalize().startswith('S')
+
+        if not answer:
+            return 'BACK', ''
+        return 'ADVANCE', ''
+    
+    _center('I comuni piu\' distanti che puoi raggiungere percorrendo '
+            f'{context['distances'][-1]} chilometri sono:',
+            line_width, True, False, True)
+    _center(f'{comuni}.\n', line_width, True, False)
+    _center('Confermi? (Si/no): ', line_width, True, False, False)
+    answer = input().capitalize().startswith('S')
+    if not answer:
+        return 'BACK', ''
+    return 'ADVANCE', ''
+
+def step_add_more(context: dict) -> tuple[str, str]:
+    _center('Vuoi aggiungere altri comuni da cui partire? (Si/no): ',
+            line_width, True, False, False)
+    answer = input().capitalize().startswith('S')
+    if not answer:
+        return 'ADVANCE', 'END'
+    context['looped'] = True
+    return 'ADVANCE', 'ADD'
+
+
+# ==================== Export functions for user interface ====================
 
 def interactive_location() -> Location:
     """
@@ -260,18 +374,41 @@ def interactive_location() -> Location:
                         config.get('forced_comuni', []))
     return Location('mock', 0.0, [])
 
+
 def interactive_location_v2() -> list[Location]:
     """
     Prompt the user to interactively select any amount of Comuni and a distance
     from each, which will be used as filters for appointment collection.
     """
-    workflow = {
-        'comune': {},
-        'distance': {},
-        'add_more': {
-            'handler': None
-
+    workflow: dict[str, WorkflowStepDef] = {
+        'comune': {
+            'handler': step_comune_v2,
+            'next': 'distance',
+            'suppress_context': True
         },
-        'forced_comuni': {}
+        'distance': {
+            'handler': step_distance_v2,
+            'next': 'distance_confirm',
+            'suppress_context': True
+        },
+        'distance_confirm': {
+            'handler': step_distance_confirm_v2,
+            'next': 'add_more',
+            'suppress_context': True,
+            'transient': True
+        },
+        'add_more': {
+            'handler': step_add_more,
+            'next': lambda choice: 'comune' if choice == 'ADD' else None,
+            'transient': True
+        }
     }
-    return [Location('lol', 0, [])]
+
+    config = LocationPickMenuV2(workflow, 'comune', '', 4).run()
+
+    if config:
+        locations = []
+        for comune, distance in zip(config['comuni'], config['distances']):
+            locations.append(Location(comune, distance, []))
+        return locations
+    return [Location('mock', 0.0, [])]

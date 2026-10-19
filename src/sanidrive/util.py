@@ -84,17 +84,17 @@ class InteractiveMenu():
         _center(self.header, line_width)
         divider('-', line_width, '\n')
 
-    def _context_fn(self, context) -> None:
+    def _context_print_fn(self, context: dict) -> None:
         """ Internal helper to allow overriding with custom context print """
         for k, v in context.items():
             print(f'\t{k.title()}:\t\t{v}')
+        print('')
+        divider('-', line_width, '\n')
     
     def print_context(self) -> None:
         if self.workflow[self.stack[-1]].get('suppress_context', False):
             return
-        self._context_fn(self.context_history[-1])
-        print('\n', end='')
-        divider('-', line_width, '\n')
+        self._context_print_fn(self.context_history[-1])
 
     def print_warning(self) -> None:
         if self.warning_message:
@@ -120,6 +120,8 @@ class InteractiveMenu():
             self.print_context()
             self.print_warning()
 
+            self.context_history.append(copy.deepcopy(
+                self.context_history[-1]))
             current_step = self.stack[-1]
             current_handler = self.workflow[current_step]['handler']
             current_context = self.context_history[-1]
@@ -129,18 +131,18 @@ class InteractiveMenu():
                 case 'ADVANCE':
                     next_step = (self.workflow[current_step]
                                  .get('next', None))
-                    if not next_step:
-                        break
                     if callable(next_step):
                         next_step = next_step(branch_info)
+                    if not next_step:
+                        break
                     if next_step not in self.workflow:
                         print(f'ERROR: {current_step} points to '
                               f'{next_step} but it doesn\'t exist!')
                         break
                     self.stack.append(next_step)
-                    self.context_history.append(copy.deepcopy(current_context))
                 case 'BACK':
                     transient = True
+                    self.context_history.pop()
                     while transient:
                         self.stack.pop()
                         self.context_history.pop()
@@ -148,6 +150,7 @@ class InteractiveMenu():
                         transient = self.workflow[self.stack[-1]].get(
                                     'transient', False)
                 case 'RETRY':
+                    self.context_history.pop()
                     self.warning_message = branch_info
                 case 'END':
                     break
