@@ -114,7 +114,7 @@ class InteractiveMenu():
             if the workflow completes successfully, or an empty dict if the
             user backs out of the initial state.
         """
-        current_context = self.stack[-1][1]
+        current_context = copy.deepcopy(self.stack[-1][1])
         while self.stack:
             self.print_header()
             self.print_context()
@@ -130,7 +130,7 @@ class InteractiveMenu():
                                  .get('next', None))
                     if callable(next_step):
                         next_step = next_step(branch_info)
-                    if not next_step:
+                    if not next_step or next_step == 'END':
                         break
                     if next_step not in self.workflow:
                         print(f'ERROR: {current_step} points to '

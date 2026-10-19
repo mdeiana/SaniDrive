@@ -249,7 +249,8 @@ def step_forced_comuni(context: dict) -> tuple[str, str]:
 
 def step_comune_v2(context: dict) -> tuple[str, str]:
     comuni = context.get('comuni', [])
-    if context.get('looped', False):
+    times_looped = context.get('times_looped', 0)
+    if times_looped:
         s = 'tornare indietro:\n'
     else:
         s = 'cercare in tutta la sardegna:\n'
@@ -258,6 +259,8 @@ def step_comune_v2(context: dict) -> tuple[str, str]:
     _center(' ', line_width * 5 // 6, True, True, False)
     query = input()
     if query == '':
+        if times_looped > 0:
+            context['times_looped'] = times_looped - 1
         return 'BACK', ''
     name = Location.find_match(query)
     if name == 'none':
@@ -325,7 +328,8 @@ def step_add_more(context: dict) -> tuple[str, str]:
     answer = input().capitalize().startswith('S')
     if not answer:
         return 'ADVANCE', 'END'
-    context['looped'] = True
+    times_looped = context.get('times_looped', 0)
+    context['times_looped'] = times_looped + 1
     return 'ADVANCE', 'ADD'
 
 
@@ -399,7 +403,7 @@ def interactive_location_v2() -> list[Location]:
         },
         'add_more': {
             'handler': step_add_more,
-            'next': lambda choice: 'comune' if choice == 'ADD' else None,
+            'next': lambda choice: 'comune' if choice == 'ADD' else 'END',
             'transient': True
         }
     }

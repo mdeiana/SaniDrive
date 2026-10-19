@@ -83,9 +83,10 @@ def run():
         ldate = 'non specificata'
 
     # query data for maximum accepted distance
-    location = interactive_location()
-    print(location, '\n'); sys.exit(0)
+    #location = interactive_location()
     locations = interactive_location_v2()
+    for location in locations:
+        print(location)
 
     # initialize driver
     driver = init_driver(driver_path, args.visible)             #type: ignore
