@@ -44,6 +44,13 @@ class TestLocationFiltering(unittest.TestCase):
         print(location, '\n', config, '\n\n')
         self.assertDictEqual(config, expected_config)           #type: ignore
 
+    def test_back_out(self) -> None:
+        self.mocks[8].side_effect = ['']
+
+        location = interactive_location()
+        config = SpyLocationPickMenu.captured_context
+        expected_config = {}
+        self.helper_location_config_check(location, config, expected_config)
 
     def test_full_traversal_no_backs(self) -> None:
         self.mocks[8].side_effect = [

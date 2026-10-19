@@ -28,7 +28,7 @@ class Location:
         self.populate_names_list()
         if name not in self.comuni_names:
             return
-        del type(self).comuni_names
+        #del type(self).comuni_names
         self.distance_max = distance
         self.forced_comuni = forced
         self.select_comune(name)

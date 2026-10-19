@@ -59,11 +59,10 @@ class InteractiveMenu():
 
     Attributes
     ----------
-    context_history : list of dict
-        The accumulated user session data.
-    stack : list of tuples
+    stack : list of tuples of str and dict
         The history stack tracking the active path. Each item is a tuple 
-        containing the state name and its handler function.
+        containing the step function's name and a snapshot of the context that
+        was fed to it.
     warning_message : str
         Set to the second element of a step function's returned tuple when the
         the first element is 'RETRY'
@@ -75,8 +74,7 @@ class InteractiveMenu():
         self.start = start
         self.header = header
         self.warn_buffer_lines = warn_buffer_lines
-        self.stack = [start]
-        self.context_history: list[dict] = [{}]
+        self.stack: list[tuple[str, dict]] = [(start, {})]
         self.warning_message = ''
 
     def print_header(self) -> None:
@@ -92,9 +90,10 @@ class InteractiveMenu():
         divider('-', line_width, '\n')
     
     def print_context(self) -> None:
-        if self.workflow[self.stack[-1]].get('suppress_context', False):
+        last_step, last_context = self.stack[-1]
+        if self.workflow[last_step].get('suppress_context', False):
             return
-        self._context_print_fn(self.context_history[-1])
+        self._context_print_fn(last_context)
 
     def print_warning(self) -> None:
         if self.warning_message:
@@ -115,16 +114,14 @@ class InteractiveMenu():
             if the workflow completes successfully, or an empty dict if the
             user backs out of the initial state.
         """
+        current_context = self.stack[-1][1]
         while self.stack:
             self.print_header()
             self.print_context()
             self.print_warning()
 
-            self.context_history.append(copy.deepcopy(
-                self.context_history[-1]))
-            current_step = self.stack[-1]
+            current_step = self.stack[-1][0]
             current_handler = self.workflow[current_step]['handler']
-            current_context = self.context_history[-1]
             next_intent, branch_info = current_handler(current_context)
 
             match next_intent:
@@ -139,22 +136,22 @@ class InteractiveMenu():
                         print(f'ERROR: {current_step} points to '
                               f'{next_step} but it doesn\'t exist!')
                         break
-                    self.stack.append(next_step)
+                    self.stack.append((next_step, current_context))
+                    current_context = copy.deepcopy(current_context)
                 case 'BACK':
                     transient = True
-                    self.context_history.pop()
                     while transient:
                         self.stack.pop()
-                        self.context_history.pop()
                         if not self.stack: break
-                        transient = self.workflow[self.stack[-1]].get(
+                        transient = self.workflow[self.stack[-1][0]].get(
                                     'transient', False)
+                    if not self.stack: break
+                    current_context = copy.deepcopy(self.stack[-1][1])
                 case 'RETRY':
-                    self.context_history.pop()
                     self.warning_message = branch_info
                 case 'END':
                     break
-        return current_context if self.context_history else {}
+        return current_context if self.stack else {}
 
 def parse_arguments() -> Namespace:
     """Parse arguments using Argparse."""
