@@ -52,8 +52,8 @@ class Location:
             self.selected_comune = name
             self.distances = data[name]
 
-    def get_distance_to(self, name:str) -> float:
-        return self.distances[name]
+    def get_distance_to(self, name:str) -> float | None:
+        return self.distances.get(name, None)
 
     def can_reach(self, name:str) -> bool:
         if self.mock or name in self.forced_comuni:

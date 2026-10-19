@@ -1,0 +1,145 @@
+var timer;
+var mappaPrest = new Array();
+var oldPrestValue = null;
+
+AUI().ready( function() {
+
+	$("body").bind('animationend', removeAnimationCssClass("updatedElement"));
+	
+	//Reminders
+	$('.reminder-icon').unbind('click', activateSwitcherBinder);
+	$('.reminder-icon').bind('click', activateSwitcherBinder);
+
+	$('.two-state-button').unbind('click', activateSwitcherBinder);
+	$('.two-state-button').bind('click', activateSwitcherBinder);
+
+	loadDefaultPrestValue();
+});
+
+function searchFilter(obj) {
+	clearTimeout(timer);
+	timer = setTimeout(function() {
+		$(obj).click();
+	}, 1000);
+}
+
+function scrollToElement(elementName) {
+	if ($('#'+elementName).length) {
+		$('html, body').animate({
+			scrollTop : $('#'+elementName).offset().top
+		}, 1000);
+	}
+}
+
+function clickChildOfParent(parentId, childId) {
+	var idItem = $("[id*='"+parentId+"'] > [id*='"+childId+"']");
+	if (idItem.length) {
+		idItem.click();
+	}
+}
+
+function renderCalendar(portletId, calendarDefaultDate, calendarEvents) {
+	buildCustomCalendar('cal', {
+		defaultDate: calendarDefaultDate,
+		datesDestroy: function( info ){
+			$('.orariListPanel').addClass('hide');
+	    },
+		dateClick: function(info) {
+			var event = info.view.calendar.getEventById( moment(info.date).format('YYYYMMDD') );
+			if(event!=null){
+			  var ppid_portlet = '_'+portletId+'_';
+			  var ppid_Executor = ppid_portlet + ':appuntamentiForm:executor';
+			  var jsonParams = jQuery.parseJSON(  '{"'+ ppid_Executor +'":"' +
+				+ ppid_Executor+ '","dataselected":"'+moment(info.date).format('YYYYMMDD') +'"}');
+			
+			  mojarra.jsfcljs(document.getElementById(ppid_portlet+':appuntamentiForm'),jsonParams,'');
+			  $('.orariListPanel').removeClass('hide')
+			  scrollToElement('orarioPanel');
+			} else {
+				$('.orariListPanel').addClass('hide');
+			}
+			 return false;
+		  }
+	}, calendarEvents );
+}
+
+function setDefaultPrestValue(row, val) {
+	mappaPrest[row]=val;
+}
+
+function loadDefaultPrestValue() {
+	for(var i=0;i<mappaPrest.length;i++) {
+		var rowElem=document.getElementById('_ricettaelettronica_WAR_cupprenotazione_:j_idt13:prestazioniTable:'+i+':prestazioneList_input');
+		if(rowElem && !rowElem.value) {
+			rowElem.value=mappaPrest[i];
+			rowElem.setAttribute('title', 'Digitare il nome della prestazione alternativa oppure uno spazio per visualizzare la lista delle prestazioni alternative!');
+		}				
+	}	
+}
+
+function removeAnimationCssClass(classToRemove) {
+	$("."+classToRemove).removeClass(classToRemove);
+}
+
+function clearElementValue(elementId) {
+	document.getElementById(elementId).value = "";
+}
+
+function toogleNotify(type, message){
+	var c_type= "alert-" + type;
+	var notify = $('#notify .notify-message');
+	notify.removeClass("alert-info").removeClass("alert-warning").removeClass("alert-danger");
+	notify.addClass(c_type);
+	notify.html(message);
+	notify.show('slow').delay(2000).hide('slow').delay(100);
+}
+
+function openPrimaDisp(that){
+	$(that).next().toggle();
+	var icon = $(that).find(".icon-expand");
+	if (icon.hasClass("icon-expand")) {
+		icon.removeClass("icon-expand").addClass("icon-collapse");
+	} else {
+		icon = $(that).find(".icon-collapse");
+		icon.removeClass("icon-collapse").addClass("icon-expand");
+	}
+}
+
+function revealByScroll(containerClass, elementClass, numberToReveal) {
+	if ($(window).scrollTop() + $(window).height() >= $(document).height() -10) {
+		revealElements(containerClass, elementClass, numberToReveal);
+	}
+}
+
+function revealElements(containerClass, elementClass, numberToReveal) {
+	if (numberToReveal <= 0) {
+		return;
+	}
+	var container = $("."+containerClass);
+	if (container.length == 0) {
+		return;
+	} 
+	var elementsArray = container.find("."+elementClass+".hidden");
+	if (elementsArray.length == 0) {
+		return;
+	}
+	var nElementsToToggle = Math.min(elementsArray.length, numberToReveal);
+	for (i = 0; i < nElementsToToggle; i++) {
+		$(elementsArray[i]).toggleClass('hidden');
+	}
+}
+
+function submitByCallbackActionButton(captchaEnabled, publicKey, actionName, callbackActionButton) {
+	if (captchaEnabled) {
+		captchaEval(publicKey, actionName, callbackActionButton);
+	} else {
+		$(document.getElementById(callbackActionButton)).click();
+	}
+}
+
+function captchaEval(publicKey, actionName, callbackActionButton) {
+	grecaptcha.execute(publicKey, {action: actionName}).then(function(token) {
+    	$('#g-recaptcha-token').val(token);
+    	$(document.getElementById(callbackActionButton)).click();
+    });
+}

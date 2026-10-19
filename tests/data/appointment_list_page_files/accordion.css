@@ -1,0 +1,75 @@
+.accordion-panel {
+  margin-bottom: 20px; }
+
+.accordion-row {
+  padding-top: 10px;
+  padding-bottom: 10px; }
+
+.accordion-row-separator {
+  border-bottom: 1px solid #cdcdcd; }
+
+.accordion-row-head .span12 {
+  padding-right: 30px; }
+
+.accordion-row-center {
+  text-align: center; }
+
+.accordion-row-collapsed .accordion-row-body {
+  display: none; }
+
+.accordion-row-opened .accordion-row-body {
+  display: block; }
+
+.accordion-row-head-title {
+  font-weight: bold;
+  padding-right: 20px; }
+
+.accordion-row-head-value {
+  font-weight: normal; }
+
+.accordion-row-toggle {
+  padding-top: 5px;
+  margin-right: -20px;
+  float: right;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1; }
+
+.accordion-row-toggle-down::before {
+  content: "\f078"; }
+
+.accordion-row-toggle-up::before {
+  content: "\f077"; }
+
+.accordion-button-row, .accordion-plus-row {
+  text-align: right; }
+
+.accordion-button-row .fas, .accordion-plus-row .fas {
+  padding-top: 15px;
+  padding-bottom: 10px;
+  padding-left: 5px;
+  padding-right: 5px; }
+
+.accordion-remove-button::before {
+  font-size: 20px;
+  content: "\f1f8";
+  cursor: pointer; }
+
+.accordion-clean-button::before {
+  font-size: 20px;
+  content: "\f51a";
+  cursor: pointer; }
+
+.accordion-plus-button::before {
+  font-size: 16px;
+  border-width: 1px;
+  border-style: solid;
+  padding: 6px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  cursor: pointer;
+  content: "\f067"; }

@@ -1,0 +1,17 @@
+calEventRender = function(objId){
+	return	{
+		eventRender: function(info) {
+		var d = "[data-date='"+moment(info.event.start).format('YYYY-MM-DD')+"']";
+		$('#'+objId).find(d).addClass("evento");
+	}};
+}
+
+jQuery(function ($) {
+	if (window.location.pathname.indexOf("/aiuto") === -1) {
+		return;
+	}
+
+	$("#accordion[role='tablist']").removeAttr("role").removeAttr("aria-multiselectable");
+	$("[id^='heading'][role='tab']").removeAttr("role");
+	$("[role='tabpanel']").removeAttr("role");
+});

@@ -7,16 +7,16 @@ from time import sleep
 from typing import TYPE_CHECKING
 from selenium.common.exceptions import InvalidSessionIdException as ISIDE
 
-from . import config
 from .config import (data_dir, appdata_dir, driver_dir, driver_path,
-                     audio_path, title_path, creds_path, locations_path)
-from .util import cls, title, _center, backline, divider, _fail
-from .util import parse_arguments, download_chromedriver
+                     audio_path, title_path, creds_path, locations_path,
+                     set_line_width)
+from .util import (cls, title, _center, backline, divider, _fail,
+                   parse_arguments, download_chromedriver)
 from .prescription import read_prescriptions, choose_prescription
-from .appointment import Appointment, interactive_latest_appointment, send_notif
-from .driver import By
-from .driver import name_class_appointment, force_kill_driver
-from .driver import init_driver, get_appointments_page, expand_list
+from .appointment import (Appointment, interactive_latest_appointment,
+                          send_notif)
+from .driver import (By, name_class_appointment, force_kill_driver,
+                     init_driver, get_appointments_page, expand_list)
 from .location import Location, interactive_location, interactive_location_v2
 
 __version__ = '1.5.0'
@@ -83,10 +83,12 @@ def run():
         ldate = 'non specificata'
 
     # query data for maximum accepted distance
-    #location = interactive_location()
-    locations = interactive_location_v2()
-    for location in locations:
-        print(location)
+    if args.old_filter:
+        print('using old filter')
+        locations = [interactive_location()]
+    else:
+        print('using new filter')
+        locations = interactive_location_v2()
 
     # initialize driver
     driver = init_driver(driver_path, args.visible)             #type: ignore
@@ -134,19 +136,25 @@ def run():
             place_obj = appnt.find_element(By.CLASS_NAME, 'unita-address')
             place = place_obj.text
             # note support to be added (17/10/26: xddddd)
+            
             # add appointment to list if it's close enough
             loc_name = place.split('-')[1].split('(')[0].strip().title()
-
+            if Location.find_match(loc_name) == 'none':
+                try:
+                    loc_name = place.split('-')[2].split(
+                        '(')[0].strip().title()
+                except IndexError:
+                    pass
             for location in locations:
                 if not already_added:
                     if location.can_reach(loc_name):
                         appointments.append(Appointment(place,
                         time_fields[0].text.strip(), time_fields[2].text, ''))
-                    already_added = True
+                        already_added = True
             """ if location.can_reach(loc_name):
                 appointments.append(Appointment(place,
                     time_fields[0].text.strip(), time_fields[2].text, '')) """
-
+        
         # find out if something changed, send a notif and move on
         if appointments != old_appointments:
             change_counter += 1
@@ -192,8 +200,8 @@ def run():
             print(f'APPUNTAMENTI'.center(line_width), '\n')
             print(f'Numero\t\t Data\t\t\t\t Ora\t\t\tVia')
             sys.stdout.flush()
-            for i, a in enumerate(appointments):
-                print(f"{i+1}\t", a)
+            for i, a in enumerate(appointments, start=1):
+                print(f"{i}\t", a)
         else:
             _center("Nessun appuntamento in questo momento.", line_width, True)
             pretty = 1
@@ -234,7 +242,7 @@ def main():
     global args, driver
     
     # set screen dimensions and print title
-    config.set_line_width(line_width)
+    set_line_width(line_width)
     args = parse_arguments()
     cls()
 

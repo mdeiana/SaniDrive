@@ -211,18 +211,24 @@ def parse_arguments() -> Namespace:
         "precedente la data scelta con --data e' trovato. La notifica verra' "+
         "prodotta comunque.")
     parser.add_argument('--exec', '--esegui', '-e', '--suono', '--suoneria',
-        '-s', '--avviso', dest='audioFile',
-        default='',
-        action='store', help="Specifica il percorso di un file "+
+        '-s', '--avviso', dest='audioFile', default='', action='store',
+        help="Specifica il percorso di un file "+
         "da eseguire quando un appuntamento precedente la data scelta con "+
         "--data e' trovato. L'utilizzo inteso e' quello di riprodurre un "+
         "file audio o aprire un collegamento a un video, ma eseguire un "+
         "file arbitrario puo' essere un modo di estendere le funzionalita' "+
         "di SaniDrive.", metavar='FILE')
+    parser.add_argument('--old_filter', '--old', '--vecchio_filtro',
+        '--vecchio', dest='old_filter', default=False, action='store_true',
+        help="Specifica la preferenza per il vecchio modo di selezionare "
+        "comuni: anziche' poter scegliere qualunque numero di comuni, ognuno "
+        "con il proprio raggio, (il default), scegli solo un comune con un "
+        "raggio e qualunque numero di comuni da includere a prescindere dalla "
+        "distanza dal primo.")
     parser.add_argument('--aiuto', '-a', dest='help', default=False,
         action='store_true', help='Scrivi questo messaggio di aiuto ed esci.')
-    args = parser.parse_args()
     
+    args = parser.parse_args()
     if args.help:
         parser.print_help()
         exit(0)
