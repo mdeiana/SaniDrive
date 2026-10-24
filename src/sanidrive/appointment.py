@@ -43,7 +43,7 @@ class Appointment:
     def __str__(self):
         """Returns appointment information in readable string form"""
         # set up proper spacing
-        if len(self.date) <= 22:
+        if len(self.date) <= 23:
             date = self.date + '\t\t'
         else:
             date = self.date + '\t'

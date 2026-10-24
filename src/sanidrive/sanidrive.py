@@ -137,23 +137,14 @@ def run():
             place = place_obj.text
             # note support to be added (17/10/26: xddddd)
             
-            # add appointment to list if it's close enough
-            loc_name = place.split('-')[1].split('(')[0].strip().title()
-            if Location.find_match(loc_name) == 'none':
-                try:
-                    loc_name = place.split('-')[2].split(
-                        '(')[0].strip().title()
-                except IndexError:
-                    pass
+            # add appointment to list if it's close enough for the user
+            loc_name = Location.extract_name_from_appointment_string(place)
             for location in locations:
                 if not already_added:
                     if location.can_reach(loc_name):
                         appointments.append(Appointment(place,
                         time_fields[0].text.strip(), time_fields[2].text, ''))
                         already_added = True
-            """ if location.can_reach(loc_name):
-                appointments.append(Appointment(place,
-                    time_fields[0].text.strip(), time_fields[2].text, '')) """
         
         # find out if something changed, send a notif and move on
         if appointments != old_appointments:

@@ -222,7 +222,7 @@ def parse_arguments() -> Namespace:
         '--vecchio', dest='old_filter', default=False, action='store_true',
         help="Specifica la preferenza per il vecchio modo di selezionare "
         "comuni: anziche' poter scegliere qualunque numero di comuni, ognuno "
-        "con il proprio raggio, (il default), scegli solo un comune con un "
+        "con il proprio raggio (il default), scegli solo un comune con un "
         "raggio e qualunque numero di comuni da includere a prescindere dalla "
         "distanza dal primo.")
     parser.add_argument('--aiuto', '-a', dest='help', default=False,

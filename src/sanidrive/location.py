@@ -1,5 +1,4 @@
-import os
-import sys
+import re
 import json
 import difflib
 from pathlib import Path
@@ -26,12 +25,13 @@ class Location:
             self.mock = True
             return
         self.populate_names_list()
-        if name not in self.comuni_names:
-            return
-        #del type(self).comuni_names
-        self.distance_max = distance
+        matched_name = self.find_match(name)
+        if matched_name not in self.comuni_names:
+            raise ValueError(f"couldn't match {name} with any comune")
+        
+        self.distance_max = float(distance)
         self.forced_comuni = forced
-        self.select_comune(name)
+        self.select_comune(matched_name)
 
     def __str__(self):
         lines = [f"{self.__class__.__name__}:"]
@@ -53,14 +53,14 @@ class Location:
             self.distances = data[name]
 
     def get_distance_to(self, name:str) -> float | None:
-        return self.distances.get(name, None)
+        return self.distances.get(self.find_match(name), None)
 
     def can_reach(self, name:str) -> bool:
-        if self.mock or name in self.forced_comuni:
+        if self.mock or name in self.forced_comuni or name == '':
             return True
         distance = self.distances.get(self.find_match(name), None)
         if distance is None:
-            print(f'WARN: comune letto come {name} da lista appuntamenti '
+            print(f'WARN: comune {name} passato a Location.can_reach '
                   'non combacia nel database!')
             return True
         return (distance <= self.distance_max)
@@ -95,6 +95,23 @@ class Location:
             return 'none'
         else:
             return matches[0]
+
+    @classmethod
+    def extract_name_from_appointment_string(cls, string: str) -> str:
+        cls.populate_names_list()
+        name = ''
+        match = re.search(r'.*-\s*([^-]+?)\s*\(', string)
+        if match:
+            name = cls.find_match(match.group(1))
+            if name == 'none':
+                print(f'WARN: comune letto come {name} da lista appuntamenti '
+                        'non esiste nel database!')
+        else:
+            print(f"WARN: Il luogo dell'appuntamento <{string}> non sembra "
+                  "contenere il nome di un comune!")
+        return name
+
+
 
 class LocationPickMenu(InteractiveMenu):
     def __init__(self, *args, **kwargs) -> None:

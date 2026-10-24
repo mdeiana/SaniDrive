@@ -29,7 +29,7 @@ Se si desidera specificare alcune opzioni è possibile ottenere una lista esaust
 Di seguito è comunque riportato l'output di `py sanidrive.py --aiuto`:
 ```
 usage: SaniDrive [-h] [--file FILE] [--driver FILE] [--visibile] [--log FILE] [--intervallo SECONDI]
-                 [--data [DATA ...]] [--nonstop] [--exec FILE] [--aiuto]
+                 [--data [DATA ...]] [--nonstop] [--exec FILE] [--old_filter] [--aiuto]
 
 Tieni traccia e avverti automaticamente di posti liberi per una prenotazione al CUP Sardegna
 
@@ -85,5 +85,14 @@ options:
                         collegamento a un video, ma eseguire un file arbitrario puo' essere un modo di estendere le
                         funzionalita' di SaniDrive.
 
+  --old_filter, --old, --vecchio_filtro, --vecchio
+                        Specifica la preferenza per il vecchio modo di selezionare comuni: anziche' poter scegliere
+                        qualunque numero di comuni, ognuno con il proprio raggio (il default), scegli solo un comune
+                        con un raggio e qualunque numero di comuni da includere a prescindere dalla distanza dal
+                        primo.
+
   --aiuto, -a           Scrivi questo messaggio di aiuto ed esci.
+
+
+SaniDrive by Michele Deiana (github.com/mdeiana). Governo pls fix sanita'
 ```
