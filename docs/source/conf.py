@@ -7,9 +7,9 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'SaniDrive'
-copyright = '2024, Michele Deiana'
+copyright = '2026, Michele Deiana'
 author = 'Michele Deiana'
-release = '1.3'
+release = '1.5.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -32,6 +32,8 @@ exclude_patterns = []
 
 napoleon_google_docstring = False
 napoleon_numpy_docstring = True
+napoleon_use_param = True
+napoleon_use_rtype = True
 napoleon_include_private_with_doc = True
 
 autodoc_default_options = {
