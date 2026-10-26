@@ -24,7 +24,8 @@ sys.path.insert(0, os.path.abspath('../../src'))
 extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.autodoc',
-    'myst_parser'
+    'sphinx.ext.viewcode',
+#    'myst_parser',
 ]
 
 templates_path = ['_templates']
@@ -34,13 +35,15 @@ napoleon_google_docstring = False
 napoleon_numpy_docstring = True
 napoleon_use_param = True
 napoleon_use_rtype = True
+napoleon_include_init_with_doc = True
 napoleon_include_private_with_doc = True
 
 autodoc_default_options = {
 	'members': True,
 	#'special-members': True,
 	'private-members': True,
-	'member-order': 'bysource'
+	'member-order': 'bysource',
+    "typehints" : "description", # : "signature"
 }
 
 autoclass_content = 'class'

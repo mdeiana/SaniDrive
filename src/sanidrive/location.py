@@ -8,8 +8,8 @@ travel constraints.
 
 See Also
 --------
-:py:mod:`appointment`
-:py:class:`InteractiveMenu`
+:py:mod:`~sanidrive.appointment`
+:py:class:`~sanidrive.util.InteractiveMenu`
 """
 
 import re

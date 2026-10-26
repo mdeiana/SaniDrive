@@ -4,7 +4,7 @@ for which appointments will be searched.
 
 See Also
 --------
-:py:mod:`appointment`
+:py:mod:`~sanidrive.appointment`
 """
 
 

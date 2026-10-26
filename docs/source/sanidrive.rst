@@ -51,19 +51,12 @@ sanidrive.sanidrive module
    :members:
    :show-inheritance:
    :undoc-members:
+   :no-index:
 
 sanidrive.util module
 ---------------------
 
 .. automodule:: sanidrive.util
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-Module contents
----------------
-
-.. automodule:: sanidrive
    :members:
    :show-inheritance:
    :undoc-members:
