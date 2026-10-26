@@ -1,3 +1,17 @@
+"""
+Utilities for managing user-selected municipalities and distance-based
+appointment filtering.
+
+The module provides the `Location` model, fuzzy municipality matching, and the
+interactive menu workflow used to collect the user’s resident municipality and
+travel constraints.
+
+See Also
+--------
+:py:mod:`appointment`
+:py:class:`InteractiveMenu`
+"""
+
 import re
 import json
 import difflib
@@ -8,10 +22,50 @@ from .util import InteractiveMenu, WorkflowStepDef
 from .util import divider, cls, _center
 
 class Location:
-    """Represents a selected comune and the distances to all other comuni.
+    """
+    Represents a selected comune and the distances to all other comuni.
 
     The class loads the Sardinian comune distance matrix from the configured
     JSON file and keeps a shared list of known comune names for fuzzy matching.
+
+    Parameters
+    ----------
+    name : str
+        Municipality name to resolve. If the value is `"mock"`, the instance is
+        created in mock mode and no validation is performed.
+    distance : float
+        Maximum distance in kilometers allowed for the selected municipality.
+    forced : list[str]
+        Additional municipalities that should be treated as reachable
+        regardless of the computed distance.
+
+    Attributes
+    ----------
+    comuni_names : list[str]
+        Shared list of all known municipality names loaded from the distance
+        database.
+    distances : dict[str, float]
+        Mapping of municipality names to distance values from the selected
+        municipality.
+    selected_comune : str
+        Name of the municipality currently selected.
+    distance_max : float
+        Maximum distance threshold used by `can_reach`.
+    forced_comuni : list[str]
+        Municipalities that are always considered reachable.
+    mock : bool
+        Indicates whether the object is a mock instance used for testing or
+        placeholder flows.
+
+    Raises
+    ------
+    ValueError
+        If `name` cannot be matched to any municipality in the loaded database.
+
+    Notes
+    -----
+    Municipality matching is fuzzy and uses `difflib.get_close_matches` with a
+    cutoff of 0.6.
     """
     comuni_names: list[str] = []
     distances: dict[str, float]
@@ -56,6 +110,26 @@ class Location:
         return self.distances.get(self.find_match(name), None)
 
     def can_reach(self, name:str) -> bool:
+        """
+        Check whether a municipality is reachable under the configured limit.
+
+        Parameters
+        ----------
+        name : str
+            Municipality name to assess.
+
+        Returns
+        -------
+        bool
+            `True` if the municipality is reachable, forced, blank, or the
+            object is in mock mode; otherwise `False` when the distance
+            exceeds the configured maximum.
+
+        Notes
+        -----
+        If the name does not match any municipality in the dataset, a warning
+        is printed and the function defaults to treating it as reachable.
+        """
         if self.mock or name in self.forced_comuni or name == '':
             return True
         distance = self.distances.get(self.find_match(name), None)
@@ -66,6 +140,19 @@ class Location:
         return (distance <= self.distance_max)
 
     def get_furthest_valid(self, count: int) -> list[str]:
+        """Return the furthest municipalities that are still within range.
+
+        Parameters
+        ----------
+        count : int
+            Maximum number of municipalities to return.
+
+        Returns
+        -------
+        list[str]
+            Names of the furthest valid municipalities, sorted by distance in
+            descending order.
+        """
         results = [(comune, distance)
             for comune, distance in self.distances.items()
             if distance <= self.distance_max and comune != self.selected_comune
@@ -88,6 +175,24 @@ class Location:
 
     @classmethod
     def find_match(cls, query: str) -> str:
+        """Find the closest municipality match for a user-provided query.
+
+        Parameters
+        ----------
+        query : str
+            Partial or imperfect municipality name.
+
+        Returns
+        -------
+        str
+            Matching municipality name if a close match is found; otherwise
+            `"none"`.
+
+        Notes
+        -----
+        Matching uses `difflib.get_close_matches` with a cutoff of 0.6 and
+        title normalization.
+        """
         cls.populate_names_list()
         matches = difflib.get_close_matches(
             query.strip().title(), cls.comuni_names, n=1, cutoff=0.6)
@@ -98,6 +203,24 @@ class Location:
 
     @classmethod
     def extract_name_from_appointment_string(cls, string: str) -> str:
+        """Extract a municipality name from an appointment description string.
+
+        Parameters
+        ----------
+        string : str
+            String containing an appointment label, typically formatted as
+            `"something - Comune (details)"`.
+
+        Returns
+        -------
+        str
+            Closest matching municipality name if one is found; otherwise
+            `"none"`.
+
+        Notes
+        -----
+        If no municipality name is detected, a warning is printed.
+        """
         cls.populate_names_list()
         name = ''
         match = re.search(r'.*-\s*([^-]+?)\s*\(', string)

@@ -1,5 +1,6 @@
 """
-Defines routines to format text and print information to the user.
+Defines routines to format text and print information to the user, as well as
+a menu system to interactively gather layered information from the user.
 Additionally provides command-line argument parsing and a routine to
 automatically download ChromeDriver.
 """

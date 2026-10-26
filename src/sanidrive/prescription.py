@@ -22,14 +22,8 @@ class FileEmptyError(Exception):
 class Prescription:
     """
     Stores information on a saved prescription.
-
-    Methods
-    -------
-    get_creds
-        Returns relevant information for login as tuple.
     """
     def __init__(self, cf: str, nre: str, name: str, note: str):
-        """Constructor for Prescription class."""
         self.cf = cf
         self.nre = nre
         self.name = name
