@@ -19,6 +19,7 @@ driver_dir = appdata_dir.joinpath('chromedriver-win64')
 
 title_path = data_dir.joinpath('title.txt')#.read_text()
 audio_path = data_dir.joinpath('emmescingue.mpeg')
+locations_path = data_dir.joinpath('comuni_distance_matrix.json')
 creds_path = appdata_dir.joinpath('credenziali.json')
 driver_path = driver_dir.joinpath('chromedriver.exe')
 

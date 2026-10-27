@@ -1,0 +1,20 @@
+function buildDialogMap(that) {
+	buildMap($(that).closest('.unita-maker'), $('.map-frame') );
+}
+
+function mapToggle(that, index){
+	var mapDiv = $('.map-panel-contenitor'+index);
+	$(that).parent().find('.map-button-label').toggle();
+	if(mapDiv.is(':visible')){
+		mapDiv.hide();
+	} else {
+		mapDiv.show();
+		buildMap( that, mapDiv.find('.map-frame') );
+	}
+}
+
+function buildMap(positionMarker, mapFrame ) {
+	var address = $(positionMarker).attr('data-address');
+	mapFrame.attr('src', 'https://maps.google.com/maps?q='+
+			address+'&t=&z=13&ie=UTF8&iwloc=&output=embed');
+}

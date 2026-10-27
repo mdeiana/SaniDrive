@@ -1,0 +1,225 @@
+/*
+    This function gets loaded when all the HTML, not including the portlets, is
+    loaded.
+*/
+AUI().ready( function() {
+	if(typeof ice != "undefined"){
+		if(typeof ice.ace != "undefined"){
+			ice.ace.locales['it'] = {
+	            closeText: 'Chiudi',
+	            prevText: 'Precedente',
+	            nextText: 'Successivo',
+	            currentText: 'Corrente',
+	            monthNames: ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno', 'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'],
+	            monthNamesShort: ['Gen.','Feb.','Mar.','Apr.','Mag.','Giu.', 'Lug.','Ago.','Set.','Ott.','Nov.','Dic.'],
+	            dayNames: ['domenica','lunedi','martedi','mercoledi','giovedi','venerdi','sabato'],
+	            dayNamesShort: ['dom.','lun.','mar.','mer.','gio.','ven.','sab.'],
+	            dayNamesMin: ['Do','Lu','Ma','Me','Gi','Ve','Sa'],
+	            weekHeader: 'Sm',
+	            dateFormat: 'dd/mm/yyyy',
+	            firstDay: 1,
+	            isRTL: false,
+	            showMonthAfterYear: false,
+	            yearSuffix: '',
+	            ampm: false,
+	            timeFormat: 'hh:mm',
+	            timeSuffix: '',
+	            timeOnlyTitle: 'Scegli l\'orario',
+	            timeText: 'Orario',
+	            hourText: 'Ora',
+	            minuteText: 'Minuti',
+	            secondText: 'Secondi',
+	            timezoneText: 'Time Zone'
+	        };
+			
+			var iceApplyFocus = ice.applyFocus;
+			ice.applyFocus= function(du){
+				iceApplyFocus(du);
+				   
+				if(Object.keys(ice.ace.Autocompleters).length>0){
+					var hasOwnProperty = Object.prototype.hasOwnProperty;
+					var du_origin = du.replace("_input","")
+					if (hasOwnProperty.call( ice.ace.Autocompleters, du_origin)){
+						ice.ace.Autocompleters[du_origin].show();
+					}
+				}
+			}
+			
+			var iceAceLazy = ice.ace.lazy;
+			ice.ace.lazy = function(e,d){
+				try{
+					if(d[1].behaviors!=undefined){
+						if(d[1].behaviors.activate.oncomplete!=undefined){
+							var oncomp = d[1].behaviors.activate.oncomplete;
+							var newOnComp = function(){
+								return new Promise(function(resolve, reject) {
+									if(oncomp.toString().indexOf("redirectTo")>-1){
+										var blocking =  $('#blocking').clone();
+										var blockAlternative = $(".blockUI-alternative");
+										blockAlternative.find(".blockPage").append( blocking.show() );
+										blockAlternative.show();
+									}
+									resolve(oncomp);
+								});
+							}
+							d[1].behaviors.activate.oncomplete=function () {
+								newOnComp().then(function(value) {
+									value();
+								});
+							}
+						}
+					}
+				}catch(e){
+					console.log(e);
+				}
+				iceAceLazy(e,d);	
+			}
+		}
+	}
+});
+
+function redirectTo(url){
+	window.open(url,'_self');
+}
+
+/*
+This function gets loaded after each and every portlet on the page.
+
+portletId: the current portlet's id
+node: the Alloy Node object of the current portlet
+*/
+Liferay.Portlet.ready(
+		function(portletId, node) {
+			
+    }
+);
+
+var activateSwitcherBinder = function(){
+	if( $(this).hasClass('activate'))
+	    $(this).removeClass('activate');
+	else
+	    $(this).addClass('activate');
+};
+
+function loadJs(url){
+	$.ajax({
+		  url: url,
+		  dataType: "script",
+		  async: false
+	});
+}
+
+function addGlobalMessage(message, type){
+	obj = document.createElement("div");
+	$(obj).addClass("ui-corner-all ui-state-" + type);
+	$(obj).append('<span class="ui-icon ui-icon-alert"></span>');
+	$(obj).append(message);
+	
+	$('.ui-faces-messages').append($(obj))
+}
+
+function custumBlockUI(msg){
+	$.blockUI({ message: msg, css: { top: '20%', width: 'auto', padding:'10px'} });
+}
+
+function clickItemId(id){
+	var idItem = $("[id*='"+id+"']");
+	if (idItem.length) {
+		idItem.click();
+	}
+}
+
+function addHelpButton(){
+	addPortletBarIcon('icon-help', 'helpDialog.show()');
+}
+
+function addPortletBarIcon(iconClass, callback){
+	var portletBar = $('.portlet-title');
+	if(portletBar.find("."+iconClass).length==0){
+		portletBar.append( "<span onclick='"+callback+"' class='icon-portlet-topbar "+iconClass+"'></span>" );
+	}
+}
+
+function messagifyOnload(){
+	$(window).scrollTop(0);
+}
+
+function togglePazienteHiddenFields() {
+	$(".badgePaziente .hiddenField").slideToggle();
+	$(".badgePaziente").toggleClass("badgePazienteBorder");
+	
+	var icon = $("#toggleBadgeFields");
+	if( icon.hasClass("fa-chevron-down") ){
+		 icon.removeClass("fa-chevron-down");
+		 icon.addClass("fa-chevron-up");
+	} else {
+		icon.removeClass("fa-chevron-up");
+		icon.addClass("fa-chevron-down");
+	}
+}
+
+function block(){
+	$.blockUI({message: $('#blocking').clone() });
+}
+
+function unblock(){
+	$.unblockUI();	
+}
+
+function sessionExpired(){
+	$.blockUI({message: $('#expired').clone() });
+}
+
+function checkToUnblock(that){
+	var toUnBlock = true;
+	try{
+		$(that.response).each(function(){
+			if(this.getElementsByTagName("redirect").length>0){ //this.prop("tagName")=="PARTIAL-RESPONSE
+				toUnBlock = false;
+			}
+		});
+	} catch(e){
+		toUnBlock = true;
+	}
+	
+	return toUnBlock;
+}
+
+(function(open) {
+    XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
+    	if(method=="POST"){
+//	    	if(Liferay.Session==null || Liferay.Session._state.data.sessionState.value=="expired"){
+    		if (url=="/c/portal/expire_session") {
+	    		sessionExpired();
+	    		return false;
+	    	}
+	    
+	    	if(postBlacklist.notInList(url)){
+				block();
+				this.addEventListener("readystatechange", function() {
+					if (this.readyState == 4) {
+						if(checkToUnblock(this))
+							unblock();	
+					}
+		        }, false);
+			}
+    	}
+		open.call(this, method, url, async, user, pass);
+    };
+})(XMLHttpRequest.prototype.open);
+
+Array.prototype.notInList = function(obj) {
+	for (var i = 0; i != this.length; i++) {
+		if (obj.includes(this[i])) {
+			return false;
+		}
+    }
+    return true; 
+};
+
+var postBlacklist = [
+ 	"/poller/",
+ 	"/c/portal/extend_session",
+ 	"p_p_resource_id",
+ 	"google-analytics"
+ ];

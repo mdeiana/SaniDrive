@@ -1,0 +1,8 @@
+Liferay.on('initLayout', function(event) {
+	  Liferay.once(function() {
+	    Liferay.Layout.on([ 'drag:end', 'drag:start' ], function(event) {
+	      console.log('event type', event.type, event);
+	      AUI().one("#main-content").toggleClass('dragging', event.type == 'drag:start');
+	    });
+	  }, Liferay.Layout, 'bindDragDropListeners');
+	});

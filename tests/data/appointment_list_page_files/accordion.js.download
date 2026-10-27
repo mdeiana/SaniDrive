@@ -1,0 +1,11 @@
+function toggleAccordionElement(that){
+  	var parent = $(that).parent();
+	var rowToggle = $(that).find(".accordion-row-toggle");
+  	if(rowToggle.hasClass("accordion-row-toggle-down")){
+  		rowToggle.addClass("accordion-row-toggle-up").removeClass("accordion-row-toggle-down");
+  		parent.find(".accordion-row-body").slideDown('slow');
+  	} else {
+  		rowToggle.addClass("accordion-row-toggle-down").removeClass("accordion-row-toggle-up");
+  		parent.find(".accordion-row-body").slideUp('slow');
+  	}
+}

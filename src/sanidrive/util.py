@@ -1,11 +1,13 @@
 """
-Defines routines to format text and print information to the user.
+Defines routines to format text and print information to the user, as well as
+a menu system to interactively gather layered information from the user.
 Additionally provides command-line argument parsing and a routine to
 automatically download ChromeDriver.
 """
 
 import os
 import sys
+import copy
 import json
 import zipfile
 import requests
@@ -14,12 +16,143 @@ from time import sleep
 from pathlib import Path
 from bs4 import BeautifulSoup
 from argparse import Namespace
+from collections.abc import Callable
+from typing import TypedDict, NotRequired, Optional
 
-from . import config
+from .config import line_width
 
 # Constant Values
 driver_version_page = 'https://googlechromelabs.github.io/chrome-for-testing/'
 driver_dl_page = 'https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json'
+CLEAR_SCREEN = "\033[2J\033[H"
+SAVE_CURS_POS = "\x1b[s"
+RESTORE_CURS_POS = "\x1b[u"
+
+class WorkflowStepDef(TypedDict):
+    handler: Callable
+    next: NotRequired[Optional[str | Callable]]
+    transient: NotRequired[bool]
+    suppress_context: NotRequired[bool]
+
+class InteractiveMenu():
+    """
+    A stack-based state machine for rendering interactive CLI menus.
+
+    Supports automatic context history and backwards navigation; forwards
+    navigation uses the input `workflow` dictionary to fetch the name of the
+    next step and its handle to the function that executes, according to the
+    WorkflowStepDef interface. Branching is supported and achieved by passing
+    a lambda funciton instead of the name of the next step that executes logic
+    based on the previous function's output.
+
+    Parameters
+    ----------
+    workflow : dict of str to WorkflowStepDef
+        A mapping of state names to their configuration dictionaries, which
+        include the handler function and routing logic.
+    start : str
+        The dictionary key for the initial state to begin the workflow.
+    header : str
+        The persistent text title to display at the top of the menu.
+    warn_buffer_lines : int, optional
+        The number of empty vertical lines to reserve for temporary warning
+        messages (default is 20).
+
+    Attributes
+    ----------
+    stack : list of tuples of str and dict
+        The history stack tracking the active path. Each item is a tuple 
+        containing the step function's name and a snapshot of the context that
+        was fed to it.
+    warning_message : str
+        Set to the second element of a step function's returned tuple when the
+        the first element is 'RETRY'
+    """
+    def __init__(self, workflow: dict[str, WorkflowStepDef],
+                 start: str, header: str,
+                 warn_buffer_lines: int = 20) -> None:
+        self.workflow = workflow
+        self.start = start
+        self.header = header
+        self.warn_buffer_lines = warn_buffer_lines
+        self.stack: list[tuple[str, dict]] = [(start, {})]
+        self.warning_message = ''
+
+    def print_header(self) -> None:
+        print(CLEAR_SCREEN, end='')
+        _center(self.header, line_width)
+        divider('-', line_width, '\n')
+
+    def _context_print_fn(self, context: dict) -> None:
+        """ Internal helper to allow overriding with custom context print """
+        for k, v in context.items():
+            print(f'\t{k.title()}:\t\t{v}')
+        print('')
+        divider('-', line_width, '\n')
+    
+    def print_context(self) -> None:
+        last_step, last_context = self.stack[-1]
+        if self.workflow[last_step].get('suppress_context', False):
+            return
+        self._context_print_fn(last_context)
+
+    def print_warning(self) -> None:
+        if self.warning_message:
+            print(SAVE_CURS_POS, '\n'*self.warn_buffer_lines, end='')
+            _center(self.warning_message, line_width, trailing_newline=False)
+            print(RESTORE_CURS_POS, end='')
+            self.warning_message = ''
+
+    def run(self) -> dict:
+        """
+        Executes the main interactive menu loop, evaluating user inputs and
+        navigating the workflow graph until completion or manual exit.
+
+        Returns
+        -------
+        dict
+            The collected session context as altered by the step functions
+            if the workflow completes successfully, or an empty dict if the
+            user backs out of the initial state.
+        """
+        current_context = copy.deepcopy(self.stack[-1][1])
+        while self.stack:
+            self.print_header()
+            self.print_context()
+            self.print_warning()
+
+            current_step = self.stack[-1][0]
+            current_handler = self.workflow[current_step]['handler']
+            next_intent, branch_info = current_handler(current_context)
+
+            match next_intent:
+                case 'ADVANCE':
+                    next_step = (self.workflow[current_step]
+                                 .get('next', None))
+                    if callable(next_step):
+                        next_step = next_step(branch_info)
+                    if not next_step or next_step == 'END':
+                        break
+                    if next_step not in self.workflow:
+                        print(f'ERROR: {current_step} points to '
+                              f'{next_step} but it doesn\'t exist!')
+                        break
+                    self.stack.append((next_step, current_context))
+                    current_context = copy.deepcopy(current_context)
+                case 'BACK':
+                    transient = True
+                    while transient:
+                        self.stack.pop()
+                        if not self.stack: break
+                        transient = self.workflow[self.stack[-1][0]].get(
+                                    'transient', False)
+                    if not self.stack: break
+                    current_context = copy.deepcopy(self.stack[-1][1])
+                case 'RETRY':
+                    self.warning_message = branch_info
+                case 'END':
+                    break
+        return current_context if self.stack else {}
 
 def parse_arguments() -> Namespace:
     """Parse arguments using Argparse."""
@@ -79,18 +212,24 @@ def parse_arguments() -> Namespace:
         "precedente la data scelta con --data e' trovato. La notifica verra' "+
         "prodotta comunque.")
     parser.add_argument('--exec', '--esegui', '-e', '--suono', '--suoneria',
-        '-s', '--avviso', dest='audioFile',
-        default='',
-        action='store', help="Specifica il percorso di un file "+
+        '-s', '--avviso', dest='audioFile', default='', action='store',
+        help="Specifica il percorso di un file "+
         "da eseguire quando un appuntamento precedente la data scelta con "+
         "--data e' trovato. L'utilizzo inteso e' quello di riprodurre un "+
         "file audio o aprire un collegamento a un video, ma eseguire un "+
         "file arbitrario puo' essere un modo di estendere le funzionalita' "+
         "di SaniDrive.", metavar='FILE')
+    parser.add_argument('--old_filter', '--old', '--vecchio_filtro',
+        '--vecchio', dest='old_filter', default=False, action='store_true',
+        help="Specifica la preferenza per il vecchio modo di selezionare "
+        "comuni: anziche' poter scegliere qualunque numero di comuni, ognuno "
+        "con il proprio raggio (il default), scegli solo un comune con un "
+        "raggio e qualunque numero di comuni da includere a prescindere dalla "
+        "distanza dal primo.")
     parser.add_argument('--aiuto', '-a', dest='help', default=False,
         action='store_true', help='Scrivi questo messaggio di aiuto ed esci.')
-    args = parser.parse_args()
     
+    args = parser.parse_args()
     if args.help:
         parser.print_help()
         exit(0)
@@ -122,7 +261,7 @@ def download_chromedriver(dir_path: Path | str) -> str:
     archive_path = os.path.join(dir_path, 'chromedriver-win64.zip')
     extr_dir_path = os.path.join(dir_path, 'chromedriver-win64')
     driver_path = os.path.join(extr_dir_path, 'chromedriver.exe')
-    p = lambda s: _center(s, config.line_width)
+    p = lambda s: _center(s, line_width)
     print("Controllo presenza ChromeDriver... non rilevata.\n")
     p("Se non hai indicato manualmente il percorso di chromedriver.exe, "+
       "probabilmente non hai scaricato ChromeDriver. SaniDrive puo' "+
@@ -207,15 +346,15 @@ def download_chromedriver(dir_path: Path | str) -> str:
         print("non riuscita. Passaggio non vitale, procediamo...\n")
 
     print("\n\n")
-    _center('-'*47, config.line_width, True)
+    _center('-'*47, line_width, True)
     _center("Installazione automatica avvenuta con successo.",
-            config.line_width, True)
-    _center('-'*47, config.line_width, True)
+            line_width, True)
+    _center('-'*47, line_width, True)
     print("\n\n")
     print("L'eseguibile di ChromeDriver si trova ora nel percorso:\n"+
           f"{os.path.realpath(driver_path)}\n\n")
     
-    _center('|||   Premere Invio per continuare   |||', config.line_width,
+    _center('|||   Premere Invio per continuare   |||', line_width,
             True)
     input('')
     cls()
@@ -229,10 +368,10 @@ def cls():
 
 def title(file_path: str):
     """Print title from file if available, otherwise from string literals."""
-    p = lambda s: _center(s, config.line_width, True, False, True)
-    divider('=', config.line_width, '\n')
+    p = lambda s: _center(s, line_width, True, False, True)
+    divider('=', line_width, '\n')
 
-    if not os.path.isfile(file_path) or config.line_width < 92:
+    if not os.path.isfile(file_path) or line_width < 92:
         p(r'')
         p(r'  / ____|           (_)  __ \     (_)           ')
         p(r' | (___   __ _ _ __  _| |  | |_ __ ___   _____  ')
@@ -245,8 +384,8 @@ def title(file_path: str):
                 p(line.strip('\n'))
 
     print('\n')
-    print('by Michele Deiana, github.com/mdeiana'.rjust(config.line_width))
-    divider('=', config.line_width, '\n')
+    print('by Michele Deiana, github.com/mdeiana'.rjust(line_width))
+    divider('=', line_width, '\n')
     print('\n\n\n\n'); p('|||   Premi Invio per iniziare   |||')
     sys.stdout.write("\033[?25l"); input('')
     sys.stdout.write("\033[?25h"); cls()
@@ -351,7 +490,7 @@ def _fail(reason: str = '', masculine: bool = True) -> None:
         Valid strings are 'layout', 'date', 'session', 'automatic_download',
         'driver_path', ''.
     """
-    p = lambda s: _center(s, config.line_width)
+    p = lambda s: _center(s, line_width)
     start = 'non riuscito.\n' if masculine else 'non riuscita.\n'
     if reason == 'loading':
         print(start); p("Errore durante la gestione del caricamento della "+

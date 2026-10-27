@@ -5,6 +5,7 @@ to navigate the CUP website and extract information from it using Selenium.
 
 import os
 import sys
+import subprocess
 from time import sleep
 from threading import Timer
 from argparse import Namespace
@@ -255,3 +256,15 @@ def expand_list(driver: WebDriver) -> None:
         finally:
             if retries >= 5:
                 _fail(reason='session', masculine=False)
+
+def force_kill_driver():
+    """Terminates chromedriver.exe and all child chrome.exe processes using
+    Windows native taskkill.
+    """
+    ps_command = ("Get-CimInstance Win32_Process -Filter \"Name='chrome.exe' "
+                  "AND CommandLine LIKE '%9222%'\" | Remove-CimInstance")
+
+    subprocess.run(
+        ["powershell", "-Command", ps_command],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL)

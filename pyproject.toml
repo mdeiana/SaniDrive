@@ -11,7 +11,7 @@ package-dir = {"sanidrive" = "src/sanidrive"}
 
 [project]
 name = "sanidrive"
-version = "1.4.0"
+version = "1.5.0"
 authors = [
   { name="Michele Deiana", email="michele.deiana.dev@gmail.com" },
 ]

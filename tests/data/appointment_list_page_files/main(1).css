@@ -1,0 +1,357 @@
+/***** PRENOTAZIONE *****/
+/*
+.filtroAppuntamentiColumn td {
+	vertical-align: top;
+}
+
+.filtroAppuntamentiColumn > tbody > tr > td {
+	width: 400px;
+}
+
+.filtroAppuntamentiColumn > tbody > tr > td:first-child {
+	width: auto;
+}
+
+.filtroAppuntamentiColumn > tbody > tr > td:last-child {
+	width: 100px;
+}*/
+#filterPanelHeader:hover {
+  cursor: pointer; }
+
+.primary-marker button {
+  color: white !important; }
+
+.orariList {
+  height: 305px;
+  overflow-x: hidden;
+  overflow-y: auto; }
+
+#orarioPanel {
+  text-align: center; }
+
+@media (max-width: 767px) {
+  .orariList {
+    height: auto; } }
+.wijmo-wijmenu, .wijmo-wijmenu-list, .wijmo-wijmenu-item {
+  padding: 0 !important; }
+
+.wijmo-wijmenu-link {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important; }
+
+.wijmo-wijmenu-item, .wijmo-wijmenu a, .wijmo-wijmenu-text {
+  width: 100% !important; }
+
+.prescrFilterRow {
+  margin: 10px 0 0 0;
+  padding-left: 15px; }
+
+.filter-two-state-button .ui-state-default {
+  padding: 0; }
+
+.filter-two-state-button > span > span > button {
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  width: 100% !important;
+  height: 28px !important; }
+
+.prescrFilterRow .ui-input-label {
+  font-weight: normal; }
+
+.filter-two-state-button {
+  display: inline-block;
+  border: 1px solid darkgray;
+  height: 28px !important;
+  width: 100% !important;
+  text-align: center; }
+
+.filter-two-state-button > span > span > button {
+  /*height:auto;*/
+  /*width:auto;*/
+  /*margin-top:4px;*/ }
+
+@media (min-width: 992px) {
+  .prescrFilterRow .span3:first-child {
+    padding-right: 0; }
+
+  .prescrFilterRow .span3:last-child {
+    padding-left: 0; } }
+@media (max-width: 991px) {
+  .prescrizionefilterDataAl {
+    clear: both;
+    padding-top: 5px; }
+
+  	/*
+  	.filter-two-state-button {
+      	width: 100% ;
+  	}*/ }
+/*
+@media (max-width: 979px) {
+	.filter-two-state-button {
+		width:130px;
+	}
+}*/
+.prestazioniTable > div > table > tbody > tr > td {
+  padding: 0 !important; }
+
+.appuntamentiTable .ui-selected .ui-widget-content > tr > td {
+  background-color: orange !important; }
+
+.appuntamentiTable .ui-selected > td, .appuntamentiTable .ui-selected > td .summaryPanel {
+  background-color: orange !important; }
+
+.appuntamentiTable .inactiveAppuntamento {
+  pointer-events: none; }
+
+.appuntamentiTable > div > table > tbody > tr > td {
+  padding-top: 7px !important;
+  padding-bottom: 7px !important; }
+
+.struttureNavigatorRow > td {
+  padding: 0 !important; }
+
+.appuntamentoAddressLink {
+  font-style: italic;
+  text-decoration: underline !important;
+  color: #00809d !important; }
+
+.bigButtonsRow {
+  width: 90%;
+  margin: 0 auto 0 auto;
+  text-align: center; }
+
+.bigButtonsRow > span {
+  display: inline-block;
+  padding: 0 40px 0 40px; }
+
+.unita-maker {
+  cursor: pointer; }
+
+/***** END - PRENOTAZIONE *****/
+/***** CALL-CENTER *****/
+#impegnativa {
+  background: url("../images/ricetta_rossa_form.gif") no-repeat scroll 0 0;
+  font-family: Arial;
+  font-size: 10px;
+  line-height: 1em;
+  margin: 0o;
+  height: 640px;
+  padding: 0px;
+  width: 780px; }
+
+#impegnativa table {
+  border-collapse: collapse;
+  width: 100%; }
+
+#impegnativa td {
+  vertical-align: top; }
+
+#impegnativa label.hidden {
+  display: none; }
+
+#impegnativa h3 {
+  border: medium none;
+  color: #ac1004;
+  display: block;
+  font-size: 1em;
+  margin: 0;
+  padding: 0;
+  text-transform: uppercase;
+  line-height: 14px;
+  font-weight: normal; }
+
+#numero_impegnativa_2 {
+  width: 196px;
+  margin-bottom: 5px;
+  margin-top: 40px; }
+
+#numero_impegnativa_1 {
+  float: left;
+  margin: 40px 26px 18px 2px;
+  width: 111px; }
+
+#impegnativa input, #impegnativa textarea {
+  font-size: 12px;
+  padding: 1px 2px;
+  resize: none; }
+
+#codice_fiscale {
+  width: 140px;
+  margin-bottom: 0; }
+
+#nome_e_cognome {
+  width: 350px; }
+
+#indirizzo {
+  height: 67px;
+  margin-bottom: 5px;
+  width: 350px; }
+
+#impegnativa .area_prescrizione {
+  padding-left: 40px !important;
+  padding-top: 18px; }
+
+#impegnativa .area_prescrizione textarea {
+  height: 100px;
+  resize: none;
+  width: 490px; }
+
+#codice_esenzione {
+  width: 105px; }
+
+#impegnativa .area_priorita_prestazione {
+  padding-left: 10px;
+  padding-right: 25px;
+  padding-top: 29px; }
+
+#impegnativa .area_priorita_prestazione input {
+  margin-right: 3px;
+  margin-top: 0; }
+
+#impegnativa .area_priorita_prestazione span {
+  margin-right: 5px; }
+
+#impegnativa .area_priorita_prestazione h3 {
+  padding-bottom: 2px; }
+
+#tempistica_erogazione_indicata {
+  margin-bottom: 40px; }
+
+#impegnativa .area_paziente {
+  padding-left: 20px;
+  padding-top: 18px; }
+
+#impegnativa .area_numero_impegnativa {
+  padding-left: 12px;
+  padding-top: 18px; }
+
+#impegnativa .area_codice_esenzione {
+  padding-left: 80px;
+  padding-top: 0; }
+
+#impegnativa .area_codice_esenzione h3 {
+  background-color: white;
+  padding-left: 5px;
+  width: 105px; }
+
+#impegnativa .area_data_prescrizione {
+  padding-right: 14px;
+  text-align: right;
+  vertical-align: bottom; }
+
+/***** END - CALL-CENTER *****/
+.inputFilterButton {
+  width: 100% !important; }
+
+.button_navigation {
+  float: left;
+  /*padding-right: 4px;*/
+  padding-bottom: 5px; }
+
+@media (max-width: 480px) {
+  .button_navigation {
+    width: 100%; } }
+/** badge paziente **/
+.badgePazientePanel {
+  position: relative;
+  min-height: 70px;
+  height: auto; }
+
+.badgePaziente {
+  padding: 5px;
+  right: 0;
+  z-index: 50;
+  overflow: hidden; }
+
+.badgePazientePanel .span4, .badgePazientePanel .span6 {
+  white-space: nowrap;
+  float: left !important;
+  margin-left: 0 !important; }
+
+.clickable {
+  cursor: pointer; }
+
+.hiddenField, .row.hiddenField, .row-fluid.hiddenField {
+  display: none; }
+
+/*
+.badgePaziente .pazienteIcon {
+	font-size: 26px; 
+	margin-right: 15px;
+}*/
+/*
+.badgePazientePanel .span4 .infoDescriptor, .badgePazientePanel .span6 .infoDescriptor {
+	float: left;
+    margin-right: 5px;
+}*/
+@media (max-width: 480px) {
+  .badgePazientePanel .span6 {
+    width: 100% !important; }
+
+  .badgePazientePanel .span4, #corpoCarrello .span4 {
+    width: 100% !important; }
+
+  #corpoCarrello .span4, #corpoCarrello .span4 {
+    width: 100% !important; } }
+@media (min-width: 481px) {
+  .badgePazientePanel .span6 {
+    width: 100% !important; }
+
+  .badgePazientePanel .span4, #corpoCarrello .span4 {
+    width: 50% !important; } }
+@media (min-width: 700px) {
+  .badgePazientePanel .span6 {
+    width: 48% !important;
+    float: left !important; }
+
+  .badgePazientePanel .span4, #corpoCarrello .span4 {
+    width: 32% !important; } }
+@media (max-width: 767px) {
+  .badgePazientePanel .span6, .badgePazientePanel .span4 {
+    width: 100% !important; }
+
+  .badgePaziente {
+    position: relative;
+    margin-right: 0;
+    max-width: 100%; } }
+@media (min-width: 768px) {
+  .span2 .btn {
+    width: 100%; }
+
+  .badgePazientePanel .span4, #corpoCarrello .span4 {
+    width: 100% !important; } }
+/*** appuntamento ***/
+.appuntamento {
+  padding: 0;
+  margin: 0 !important; }
+
+.appuntamento .row-fluid {
+  margin-left: 0;
+  margin-right: 0; }
+
+.appuntamento .span10 {
+  padding: 0; }
+
+@media (max-width: 991px) {
+  .appuntamento .span10 {
+    width: 100% !important; }
+  .appuntamento .span2 {
+    padding: 0;
+    width: 100% !important;
+    margin-left: 0 !important; }
+  .appuntamento .span6 {
+    padding: 0;
+    margin-bottom: 10px; } }
+@media (min-width: 992px) {
+  .appuntamento .span2 {
+    padding-right: 0 !important;
+    text-align: right; }
+  .appuntamento .span6:first-child {
+    padding: 0; }
+  .appuntamento .span6:last-child {
+    padding-right: 0; } }
+/** end - Appuntamento **/
+#sezionePrenotazioni-bt h4, #sezionePrenotazioni-bt h5 {
+  margin-top: 5px; }
+

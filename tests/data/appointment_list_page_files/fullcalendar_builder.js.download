@@ -1,0 +1,68 @@
+/* Calendar */
+var fullcalendarLocal = new Array();
+fullcalendarLocal["it_IT"]= {
+	locale: 'it',
+	timeFormat: 'H:mm',
+	firstDay: 1,
+	buttonText: {
+		today: 'Oggi',
+		month: 'Mese',
+		day: 'Giorno',
+		week: 'Settimana'
+	},
+	monthNames: ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'],
+	monthNamesShort: ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dec'],
+	dayNames: ['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'],
+	dayNamesShort: ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'],
+	allDayText: 'Tutto il giorno',
+	axisFormat: 'H:mm',
+};
+
+var fullcalendarExtend = {
+	plugins: [ 'interaction', 'dayGrid', 'moment'],
+	header: {
+	  left: 'prev',
+	  center: 'title',
+	  right: 'next'
+	},
+	defaultView: 'dayGridMonth',
+	fixedWeekCount: false,
+	editable: false,
+	selectable: true,
+	height: 'auto',
+	aspectRatio: 2,
+	selectable: true,
+	unselectAuto: false,
+	selectConstraint: 'selectable',
+	selectLongPressDelay: 1
+}
+
+function calEventRender(objId){
+	return {};
+}
+
+function calendarDateOutOfRange(objId, date){
+	var outOfRange = true;
+	if(date!=undefined){
+		var events = $(objId).fullCalendar('clientEvents');
+		for (var i = 0; i < events.length; i++) {
+            if (moment(date).isSame(moment(events[i].start))) {
+            	outOfRange = false;
+            	break;	
+            }
+		}
+	}
+	
+	return outOfRange;
+}
+
+function buildCustomCalendar(objId, ext_options, events){
+	buildCalendar(objId, fullcalendarExtend, fullcalendarLocal[ Liferay.ThemeDisplay.getLanguageId() ], ext_options, events);
+}
+
+function buildCalendar(objId, extend, locale, options, events){
+	var cal_extend = {};
+	var render = calEventRender(objId);
+	var calendar = new FullCalendar.Calendar(document.getElementById(objId), $.extend(cal_extend, extend, locale, options, events, render) );
+	calendar.render();	
+}		

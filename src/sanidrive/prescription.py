@@ -4,7 +4,7 @@ for which appointments will be searched.
 
 See Also
 --------
-:py:mod:`appointment`
+:py:mod:`~sanidrive.appointment`
 """
 
 
@@ -21,15 +21,9 @@ class FileEmptyError(Exception):
 
 class Prescription:
     """
-    Class used to store information on saved prescriptions.
-
-    Methods
-    -------
-    get_creds
-        Returns relevant information for login as tuple.
+    Stores information on a saved prescription.
     """
     def __init__(self, cf: str, nre: str, name: str, note: str):
-        """Constructor for Prescription class."""
         self.cf = cf
         self.nre = nre
         self.name = name

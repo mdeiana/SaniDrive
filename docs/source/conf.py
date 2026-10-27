@@ -7,9 +7,9 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'SaniDrive'
-copyright = '2024, Michele Deiana'
+copyright = '2026, Michele Deiana'
 author = 'Michele Deiana'
-release = '1.3'
+release = '1.5.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -18,13 +18,14 @@ import os
 import sys
 from pathlib import Path
 
-sys.path.insert(0, os.path.abspath('../../src/sanidrive'))
+sys.path.insert(0, os.path.abspath('../../src'))
 #sys.path.insert(0, str(Path('../..', 'src').resolve()))
 
 extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.autodoc',
-    'myst_parser'
+    'sphinx.ext.viewcode',
+#    'myst_parser',
 ]
 
 templates_path = ['_templates']
@@ -32,13 +33,17 @@ exclude_patterns = []
 
 napoleon_google_docstring = False
 napoleon_numpy_docstring = True
+napoleon_use_param = True
+napoleon_use_rtype = True
+napoleon_include_init_with_doc = True
 napoleon_include_private_with_doc = True
 
 autodoc_default_options = {
 	'members': True,
 	#'special-members': True,
 	'private-members': True,
-	'member-order': 'bysource'
+	'member-order': 'bysource',
+    "typehints" : "description", # : "signature"
 }
 
 autoclass_content = 'class'

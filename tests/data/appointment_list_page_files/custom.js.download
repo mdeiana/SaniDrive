@@ -1,0 +1,164 @@
+"use strict"; + function (e) {
+	function a() {
+		e("html").removeClass("nav-sidebar-open"), e("#navbar-sidebar-wrap").attr("aria-hidden", "true").attr("inert", !0)
+	}
+	e("#navbar-sidebar-wrap").attr("inert", !0), e(".toggle-nav-sidebar").click(function () {
+		e("html").toggleClass("nav-sidebar-open").is(".nav-sidebar-open") && (e("#navbar-sidebar-wrap").attr("aria-hidden", "false").removeAttr("inert"), setTimeout(function () {
+			e("#navbar-sidebar-wrap").focus()
+		}, 100))
+	}), e(".close-nav-sidebar").click(a), e("#nav-sidebar-overlayer").click(a), e(window).keydown(function (t) {
+		e("html.nav-sidebar-open").length && 27 == t.keyCode && a()
+	})
+}(jQuery), + function (e) {
+	if (e(".masonry").length > 0) {
+		e(".masonry > .clearfix").remove();
+		var a;
+		e(window).load(function () {
+			a = e(".masonry").masonry({
+				itemSelector: ".grid-item"
+			})
+		}), e(window).on("resize", function () {
+			"undefined" != typeof a && "function" == typeof a.masonry && a.masonry("layout")
+		})
+	}
+}(jQuery), + function (e) {
+	e(".btn-group .dropdown-toggle").click(function () {
+		var a = e(this).closest(".btn-group"),
+			t = a.children(".dropdown-menu");
+		a.on("shown.bs.dropdown", function () {
+			t.attr("aria-hidden", !1)
+		}).on("hidden.bs.dropdown", function () {
+			t.attr("aria-hidden", !0)
+		})
+	})
+}(jQuery), + function (e) {
+	function a() {
+		e(window).scrollTop() > 500 ? e("#scroll-top").addClass("visible") : e("#scroll-top").removeClass("visible")
+	}
+	e("a[href*=#]:not([href=#]):not([role=button]):not(.skiptomain)").click(function () {
+		if (location.pathname.replace(/^\//, "") == this.pathname.replace(/^\//, "") || location.hostname == this.hostname) {
+			var a = e(this.hash);
+			if (a = a.length ? a : e("[name=" + this.hash.slice(1) + "]"), a.length) {
+				var t = 0;
+				return e("html,body").animate({
+					scrollTop: a.offset().top - t + 1
+				}, 600), !1
+			}
+		}
+	}), e(window).on("scroll", a), a()
+}(jQuery), + function (e) {
+	var a = e(e("#horiz-menu-btn").text());
+	e("#nav-header ul.nav_header > li.menu-item-has-children").each(function () {
+		e("> a", this).after(a.clone());
+		var t = e('');
+		e(this).children().appendTo(t), t.appendTo(e(this))
+	})
+}(jQuery), + function (e) {
+	e(".dropdown-toggle").dropdown()
+}(jQuery), + function (e) {
+	function a() {
+		var a = e(window).scrollTop();
+		a > 30 ? t || (e("html").addClass("header-shrinked"), t = 1, e("#main-header > .container, #main-header .social").attr("inert", "true"), e("#main-header").aa2_shrink(), e("html").trigger("aa2-header-shrink")) : t && (e("html").removeClass("header-shrinked"), t = 0, e("#main-header > .container, #main-header .social").removeAttr("inert"), e("#main-header").aa2_enlarge(), e("html").trigger("aa2-header-enlarge"))
+	}
+	e("html").hasClass("header-fixable") && e("html").addClass("header-fixed"), e.fn.aa2_shrink = function () {
+		return this.each(function () {
+			e(this).css("height", e(this).css("height")), e(this).data("height", e(this).css("height")), e(this).css("height", 0)
+		})
+	}, e.fn.aa2_enlarge = function () {
+		return this.each(function () {
+			var a = e(this);
+			a.css("height", a.data("height")), setTimeout(function () {
+				a.css("height", "auto")
+			}, 350)
+		})
+	};
+	var t = 0;
+	e("html").hasClass("header-shrinkable") && e(window).on("load scroll", a)
+}(jQuery), jQuery(document).ready(function (e) {
+	e("span.crypted-email").each(function () {
+		var a = atob(e(this).data("code")).replace("?", "@");
+		e(this).after('<a href="mailto:' + a + '" class="email-link">' + a + "</a>"), e(this).remove()
+	})
+}), + function (e) {
+	e.AA2AjaxSearch = function (a) {
+		var t = {
+			delay: 300,
+			minChars: 3,
+			scope: "body",
+			container: "",
+			field: '#s:not(".aa2_disable_ajax_search #s")'
+		};
+		this.options = e.extend({}, t, a), this.scope = e(this.options.scope), this.timer = !1, this.lastVal = "", this.options.container ? this.container = e(this.options.container) : this.container = e(this.options.field).parent(), this.init()
+	}, e.AA2AjaxSearch.prototype = {
+		init: function () {
+			e(this.options.field, this.scope).attr("autocomplete", "off"), this.bind_events()
+		},
+		bind_events: function () {
+			this.scope.on("keyup", this.options.field, e.proxy(this.try_search, this)), e(document).on("mousedown", "html.ajax-search-open", e.proxy(this.hide_results, this)), e(window).on("keydown", e.proxy(this.maybe_hide, this))
+		},
+		try_search: function (a) {
+			clearTimeout(this.timer), a.currentTarget.value.length >= this.options.minChars && this.lastVal != e.trim(a.currentTarget.value) && (this.timer = setTimeout(e.proxy(this.do_search, this, a), this.options.delay))
+		},
+		do_search: function (a) {
+			var t = this,
+				n = e(a.currentTarget),
+				i = n.parents("form:eq(0)"),
+				o = e(".ajax_search_response", this.container),
+				s = i.find("button"),
+				r = i.attr("action"),
+				h = i.serialize();
+			h += "&action=aa2_search_ajax", r.indexOf("?") != -1 && (r = r.split("?"), h += "&" + r[1]), o.length || (o = e('<div class="ajax_search_response" tabindex="-1" inert></div>').appendTo(this.container)), o.find(".ajax_not_found").length && a.currentTarget.value.indexOf(this.lastVal) != -1 || (this.lastVal = a.currentTarget.value, e.ajax({
+				url: aa2_globals.ajaxurl,
+				type: "POST",
+				data: h,
+				beforeSend: function () {
+					s.addClass("loading")
+				},
+				success: function (a) {
+					0 == a && (a = ""), o.attr("aria-hidden", "false").removeAttr("inert").html(a), t.container.addClass("ajax-open"), e("html").addClass("ajax-search-open")
+				},
+				complete: function () {
+					s.removeClass("loading")
+				}
+			}))
+		},
+		hide_results: function (a) {
+			var t = e(a.target);
+			t.is(this.container) || 0 != t.parents().filter(this.container).length || this.hide()
+		},
+		maybe_hide: function (a) {
+			e("html.ajax-search-open").length && 27 == a.keyCode && this.hide()
+		},
+		hide: function () {
+			this.container.removeClass("ajax-open"), e(".ajax_search_response", this.container).attr("aria-hidden", "true").attr("inert", !0), e("html").removeClass("ajax-search-open")
+		}
+	}, new e.AA2AjaxSearch({
+		scope: "#main-header"
+	})
+}(jQuery), + function (e) {
+	e("#main").attr("tabindex", -1), e(".header-fixable #skiptomain > a").click(function (a) {
+		a.preventDefault();
+		var t = window.scrollX,
+			n = 65;
+		e("#main").focus(), window.scrollTo(t, n)
+	})
+}(jQuery), + function (e, a) {
+	e.fn.aa2_agenda = function () {
+		if ("undefined" == typeof aa2_agenda_posts) return this;
+		var t = this,
+			n = a.template("aa2-agenda-evento");
+		return this.fillDettagli = function (a, t) {
+			return !!aa2_agenda_posts.hasOwnProperty(a) && (t.html(""), e.each(aa2_agenda_posts[a], function (e, a) {
+				var i = n(a);
+				t.append(i), console.log(e), (e + 1) % 2 == 0 && t.append('<div class="clearfix visible-sm-block"/>'), (e + 1) % 3 == 0 && t.append('<div class="clearfix visible-md-block visible-lg-block"/>')
+			}), !0)
+		}, this.each(function () {
+			var a = e(".agenda-dettagli", this);
+			e(this).on("click", ".agenda-giorno.con-eventi", function (n) {
+				n.preventDefault(), e(this).hasClass("active") ? (a.addClass("hidden"), e(this).removeClass("active")) : (e(this).siblings(".con-eventi").removeClass("active"), e(this).addClass("active"), t.fillDettagli(e(this).data("day"), e(".row", a)) && a.removeClass("hidden"))
+			})
+		})
+	}, e(document).ready(function () {
+		e("body.home .home-section-agenda").length > 0 && e("body.home .home-section-agenda").aa2_agenda()
+	})
+}(jQuery);

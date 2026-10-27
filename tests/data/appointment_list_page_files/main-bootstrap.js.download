@@ -1,0 +1,17 @@
+function startTour(dati) {
+	var tour = new Tour({
+	  steps : dati,
+	  backdrop: true,
+	  storage: false,
+	  smartPlacement: true,
+	  autoscroll: true
+	});
+
+	tour.init();
+	tour.start();
+}
+
+
+function addStartTourButton(dataName){
+	addPortletBarIcon('icon-tour', 'startTour('+dataName+')');
+}
